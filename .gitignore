@@ -12,6 +12,5 @@ local
 **.out
 locale
 po/wxRays.pot
-data
 .hg
 .hgignore
