@@ -1,0 +1,907 @@
+# RUSSIAN TRANSLATION OF THE wxRays.
+# Copyright (C) 2013 Serhiy Lysovenko
+# This file is distributed under the same license as the wxRays package.
+# Serhiy Lysovenko <EMAIL@ADDRESS>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.0.3 \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-04-15 19:39+0300\n"
+"PO-Revision-Date: 2014-02-28 23:30+0200\n"
+"Last-Translator: Serhiy Lysovenko <EMAIL@ADDRESS>\n"
+"Language-Team: NO TEAM <nospam@gmail.com>\n"
+"Language: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: utf-8\n"
+
+#: ../addons.py:208
+msgid "Use"
+msgstr "Исп."
+
+#: ../addons.py:215
+msgid "Title"
+msgstr "Название"
+
+#: ../addons.py:260
+msgid "Addons"
+msgstr "Приложения"
+
+#: ../addons.py:264
+msgid "Configure..."
+msgstr "Настроить..."
+
+#: ../altgt_add.py:60
+msgid "PO file:"
+msgstr "Файл po:"
+
+#: ../altgt_add.py:60 ../nistdb_add.py:76
+msgid "Open"
+msgstr "Откріть"
+
+#: ../altgt_add.py:61
+msgid "Open the po file"
+msgstr "Открыть файл po"
+
+#: ../altgt_add.py:61
+msgid "po files|*.po"
+msgstr "Файлы po|*.po"
+
+#: ../liqam_add.py:42
+msgid "Radial distribution function"
+msgstr "Функция радиального распределения"
+
+#: ../liqam_add.py:43
+msgid "Structure factor"
+msgstr "СФ"
+
+#: ../liqam_add.py:44
+msgid "Alternative intensity curve"
+msgstr "Альтернативная КИ"
+
+#: ../liqam_add.py:45
+msgid "Reverse Fourier transform"
+msgstr "Обратное превращение Фурье"
+
+#: ../liqam_add.py:46
+msgid "At. dens. evol."
+msgstr "Эвол. ат. плотн."
+
+#: ../liqam_add.py:47
+msgid "Radial distribution function's tail"
+msgstr "Хвост функции радиального распределения"
+
+#: ../liqam_add.py:48
+msgid "Background curve"
+msgstr "Кривая фона"
+
+#: ../liqam_add.py:57
+msgid "Calculate S(q)..."
+msgstr "Рассчитать СФ"
+
+#: ../liqam_add.py:59
+msgid "Calculate atomic density..."
+msgstr "Найти атомарную плотность..."
+
+#: ../liqam_add.py:62
+#, fuzzy
+msgid "Find SF's head..."
+msgstr "Найти хвост ФРР"
+
+#: ../liqam_add.py:65
+#, fuzzy
+msgid "Find SF's tail..."
+msgstr "Найти хвост ФРР"
+
+#: ../liqam_add.py:68
+#, fuzzy
+msgid "Calculate RDF..."
+msgstr "Рассчитать..."
+
+#: ../liqam_add.py:71
+#, fuzzy
+msgid "Find RDF's tail..."
+msgstr "Найти хвост ФРР"
+
+#: ../liqam_add.py:74
+#, fuzzy
+msgid "Perform RFT..."
+msgstr "Произвести ОФП"
+
+#: ../liqam_add.py:77
+msgid "Smooth S(q) by RFT"
+msgstr "Сгладить СФ по ОФП"
+
+#: ../liqam_add.py:80
+msgid "Find intensity curve by S(q)"
+msgstr "Найти КИ по СФ"
+
+#: ../liqam_add.py:85
+#, fuzzy
+msgid "Change initial intensity curve..."
+msgstr "Изменить исходную КИ"
+
+#: ../liqam_add.py:88
+msgid "S&ave S(q) file..."
+msgstr "Сохранить файл СФ..."
+
+#: ../liqam_add.py:90
+msgid "SF modifiers"
+msgstr "Модификаторы СФ"
+
+#: ../liqam_add.py:94
+msgid "Fit to head"
+msgstr "Подогнать под голову"
+
+#: ../liqam_add.py:97
+#, fuzzy
+msgid "Fit to tail"
+msgstr "Найти хвост ФРР"
+
+#: ../liqam_add.py:172 ../liqam_add.py:200 ../liqam_add.py:303
+msgid "Points:"
+msgstr "Точек:"
+
+#: ../liqam_add.py:177
+msgid "Tail init params"
+msgstr "Исходные параметры хвоста"
+
+#: ../liqam_add.py:199
+msgid "Head init. params"
+msgstr "Исходные параметры головы"
+
+#: ../liqam_add.py:201 ../liqam_add.py:905
+msgid "Diam:"
+msgstr "Диам:"
+
+#: ../liqam_add.py:201
+msgid "Dens:"
+msgstr "Плотн:"
+
+#: ../liqam_add.py:233 ../v_datmod.py:32 ../v_datmod.py:58 ../v_menu.py:43
+#: ../v_menu.py:46 ../v_plot.py:414
+msgid "Intensity curve"
+msgstr "КИ"
+
+#: ../liqam_add.py:247
+msgid "Believe factor"
+msgstr "Доверительный коэфициент"
+
+#: ../liqam_add.py:248
+msgid "The visible part only"
+msgstr "Только видимая часть"
+
+#: ../liqam_add.py:249 ../powder_add.py:239
+msgid "Believe factor:"
+msgstr ""
+
+#: ../liqam_add.py:275 ../liqam_add.py:304
+msgid "Start:"
+msgstr "Начало:"
+
+#: ../liqam_add.py:276 ../liqam_add.py:305
+msgid "End:"
+msgstr "Конец:"
+
+#: ../liqam_add.py:277
+msgid "Steps:"
+msgstr "Шаги:"
+
+#: ../liqam_add.py:278
+msgid "RFT params"
+msgstr ""
+
+#: ../liqam_add.py:310
+msgid "RDF tail"
+msgstr "Хвост ФРР"
+
+#: ../liqam_add.py:329 ../liqam_add.py:415 ../liqam_add.py:430
+msgid "parameter"
+msgstr "Параметр"
+
+#: ../liqam_add.py:329 ../liqam_add.py:415 ../liqam_add.py:430
+msgid "value"
+msgstr "значение"
+
+#: ../liqam_add.py:367
+msgid "Classic"
+msgstr "Классический"
+
+#: ../liqam_add.py:367
+#, fuzzy
+msgid "By Stetsiv (mix)"
+msgstr "По Стециву (ПКФ)"
+
+#: ../liqam_add.py:368
+msgid "By Stetsiv (PCF)"
+msgstr "По Стециву (ПКФ)"
+
+#: ../liqam_add.py:369
+msgid "By Stetsiv (PCF integrated)"
+msgstr "По Стециву (ПКФ инт.)"
+
+#: ../liqam_add.py:370
+msgid "By Stetsiv (PCF dens. opt.)"
+msgstr "По Стециву (ПКФ опт. плот.)"
+
+#: ../liqam_add.py:371
+msgid "By Stetsiv (parabolic)"
+msgstr "По Стециву (параболич.)"
+
+#: ../liqam_add.py:377
+#, fuzzy
+msgid "Calculation details"
+msgstr "Режим расчета"
+
+#: ../liqam_add.py:378 ../liqam_add.py:519
+msgid "Calculation mode"
+msgstr "Режим расчета"
+
+#: ../liqam_add.py:381
+#, fuzzy
+msgid "Elements"
+msgstr "Элементы:"
+
+#: ../liqam_add.py:386
+#, fuzzy
+msgid "Degree of polynomial"
+msgstr "Порядок полинома:"
+
+#: ../liqam_add.py:394
+#, python-brace-format
+msgid "R_{0} samples"
+msgstr ""
+
+#: ../liqam_add.py:397
+#, fuzzy
+msgid "The background polynomial"
+msgstr "Порядок фонового полинома:"
+
+#: ../liqam_add.py:414
+msgid "Head"
+msgstr "Голова"
+
+#: ../liqam_add.py:417
+msgid "diameter"
+msgstr "диаметр"
+
+#: ../liqam_add.py:417
+msgid "Effective density"
+msgstr "Эффективная плотность"
+
+#: ../liqam_add.py:430
+msgid "Tail"
+msgstr "Хвостъ"
+
+#: ../liqam_add.py:455
+msgid "Elements is invalid!\n"
+msgstr "Элементы хуево записаны!\n"
+
+#: ../liqam_add.py:455 ../v_dialogs.py:47
+msgid "Error"
+msgstr "Хуйня вышла"
+
+#: ../liqam_add.py:463
+msgid "Field in empty."
+msgstr "Поле пустое"
+
+#: ../liqam_add.py:469
+msgid "Syntax error."
+msgstr "какая-то хуйня с синтаксисом."
+
+#: ../liqam_add.py:472
+#, python-format
+msgid "Element %s not found."
+msgstr "Элемента %s тупо нету."
+
+#: ../liqam_add.py:477 ../v_dialogs.py:60
+msgid "Wrong type of float."
+msgstr "Хуевое представление действительного числа."
+
+#: ../liqam_add.py:480
+msgid "Part of element must be > 0."
+msgstr "Доля єлемента должна быть > 0."
+
+#: ../liqam_add.py:494
+msgid "Calculation of the structure factor"
+msgstr "Расчет СФ"
+
+#: ../liqam_add.py:505 ../liqam_add.py:929
+msgid "Elements:"
+msgstr "Элементы:"
+
+#: ../liqam_add.py:532
+msgid "Polynomial's range:"
+msgstr "Порядок полинома:"
+
+#: ../liqam_add.py:542
+msgid "Sections:"
+msgstr "Секций:"
+
+#: ../liqam_add.py:551
+msgid "Start dens. opt.:"
+msgstr "Начало опт. плот.:"
+
+#: ../liqam_add.py:561 ../liqam_add.py:738
+msgid "Atomic density:"
+msgstr "Атомарная плотность:"
+
+#: ../liqam_add.py:580
+msgid "Cutoff radius:"
+msgstr "Радиус обрыва:"
+
+#: ../liqam_add.py:590
+msgid "Samples:"
+msgstr "Точек:"
+
+#: ../liqam_add.py:681
+msgid "S(Q) by Stetsiv"
+msgstr ""
+
+#: ../liqam_add.py:682
+#, python-format
+msgid "Calculating the structure factor by the Stetsiv method (%s)..."
+msgstr "Расчет СФ по Стециву (%s)..."
+
+#: ../liqam_add.py:710
+#, fuzzy
+msgid "Calculation of the RDF"
+msgstr "Расчет g(r)"
+
+#: ../liqam_add.py:726
+msgid "Calculate..."
+msgstr "Рассчитать..."
+
+#: ../liqam_add.py:731
+msgid "Drop tail"
+msgstr "Обрубить хвост"
+
+#: ../liqam_add.py:759
+msgid "Start, end, steps:"
+msgstr "Начало, конец, шаги:"
+
+#: ../liqam_add.py:781
+msgid "Calculate first maximum"
+msgstr "Расчитать первый максимум"
+
+#: ../liqam_add.py:787
+msgid "Asym bells: "
+msgstr "Асим: "
+
+#: ../liqam_add.py:806
+msgid "First coord"
+msgstr "Первая КС"
+
+#: ../liqam_add.py:893
+#, python-format
+msgid "Value Error: %s"
+msgstr "Ошибка значения: %s"
+
+#: ../liqam_add.py:905
+msgid "Diameter"
+msgstr "Диаметр"
+
+#: ../liqam_add.py:922 ../liqam_add.py:1055
+msgid "Calc. of prox. at. dens."
+msgstr "Найти прибл. ат. плотн."
+
+#: ../liqam_add.py:942
+msgid "Times crude:"
+msgstr "Грубо раз:"
+
+#: ../liqam_add.py:954
+msgid "Times accurate:"
+msgstr "Точно раз:"
+
+#: ../liqam_add.py:966
+msgid "Degree of polynomial:"
+msgstr "Порядок полинома:"
+
+#: ../liqam_add.py:978
+msgid "Previous cutoff:"
+msgstr "Прежний обрыв:"
+
+#: ../liqam_add.py:988
+msgid "Parabolic samples:"
+msgstr "Точек параболы:"
+
+#: ../liqam_add.py:1000
+msgid "Searching samples:"
+msgstr "Точек для поиска:"
+
+#: ../liqam_add.py:1056
+msgid "Calculating proximately atomic density..."
+msgstr "Расчет прибл. ат. плотности..."
+
+#: ../liqam_add.py:1091
+msgid "Iteration"
+msgstr "Итерация"
+
+#: ../liqam_add.py:1092
+msgid "At. dens., $\\AA^{-3}$"
+msgstr "Ат. плот., $\\AA^{-3}$"
+
+#: ../liqam_add.py:1104
+msgid "dat (*.dat)|*.dat|Extended SQ (*.esq)|*.esq"
+msgstr "dat (*.dat)|*.dat|Расшир. SQ (*.esq)|*.esq"
+
+#: ../liqam_add.py:1106
+msgid "Save structure factor"
+msgstr "Сохренить СФ"
+
+#: ../liqam_add.py:1118 ../v_plot.py:124
+#, fuzzy, python-format
+msgid ""
+"File “%s” already exists.\n"
+"Rewrite it?"
+msgstr ""
+"Файл \"%s\" уже существует.\n"
+"Заменить его нахуй?"
+
+#: ../nistdb_add.py:35
+msgid "NIST database..."
+msgstr "БД NIST..."
+
+#: ../nistdb_add.py:75
+msgid "DB file:"
+msgstr "Файл БД:"
+
+#: ../nistdb_add.py:76 ../nistdb_add.py:138
+msgid "Open main database file"
+msgstr "Откр. осн. файл БД"
+
+#: ../nistdb_add.py:77 ../nistdb_add.py:137
+msgid "NIST*AIDS-83 database format|pdf2.dat"
+msgstr "Файл БД форматa NIST*AIDS-83|pdf2.dat"
+
+#: ../nistdb_add.py:89 ../nistdb_add.py:147
+msgid "Wrong database file"
+msgstr "Хреновый файл БД"
+
+#: ../nistdb_add.py:89 ../nistdb_add.py:147 ../v_dialogs.py:290
+#: ../v_dialogs.py:300
+msgid "Error!"
+msgstr "Блядь!"
+
+#: ../nistdb_add.py:164
+msgid "Indexator"
+msgstr "Индексировщик"
+
+#: ../nistdb_add.py:164
+msgid "Indexing database..."
+msgstr "Индексирую БД..."
+
+#: ../nistdb_add.py:205
+msgid "NIST Pattern"
+msgstr "Шаблон NIST"
+
+#: ../nistdb_add.py:206
+msgid "DB Cards"
+msgstr "Карточки БД"
+
+#: ../nistdb_add.py:216
+msgid "Include deleted"
+msgstr "Включить удаленные"
+
+#: ../nistdb_add.py:224
+msgid "Number"
+msgstr "Номер"
+
+#: ../nistdb_add.py:225
+msgid "Name"
+msgstr "Имя"
+
+#: ../nistdb_add.py:226
+msgid "Formula"
+msgstr "Формула"
+
+#: ../nistdb_add.py:227
+msgid "Quality"
+msgstr "Качество"
+
+#: ../nistdb_add.py:239
+#, fuzzy
+msgid "Card's information"
+msgstr "Инфа о картоках"
+
+#: ../nistdb_add.py:240
+#, fuzzy
+msgid "Delete"
+msgstr " (Удалено)"
+
+#: ../nistdb_add.py:240
+msgid "Clear"
+msgstr ""
+
+#: ../nistdb_add.py:241
+msgid "Preserve positions"
+msgstr ""
+
+#: ../nistdb_add.py:452
+msgid "Cards info"
+msgstr "Инфа о картоках"
+
+#: ../nistdb_add.py:502
+msgid " (Deleted)"
+msgstr " (Удалено)"
+
+#: ../nistdb_add.py:503
+#, python-format
+msgid ""
+"\n"
+"<table>\n"
+"<tr><td>Number:</td><td>%(num)s</td></tr>\n"
+"<tr><td>Name:</td><td>%(nam)s</td></tr>\n"
+"<tr><td>Formula:</td><td>%(fml)s</td></tr>\n"
+"<tr><td>Quality:</td><td>%(qlt)s</td></tr>\n"
+msgstr ""
+"\n"
+"<table>\n"
+"<tr><td>Номер:</td><td>%(num)s</td></tr>\n"
+"<tr><td>Имя:</td><td>%(nam)s</td></tr>\n"
+"<tr><td>Формула:</td><td>%(fml)s</td></tr>\n"
+"<tr><td>Каество:</td><td>%(qlt)s</td></tr>\n"
+
+#: ../nistdb_add.py:514
+msgid "Cell parameters:"
+msgstr "Параметы решетки"
+
+#: ../nistdb_add.py:523
+msgid "Space group:"
+msgstr "Пространственная группа:"
+
+#: ../nistdb_add.py:549
+msgid "<h5>Comment</h5>"
+msgstr "<h5>Коментарий</h5>"
+
+#: ../nistdb_add.py:552
+msgid "Color: "
+msgstr "Цвет: "
+
+#: ../nistdb_add.py:555
+msgid "<h5>References</h5>\n"
+msgstr "<h5>Ссылки</h5>\n"
+
+#: ../powder_add.py:30
+msgid "Gaus"
+msgstr ""
+
+#: ../powder_add.py:30
+msgid "Lorentz"
+msgstr ""
+
+#: ../powder_add.py:30
+msgid "Pseudo Voit"
+msgstr ""
+
+#: ../powder_add.py:40
+msgid "Find background..."
+msgstr "Найти фон..."
+
+#: ../powder_add.py:43
+#, fuzzy
+msgid "Calc. refl. shapes..."
+msgstr "Рассчитать..."
+
+#: ../powder_add.py:46
+msgid "Predefined reflexes..."
+msgstr ""
+
+#: ../powder_add.py:79
+msgid "Exp. background"
+msgstr "Эксп. фон"
+
+#: ../powder_add.py:81 ../powder_add.py:96
+msgid "I, rel. units"
+msgstr "I, отн. ед."
+
+#: ../powder_add.py:94
+#, fuzzy
+msgid "Exp. reflexes"
+msgstr "Эксп. пики"
+
+#: ../powder_add.py:108
+msgid "Calculate background"
+msgstr "Найти фоняру"
+
+#: ../powder_add.py:115
+msgid "Sigma multiplier:"
+msgstr "σ множитель"
+
+#: ../powder_add.py:123
+msgid "Background poynom's range:"
+msgstr "Порядок фонового полинома:"
+
+#: ../powder_add.py:234
+msgid "Min. σ:"
+msgstr ""
+
+#: ../powder_add.py:235
+msgid "Const. σ"
+msgstr ""
+
+#: ../powder_add.py:236
+#, fuzzy
+msgid "Max. bells:"
+msgstr "Асим: "
+
+#: ../powder_add.py:237
+#, fuzzy
+msgid "Shape function:"
+msgstr "Секций:"
+
+#: ../powder_add.py:238
+msgid "Ignore points:"
+msgstr ""
+
+#: ../powder_add.py:244
+msgid "Algorithm:"
+msgstr ""
+
+#: ../powder_add.py:244
+msgid "alg 1"
+msgstr ""
+
+#: ../powder_add.py:244
+msgid "alg 2"
+msgstr ""
+
+#: ../powder_add.py:245
+msgid "Shapes of reflexes"
+msgstr ""
+
+#: ../powder_add.py:259
+#, fuzzy
+msgid "Calculate shapes"
+msgstr "Найти голову"
+
+#: ../powder_add.py:260
+#, fuzzy
+msgid "Calculating shapes of the reflexes..."
+msgstr "Расчет позиций пиков..."
+
+#: ../powder_add.py:303
+msgid "Reflexes description"
+msgstr ""
+
+#: ../powder_add.py:305
+msgid "Mode"
+msgstr ""
+
+#: ../v_datmod.py:63
+msgid "Shift X by:"
+msgstr ""
+
+#: ../v_datmod.py:64
+msgid "Shift Y by:"
+msgstr ""
+
+#: ../v_datmod.py:65
+msgid "Shift data"
+msgstr ""
+
+#: ../v_dialogs.py:55
+msgid "Field is empty."
+msgstr "Поле, блядь, пустое."
+
+#: ../v_dialogs.py:63
+msgid "Unreal value."
+msgstr "Нереально-хуевое значение."
+
+#: ../v_dialogs.py:99
+msgid "Experimental features"
+msgstr "Особенности эксперимента"
+
+#: ../v_dialogs.py:104
+msgid "Radiation"
+msgstr "Излучение"
+
+#: ../v_dialogs.py:107
+msgid "Anticatode:"
+msgstr "Антикатод:"
+
+#: ../v_dialogs.py:119
+msgid "Filtering:"
+msgstr "Фильтрация:"
+
+#: ../v_dialogs.py:121
+msgid "Monochromator"
+msgstr "Монохроматор"
+
+#: ../v_dialogs.py:121
+msgid "Alpha mix"
+msgstr "Альфа смесь"
+
+#: ../v_dialogs.py:121
+msgid "No beta-filter"
+msgstr "Без β-фильтра"
+
+#: ../v_dialogs.py:134
+msgid "File X:"
+msgstr "Абсцысса"
+
+#: ../v_dialogs.py:144
+msgid "Sample:"
+msgstr "Образец:"
+
+#: ../v_dialogs.py:146
+msgid "Powder"
+msgstr "Порошок"
+
+#: ../v_dialogs.py:146
+msgid "Liquid"
+msgstr "Жидкость"
+
+#: ../v_dialogs.py:238
+msgid "All known filetypes"
+msgstr "Все знакомые типы файлов"
+
+#: ../v_dialogs.py:256
+#, fuzzy
+msgid "Open data file(s)"
+msgstr "Открыть файл з данными"
+
+#: ../v_dialogs.py:289
+#, fuzzy, python-format
+msgid ""
+"Wrong data file(s):\n"
+"%s"
+msgstr "Хреновый файл данных"
+
+#: ../v_dialogs.py:299
+#, python-format
+msgid ""
+"Other data are incompatible to the\n"
+"%s"
+msgstr ""
+
+#: ../v_dialogs.py:325
+msgid "(C) 2013-2014 Serhiy Lysovenko"
+msgstr "(C) 2013-2014 Сергей Лысовенко"
+
+#: ../v_dialogs.py:326
+msgid "Treater of the x-ray diffraction data"
+msgstr "Обработчик рентгено-дифракционных данных"
+
+#: ../v_dialogs.py:327
+msgid "Home page"
+msgstr "Домашняя страница"
+
+#: ../v_face.py:44
+msgid "Commented dat files"
+msgstr "Комментированный файл dat"
+
+#: ../v_menu.py:36
+msgid "&File"
+msgstr "&Файл"
+
+#: ../v_menu.py:37
+#, fuzzy
+msgid "&Open data file(s)..."
+msgstr "&Открыть файл данных..."
+
+#: ../v_menu.py:40
+msgid "&Quit"
+msgstr "&Выход"
+
+#: ../v_menu.py:42
+msgid "&Data"
+msgstr "&Данные"
+
+#: ../v_menu.py:44
+msgid "Crop the intensity curve"
+msgstr "Обрезать эксп. данные"
+
+#: ../v_menu.py:47
+#, fuzzy
+msgid "Shift the intensity curve..."
+msgstr "Обрезать эксп. данные"
+
+#: ../v_menu.py:50
+msgid "&Plot"
+msgstr "&График"
+
+#: ../v_menu.py:51
+msgid "&Tools"
+msgstr "&Инструменты"
+
+#: ../v_menu.py:52
+msgid "Addons..."
+msgstr "Аддоны..."
+
+#: ../v_menu.py:53
+msgid "Help"
+msgstr "Справка"
+
+#: ../v_menu.py:54
+msgid "About..."
+msgstr "О программе..."
+
+#: ../v_plot.py:86 ../v_plot.py:103
+msgid "Save plot as ASCII file"
+msgstr "Сохраник график как текст"
+
+#: ../v_plot.py:90
+msgid "Details"
+msgstr "Детали"
+
+#: ../v_plot.py:100
+msgid "Details\tCtrl+D"
+msgstr "Детали\tCtrl+D"
+
+#: ../v_plot.py:115
+#, fuzzy, python-format
+msgid "Save plot “%s” as ASCII file"
+msgstr "Сохраник график как текст"
+
+#: ../v_plot.py:391
+#, python-format
+msgid "%(a)s: Plot info (%(b)s)"
+msgstr "%(a)s: Информация о %(b)s"
+
+#: ../v_powder_tbl.py:36
+msgid "Location"
+msgstr ""
+
+#: ../v_powder_tbl.py:37
+#, fuzzy
+msgid "Intensity"
+msgstr "КИ"
+
+#: ../v_powder_tbl.py:38
+#, fuzzy
+msgid "Comment"
+msgstr "<h5>Коментарий</h5>"
+
+#: ../v_powder_tbl.py:39
+msgid "Frozen"
+msgstr ""
+
+#: ../v_powder_tbl.py:290
+msgid "Predefined reflexes"
+msgstr ""
+
+#: ../v_powder_tbl.py:307
+msgid "Location units:"
+msgstr ""
+
+#~ msgid "Filter"
+#~ msgstr "Фильтр"
+
+#~ msgid "Find"
+#~ msgstr "Найти"
+
+#~ msgid "Stetsiv S(Q)"
+#~ msgstr "СФ Стецива"
+
+#~ msgid "Find peaks"
+#~ msgstr "Найти пики"
+
+#~ msgid "By Stetsiv (sections)"
+#~ msgstr "По Стециву (посекторно)"
+
+#~ msgid ""
+#~ "File '%s` already exists.\n"
+#~ "Rewrite it?"
+#~ msgstr ""
+#~ "Файл \"%s\" уже существует.\n"
+#~ "Заменить его нахуй?"
+
+#~ msgid "Calculate tail"
+#~ msgstr "Рассчитать хвостъ"
+
+#~ msgid "RFT"
+#~ msgstr "ОФП"
+
+#~ msgid "Calculate g(r)..."
+#~ msgstr "Рассчитать g(r)..."
+
+#~ msgid "Experimental data"
+#~ msgstr "Экспериментальные данные"
+
+#~ msgid "Diameter / density"
+#~ msgstr "Диаметр / плотность"
+
+#~ msgid "Wrong po file"
+#~ msgstr "Хреновый файл po"

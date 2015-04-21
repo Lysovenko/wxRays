@@ -1,0 +1,4 @@
+path=nistdb_add.py
+name=NIST database browser
+id=10
+keys=configurable

@@ -1,0 +1,25 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage[T2A]{fontenc}
+\usepackage[cp1251]{inputenc}
+\usepackage[english,ukrainian]{babel}
+%\usepackage{graphicx}
+\usepackage{ifpdf}
+\usepackage{hyperref}
+\ifpdf
+\hypersetup{pdftitle={wxRays tutorial},%
+pdfauthor={Serhiy Lysovenko},pdfsubject={wxRays},pdftex,
+colorlinks}%,hyperindex,plainpages=false,unicode,pagebackref,pdfpagelabels} 
+%\makeindex
+\fi
+\begin{document}
+\title{Посібник з wxRays}
+\author{Сергій Лисовенко}
+\maketitle
+\tableofcontents
+\sloppy
+\part*{Вступ}
+wxRays задумувалась як легкорозширювана програма зі зручним інтерфейсом для обробки рентгенодифракційних даних. Програма є відкритим кодом на мові Python.
+% Відкритість коду дає можливість 
+В якості графічного інтерфейсу wxRays використовує wxPython та Matplotlib. Вибір впав на wxPython, оскільки він містить широкий набір елементів інтерфейсу і добре документований. Для прискорення роботи з числовими масивами використовується бібліотека NumPy.
+
+\end{document}

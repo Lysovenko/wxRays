@@ -1,0 +1,61 @@
+\documentclass[a4paper,12pt]{article}
+%\usepackage[T2A]{fontenc}
+%\usepackage[cp1251]{inputenc}
+%\usepackage[english,ukrainian]{babel}
+\usepackage{ifpdf}
+\usepackage{hyperref}
+\ifpdf
+\hypersetup{pdftitle={wxRays User manual},%
+pdfauthor={Serhiy Lysovenko},pdfsubject={wxRays},pdftex,
+colorlinks}%,hyperindex,plainpages=false,unicode,pagebackref,pdfpagelabels} 
+%\makeindex
+\fi
+\begin{document}
+\title{wxRays\\User manual}
+\author{Serhiy Lysovenko}
+\maketitle
+\tableofcontents
+\sloppy
+\section{Installation}
+Before installation the wxRays ensure that your system contains:
+\begin{itemize}
+\item \href{http://python.org/}{Python}
+\item \href{http://www.wxpython.org/}{wxPython}
+\item \href{http://www.numpy.org/}{NumPy}
+\item \href{http://www.scipy.org/}{SciPy}
+\item \href{http://matplotlib.org/}{Mathplotlib}
+\end{itemize}
+
+If listed above software not installed on the system --- you must install it (it order, showed above, if you do it manually). For running the wxRays it is enough just unpack it to convenient place and run the {\ttfamily \_\_main\_\_.py} file by Python.
+
+\section{Basic features}
+While addons is turned off you can load two columns commented {\ttfamily *.dat} files. Content of the file will be displayed at the plot. Data displayed on the plot can be saved as image or as commented {\ttfamily *.dat} file.
+
+Addons can make comments for the plot, which can be displayed by Ctrl+D shortcut or by appropriate menu item. If you save the plot as {\ttfamily *.dat} file --- comments also will be saved there.
+
+You can switch between plots by {\bfseries Menu~$\to$ Plot~$\to$ Name of the plot}.
+
+Sometimes you will need leave only part of the experimental data. To do so you have to select the part of plot which you wish to leave (only the x-axis is relevant). Than select {\bfseries Menu~$\to$ Data~$\to$ Crop exp. data}.
+
+
+\section{Addons settings}
+To configure addons select {\bfseries Menu~$\to$ Tools~$\to$ Addons\ldots}. If the addon can be configured and checked in the list and selected --- the ``Configure\ldots'' button will be activated. Configurable addons is: ``Alternative for gettext'' and ``NIST database browser''. First of then requires {\ttfamily *.po} file with translation of the program and second --- place of the {\ttfamily pdf2.dat} file with PDF-2 x-rays database or it's alternative.
+
+\section{Standard addons descriptions}
+
+\subsection{Alternative for gettext}
+Alternative for the GNU gettext. 
+
+\subsection{Liquids and amorphous materials data processor}
+Calculates structure factor and pair correlation function of liquid and amorphous samples.
+
+\subsection{NIST database browser}
+Browses PDF-2 x-rays database. Te file with DB must be picked while addons configuring.
+
+\subsection{Powder data processor}
+Treats powder diffractograms.
+
+\section{Side addons installation}
+An addon consists of an {\ttfamily *.addon} file which contains the description of the addon and one or few {\ttfamily *.py} files. Place the addons files to the directory where the program files are placed and activate in the appropriate dialog window. Addon's files also can be placed to the folder where the program saves its settings. In POSIX systems setting files placed in \mbox{\ttfamily $\sim$/.wxRays} or \mbox{\ttfamily $\sim$/.config/wxRays} directory, in other systems they placed in the {\ttfamily wxRays} folder, which placed in the user's home directory.
+\end{document}
+

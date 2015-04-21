@@ -1,0 +1,17 @@
+syntax:glob
+__pycache__
+tmp
+local
+**~
+**.pyc
+**.pyo
+**.toc
+**.pdf
+**.log
+**.aux
+**.out
+locale
+po/wxRays.pot
+data
+.hg
+.hgignore
