@@ -166,18 +166,20 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
         self.__menu.action_catch(data.info is not None and "!pl info on"
                                  or "!pl info off")
         plots = data.plots
-        last_only = False
+        last_only = 0
         the_color = None
         if self.cur_dset == d_set and not data.fresh:
             last_only = data.only_last
             if last_only:
-                el = self.p_plots[-1][0]
-                if hasattr(el, 'get_color'):
-                    the_color = el.get_color()
-                elif hasattr(el, 'get_edgecolor'):
-                    the_color = el.get_edgecolor()
-                for i in self.p_plots.pop(-1):
-                    i.remove()
+                l_plots = len(self.p_plots) - 1
+                for pli in xrange(l_plots, l_plots - last_only, -1):
+                    el = self.p_plots[pli][0]
+                    if hasattr(el, 'get_color'):
+                        the_color = el.get_color()
+                    elif hasattr(el, 'get_edgecolor'):
+                        the_color = el.get_edgecolor()
+                    for i in self.p_plots.pop(pli):
+                        i.remove()
             else:
                 for i in self.p_plots:
                     for j in i:
@@ -212,7 +214,7 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
         clrs = self.__colorcircle
         cll = len(clrs)
         if last_only:
-            plots = plots[-1:]
+            plots = plots[-last_only:]
         for plot in plots:
             # we dont know length of the plot tuple
             x, y, a, cl, tp, pcr = (plot + (None,) * (6 - len(plot)))[:6]
@@ -361,9 +363,15 @@ class DataSet:
 
     def replace_last(self, plt):
         "insecure replace last plot"
-        pplt = self.plots[-1]
-        self.plots[-1] = plt + pplt[len(plt):]
-        self.only_last = True
+        if type(plt) == tuple:
+            pplt = self.plots[-1]
+            self.plots[-1] = plt + pplt[len(plt):]
+            self.only_last = 1
+        else:
+            for i, pl in enumerate(plt, len(self.plots) - len(plt)):
+                pplt = self.plots[i]
+                self.plots[i] = pl + pplt[len(pl):]
+            self.only_last = len(plt)
 
     def set_picker(self, picker):
         self.picker = picker
