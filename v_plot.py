@@ -167,18 +167,11 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
                                  or "!pl info off")
         plots = data.plots
         last_only = 0
-        the_color = None
         if self.cur_dset == d_set and not data.fresh:
             last_only = data.only_last
             if last_only:
-                l_plots = len(self.p_plots) - 1
-                for pli in xrange(l_plots, l_plots - last_only, -1):
-                    el = self.p_plots[pli][0]
-                    if hasattr(el, 'get_color'):
-                        the_color = el.get_color()
-                    elif hasattr(el, 'get_edgecolor'):
-                        the_color = el.get_edgecolor()
-                    for i in self.p_plots.pop(pli):
+                for pli in xrange(last_only):
+                    for i in self.p_plots.pop(-1):
                         i.remove()
             else:
                 for i in self.p_plots:
@@ -224,8 +217,6 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
                 ltype = '-'
             if cl:
                 color = cl
-            elif the_color is not None:
-                color = the_color
             else:
                 clr %= cll
                 color = clrs[clr]
@@ -237,7 +228,7 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
             else:
                 continue
             if ltype == 'pulse':
-                plto = a2p.bar(x, y, width=0.001, edgecolor=color,
+                plto = a2p.bar(x, y, width=1e-9, edgecolor=color,
                                align="center")
                 self.p_plots.append(plto)
             else:

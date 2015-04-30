@@ -296,8 +296,6 @@ def load_data_file(mobj, fnames, loads):
                     _("Other data are incompatible to the\n%s") %
                     fnams[0], _("Error!"), wx.OK | wx.ICON_ERROR | wx.CENTER)
         if data is None:
-            # wx.MessageBox(_("Wrong data file(s)"), _("Error!"),
-            #               wx.OK | wx.ICON_ERROR | wx.CENTER)
             return
         if not data:
             from v_dialogs import DlgDdataFile

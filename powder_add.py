@@ -35,7 +35,6 @@ def introduce(data):
     d = "data"
     menu = data['menu']
     data["data"]["User refl"] = pdr = PredefRefl(data)
-    # menu.add_catcher(pdr.catch_menu)
     mitems = [(d, {"on init": False, 'pow samp': True},
                _("Find background..."),
                Mcall(data, 'calc_bg'), None, id),

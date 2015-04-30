@@ -253,28 +253,35 @@ class DBCardsList:
     def plot_pattern(self, unum):
         "plot the current pattern"
         if "Exp. data" in self.__data:
-            # maybe it is better to make lambda selector
             ed = self.__data["Exp. data"]
+            chromos = []
             if ed.lambda1 is not None:
-                wavel = ed.lambda1
-            else:
-                wavel = ed.wavel
+                chromos.append((ed.lambda1, 1.))
+            if ed.lambda2 is not None:
+                chromos.append((ed.lambda2, ed.I2))
+            if ed.lambda3 is not None:
+                chromos.append((ed.lambda3, ed.I3))
         else:
-            wavel = None
+            chromos = None
         plt = self.__plot
         pln = plt.get_cur_key()
         mpln = self.__mname
         units = plt.cur_xunits
         if pln:
             cd = plt.get_cur_data()
+            if 'wavelength' in cd.tech_info and not chromos:
+                chromos = [(cd.tech_info['wavelength'], 1.)]
             if 'wavelength' in cd.tech_info:
                 wavel = cd.tech_info['wavelength']
         if pln and pln != mpln and units in (
                 'A', 'A^{-1}', 'sin(\\theta)',
                 '2\\theta', '\\theta') and not cd.ax2:
-            x, y = self.card_poss[unum].get_di(units, wavel)
+            colors = ("red", "orange", "green")
             cd = cd.clone()
-            cd.append((x, y, 2, None, 'pulse'))
+            for clr, (wavel, intens) in enumerate(chromos):
+                x, y = self.card_poss[unum].get_di(units, wavel)
+                y *= intens
+                cd.append((x, y, 2, colors[clr], 'pulse'))
             cd.set_info(self.card_poss[unum].wiki_di(units, x, cd))
             plt.set_data(mpln, cd)
             plt.plot_dataset(mpln)
@@ -284,12 +291,19 @@ class DBCardsList:
             if 'wavelength' in cd.tech_info:
                 wavel = cd.tech_info['wavelength']
             units = cd.get_units()
-            xy = self.card_poss[unum].get_di(units, wavel)
-            cd.replace_last(xy)
-            cd.set_info(self.card_poss[unum].wiki_di(units, xy[0], cd))
+            last = []
+            if not chromos:
+                chromos = [(0., 1.)]
+            for wavel, intens in chromos:
+                x, y = self.card_poss[unum].get_di(units, wavel)
+                y *= intens
+                last.append((x, y))
+            cd.replace_last(last)
+            # last[0][0] is dangerous way to replace xy[0]
+            cd.set_info(self.card_poss[unum].wiki_di(units, last[0][0], cd))
             plt.plot_dataset(mpln)
             return
-        x, y = self.card_poss[unum].get_di('A^{-1}', wavel)
+        x, y = self.card_poss[unum].get_di('A^{-1}', 0.)
         plt.set_data(mpln, [(x, y, 1, None, 'pulse')], r'$\AA^{-1}$',
                      'I, %', 'A^{-1}')
         plt.get_data(mpln).set_info(self.card_poss[unum].wiki_di(units, x))
@@ -356,7 +370,6 @@ class DBCardsList:
         "popup local menu"
         internal = self.internal
         if "User refl" in internal["data"]:
-            # and internal["data"]["User refl"]:
             self.__popitm["prepos"].Enable(True)
         else:
             self.__popitm["prepos"].Enable(False)
