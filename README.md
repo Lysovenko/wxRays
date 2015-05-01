@@ -1,5 +1,5 @@
 wxRays
-=======================
+======
 
 * Homepage: https://sourceforge.net/p/wxrays/wiki/Home/
 * https://sourceforge.net/p/wxrays/code/ (primary)
@@ -34,7 +34,14 @@ and install it.
 Addons
 ------
 
-To install a third party addon unpack it in the wxRays search path.
+An addon consists of the <code>&lt;addon_name&gt;.addon</code> file which
+contains the description of the addon and one or few <code>*.py</code> files.
+Place the addons files to the directory where the program files are placed and
+activate in the appropriate dialog window. Addon's files also can be placed to
+the folder where the program saves its settings. In POSIX systems setting files
+placed in <code>~/.wxRays</code> or <code>~/.config/wxRays</code> directory, in
+other systems they placed in the <code>wxRays</code> folder, which is placed in
+the user's home directory.
 
 Configuration
 =============
