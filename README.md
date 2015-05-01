@@ -31,9 +31,14 @@ To install the package for whole system just make appropriate binary package:
 </code>
 and install it.
 
+Addons
+------
+
+To install a third party addon unpack it in the wxRays search path.
+
 Configuration
 =============
 
 Tools-&gt;Addons
 
-Check required.
+Check required. Also wxRays remembers your options.
