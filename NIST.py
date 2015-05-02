@@ -456,34 +456,37 @@ class Wiki_card:
                 table.append("| %d %d %d" % r[2:])
         table.append("|}")
         if self.xy is not None:
-            table.append("----")
-            plotpos = []
-            x, y = self.xy
-            for p, r in zip(pos, refl):
-                if p < x[0] or p > x[-1]:
-                    continue
-                for xp, xv in enumerate(x):
-                    if xv >= p:
-                        break
-                xp1 = xp - 1
-                y0 = y[xp1] + (p - x[xp1]) * (y[xp] - y[xp1]) / (xv - x[xp1])
-                plotpos.append((p, y0) + r[2:])
-            if plotpos:
-                table.append("{|\n| pos\n| val")
-                if hkl_col:
-                    table.append("! hkl")
-                for p in plotpos:
-                    table.append("|-\n| %g\n| %g" % p[:2])
-                    if len(p) > 2:
-                        table.append("| %d %d %d" % p[2:])
-                table.append("|}")
-            table.append("----")
-            for p in plotpos:
-                table.append("set arrow from %g, %g rto 0, ll nohead\n"
-                             % p[:2])
-                name = uformula
-                if len(p) > 2:
-                    name += " (%d %d %d)" % p[2:]
-                table.append("set label \"%s\" at %g, %g + ll rotate\n"
-                             % ((name,) + p[:2]))
+            self.gnuplot_tail(table, pos, refl, hkl_col, uformula)
         return u"\n".join(table)
+
+    def gnuplot_tail(self, table, pos, refl, hkl_col, uformula):
+        table.append("----")
+        plotpos = []
+        x, y = self.xy
+        for p, r in zip(pos, refl):
+            if p < x[0] or p > x[-1]:
+                continue
+            for xp, xv in enumerate(x):
+                if xv >= p:
+                    break
+            xp1 = xp - 1
+            y0 = y[xp1] + (p - x[xp1]) * (y[xp] - y[xp1]) / (xv - x[xp1])
+            plotpos.append((p, y0) + r[2:])
+        if plotpos:
+            table.append("{|\n| pos\n| val")
+            if hkl_col:
+                table.append("! hkl")
+            for p in plotpos:
+                table.append("|-\n| %g\n| %g" % p[:2])
+                if len(p) > 2:
+                    table.append("| %d %d %d" % p[2:])
+            table.append("|}")
+        table.append("----")
+        for p in plotpos:
+            table.append("set arrow from %g, %g rto 0, ll nohead\n"
+                         % p[:2])
+            name = uformula
+            if len(p) > 2:
+                name += " (%d %d %d)" % p[2:]
+            table.append("set label \"%s\" at %g, %g + ll rotate\n"
+                         % ((name,) + p[:2]))
