@@ -472,16 +472,6 @@ class Wiki_card:
             xp1 = xp - 1
             y0 = y[xp1] + (p - x[xp1]) * (y[xp] - y[xp1]) / (xv - x[xp1])
             plotpos.append((p, y0) + r[2:])
-        if plotpos:
-            table.append("{|\n| pos\n| val")
-            if hkl_col:
-                table.append("! hkl")
-            for p in plotpos:
-                table.append("|-\n| %g\n| %g" % p[:2])
-                if len(p) > 2:
-                    table.append("| %d %d %d" % p[2:])
-            table.append("|}")
-        table.append("----")
         for p in plotpos:
             table.append("set arrow from %g, %g rto 0, ll nohead\n"
                          % p[:2])
