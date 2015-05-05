@@ -422,20 +422,21 @@ class NIST_Card:
                     val = rval + val[spos:]
                 yield cod, val
 
-    def wiki_di(self, xtype, pos, pld=None):
-        return Wiki_card(self, xtype, pos, pld)
+    def wiki_di(self, xtype, wavels, pld=None):
+        return Wiki_card(self, xtype, wavels, pld)
 
 
 class Wiki_card:
-    def __init__(self, card, xtype, pos, pld):
-        self.ctp = card, xtype, pos
+    def __init__(self, card, xtype, wavels, pld):
+        self.ctp = card, xtype, wavels
         if pld is not None:
             self.xy = pld.plots[0][:2]
         else:
             self.xy = None
 
     def __str__(self):
-        card, xtype, pos = self.ctp
+        card, xtype, wavels = self.ctp
+        pos = card.get_di(xtype, wavels[0])[0]
         refl = card.reflexes
         xt = {'\\theta': u"\u03b8", 'A^{-1}': u"\u212b^{-1}",
               'sin(\\theta)': u"sin(\u03b8)", 'A': u"\u212b",
@@ -456,7 +457,9 @@ class Wiki_card:
                 table.append("| %d %d %d" % r[2:])
         table.append("|}")
         if self.xy is not None:
-            self.gnuplot_tail(table, pos, refl, hkl_col, uformula)
+            for wavel in wavels:
+                pos = card.get_di(xtype, wavel)[0]
+                self.gnuplot_tail(table, pos, refl, hkl_col, uformula)
         return u"\n".join(table)
 
     def gnuplot_tail(self, table, pos, refl, hkl_col, uformula):

@@ -255,12 +255,16 @@ class DBCardsList:
         if "Exp. data" in self.__data:
             ed = self.__data["Exp. data"]
             chromos = []
+            wavels = []
+            if ed.wavel is not None:
+                wavels.append(ed.wavel)
             if ed.lambda1 is not None:
                 chromos.append((ed.lambda1, 1.))
             if ed.lambda2 is not None:
                 chromos.append((ed.lambda2, ed.I2))
             if ed.lambda3 is not None:
                 chromos.append((ed.lambda3, ed.I3))
+                wavels.append(ed.lambda3)
         else:
             chromos = None
         plt = self.__plot
@@ -271,6 +275,7 @@ class DBCardsList:
             cd = plt.get_cur_data()
             if 'wavelength' in cd.tech_info and not chromos:
                 chromos = [(cd.tech_info['wavelength'], 1.)]
+                wavels = [cd.tech_info['wavelength']]
             if 'wavelength' in cd.tech_info:
                 wavel = cd.tech_info['wavelength']
         if pln and pln != mpln and units in (
@@ -282,7 +287,7 @@ class DBCardsList:
                 x, y = self.card_poss[unum].get_di(units, wavel)
                 y *= intens
                 cd.append((x, y, 2, colors[clr], 'pulse'))
-            cd.set_info(self.card_poss[unum].wiki_di(units, x, cd))
+            cd.set_info(self.card_poss[unum].wiki_di(units, wavels, cd))
             plt.set_data(mpln, cd)
             plt.plot_dataset(mpln)
             return
@@ -294,19 +299,20 @@ class DBCardsList:
             last = []
             if not chromos:
                 chromos = [(0., 1.)]
+                wavels = [0]
             for wavel, intens in chromos:
                 x, y = self.card_poss[unum].get_di(units, wavel)
                 y *= intens
                 last.append((x, y))
             cd.replace_last(last)
-            # last[0][0] is dangerous way to replace xy[0]
-            cd.set_info(self.card_poss[unum].wiki_di(units, last[0][0], cd))
+            cd.set_info(self.card_poss[unum].wiki_di(units, wavels, cd))
             plt.plot_dataset(mpln)
             return
         x, y = self.card_poss[unum].get_di('A^{-1}', 0.)
         plt.set_data(mpln, [(x, y, 1, None, 'pulse')], r'$\AA^{-1}$',
                      'I, %', 'A^{-1}')
-        plt.get_data(mpln).set_info(self.card_poss[unum].wiki_di(units, x))
+        plt.get_data(mpln).set_info(
+            self.card_poss[unum].wiki_di('A^{-1}', [0]))
         plt.plot_dataset(mpln)
 
     def on_window_close(self, evt=None):
