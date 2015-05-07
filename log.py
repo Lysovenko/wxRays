@@ -21,10 +21,8 @@ class Journal(list):
         for l in self:
             fp.write("# %s\n" % l)
 
-    def __init__(self, parent=None):
-        list.__init__(self)
-        if parent is not None:
-            self += parent
+    def set_parent(self, parent):
+        self[:0] = parent
 
     def log(self, msg):
         self.append(str(msg))

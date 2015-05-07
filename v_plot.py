@@ -328,7 +328,7 @@ class DataSet:
         self.only_last = False
         self.picker = None
         self.info = None
-        self.journal = None
+        self.journal = Journal()
         self.tech_info = {}
         self.discards = set()
         for a in zip(*self.plots)[2]:
@@ -344,6 +344,7 @@ class DataSet:
         cln = DataSet(list(self.plots), self.xlabel, self.ylabel, self.xunits)
         cln.picker = self.picker
         cln.tech_info.update(self.tech_info)
+        cln.journal.set_parent(self.journal)
         return cln
 
     def append(self, plt):
