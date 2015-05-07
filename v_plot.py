@@ -39,6 +39,7 @@ from wx.html import HtmlWindow
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg, \
     NavigationToolbar2WxAgg
+from log import Journal
 
 
 class Plot:
@@ -327,6 +328,7 @@ class DataSet:
         self.only_last = False
         self.picker = None
         self.info = None
+        self.journal = None
         self.tech_info = {}
         self.discards = set()
         for a in zip(*self.plots)[2]:

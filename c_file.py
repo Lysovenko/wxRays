@@ -1,7 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"c_file.py"
-# wxRays (C) 2013-2014 Serhii Lysovenko
+"Read data files"
+# wxRays (C) 2013-2015 Serhii Lysovenko
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,12 +16,10 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-
 import numpy as np
-from scipy.interpolate import splrep, splev, interp1d
 
 
-def asciiFileLoad(fname):
+def ascii_file_load(fname):
     arr = []
     odict = {}
     try:

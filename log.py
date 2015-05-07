@@ -16,7 +16,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 
-class PlotLog(list):
+class Journal(list):
     def write_to(self, fp):
         for l in self:
             fp.write("# %s\n" % l)
@@ -25,3 +25,6 @@ class PlotLog(list):
         list.__init__(self)
         if parent is not None:
             self += parent
+
+    def log(self, msg):
+        self.append(str(msg))

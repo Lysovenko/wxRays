@@ -32,7 +32,7 @@ class MainFrame(wx.Frame):
         wx.Frame.__init__(self, None, - 1, PROG_NAME, size=last_size)
         from v_plot import Plot
         from v_menu import Active_menu
-        from c_file import asciiFileLoad
+        from c_file import ascii_file_load
         self.data = {}
         adb = {'data': self.data, 'window': self}
         self.addons_data = {' base ': adb}
@@ -42,7 +42,7 @@ class MainFrame(wx.Frame):
         adb.update({'plot': self.plot, 'menu': self.a_menu, 'loaders': []})
         APP_SETT.addons.introduce(self.addons_data)
         adb['loaders'].insert(0, (_('Commented dat files'), ('.dat',),
-                                  asciiFileLoad))
+                                  ascii_file_load))
         self.a_menu.set_menu_bar()
         self.plot.mk_menuitems()
         self.canvas = self.plot.get_canvas(self)
