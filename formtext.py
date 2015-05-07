@@ -19,6 +19,7 @@
 
 
 import re
+from re import M, U, S
 import locale as loc
 
 _escapes = {ord('\r'): None, ord('&'): u'&amp;',
@@ -29,50 +30,50 @@ def wiki2html(wiki):
     wiki = unicode(wiki).translate(_escapes)
     for i in xrange(1, 7):
         w = '=' * i
-        p = re.compile(r'^%s\s+([^=\[]*?)\s+%s' % (w, w), re.M | re.U)
+        p = re.compile(r'^%s\s+([^=\[]*?)\s+%s' % (w, w), M | U)
         wiki = p.sub('<h%d>\\1</h%d>' % (i, i), wiki)
-    p = re.compile(r"^----+$", re.M | re.U)
+    p = re.compile(r"^----+$", M | U)
     wiki = p.sub('<hr>', wiki)
-    p = re.compile("(?<!')'''''([^']+)'''''(?!')",  re.M | re.U)
+    p = re.compile("(?<!')'''''([^']+)'''''(?!')",  M | U)
     wiki = p.sub(r"<strong><em>\1</em></strong>", wiki)
-    p = re.compile("(?<!')'''([^']+)'''(?!')",  re.M | re.U)
+    p = re.compile("(?<!')'''([^']+)'''(?!')",  M | U)
     wiki = p.sub(r"<strong>\1</strong>", wiki)
-    p = re.compile("(?<!')''([^']+)''(?!')",  re.M | re.U)
+    p = re.compile("(?<!')''([^']+)''(?!')",  M | U)
     wiki = p.sub(r"<em>\1</em>", wiki)
     # unordered
-    p = re.compile(r"^\*\s*(.*)", re.M | re.U)
+    p = re.compile(r"^\*\s*(.*)", M | U)
     wiki = p.sub(r"<li>\1</li>", wiki)
-    p = re.compile(r"\n\n<li>", re.M | re.U | re.S)
+    p = re.compile(r"\n\n<li>", M | U | S)
     wiki = p.sub("\n<ul>\n<li>", wiki)
-    p = re.compile(r"<\/li>\n(?!<li>)", re.M | re.U | re.S)
+    p = re.compile(r"<\/li>\n(?!<li>)", M | U | S)
     wiki = p.sub("</li>\n</ul>", wiki)
     # ordered
-    p = re.compile(r"^#[:]?[#]*\s*(.*)", re.M | re.U)
+    p = re.compile(r"^#[:]?[#]*\s*(.*)", M | U)
     wiki = p.sub(r"<li>\1</li>", wiki)
-    p = re.compile(r"\n\n<li>", re.M | re.U | re.S)
+    p = re.compile(r"\n\n<li>", M | U | S)
     wiki = p.sub("\n<ol>\n<li>", wiki)
-    p = re.compile(r"<\/li>\n(?!<li>)", re.M | re.U | re.S)
+    p = re.compile(r"<\/li>\n(?!<li>)", M | U | S)
     wiki = p.sub("</li>\n</ol>", wiki)
     # paragraph
     p = re.compile(r"(?:(?<=\A)|(?<=\n\n))([^#=\*\{].*?)(?:(?=\n\n+)|(?=\Z))",
-                   re.M | re.U | re.S)
+                   M | U | S)
     wiki = p.sub(r"<p>\1</p>", wiki)
     p = re.compile(r"<p><hr><\/p>")
     wiki = p.sub(r"<hr>", wiki)
     # table
-    p = re.compile(r"^\{\|", re.M | re.U)
+    p = re.compile(r"^\{\|", M | U)
     wiki = p.sub("<table><tr>", wiki)
-    p = re.compile(r"^\|-", re.M | re.U)
+    p = re.compile(r"^\|-", M | U)
     wiki = p.sub("</tr><tr>", wiki)
-    p = re.compile(r"^!\s(.*)", re.M | re.U)
+    p = re.compile(r"^!\s(.*)", M | U)
     wiki = p.sub("<th>\\1</th>", wiki)
-    p = re.compile(r"^\|\s(.*)", re.M | re.U)
+    p = re.compile(r"^\|\s(.*)", M | U)
     wiki = p.sub("<td>\\1</td>", wiki)
-    p = re.compile(r"^\|\}", re.M | re.U)
+    p = re.compile(r"^\|\}", M | U)
     wiki = p.sub("</tr></table>", wiki)
-    p = re.compile(r"\^\{([^}]*)\}", re.U)
+    p = re.compile(r"\^\{([^}]*)\}", U)
     wiki = p.sub("<sup>\\1</sup>", wiki)
-    p = re.compile(r"_\{([^}]*)\}", re.U)
+    p = re.compile(r"_\{([^}]*)\}", U)
     wiki = p.sub("<sub>\\1</sub>", wiki)
     return wiki
 
@@ -83,12 +84,12 @@ def poly1d2wiki(coefs):
            for i, j in enumerate(coefs)]
     res = u' + '.join(jts)
     res = res[:-6]
-    p = re.compile(r"\+\ -", re.U)
+    p = re.compile(r"\+\ -", U)
     res = p.sub("- ", res)
-    p = re.compile(r"\^\{1\}", re.U)
+    p = re.compile(r"\^\{1\}", U)
     res = p.sub("", res)
-    p = re.compile(r"e\+0*(\d*)", re.U)
+    p = re.compile(r"e\+0*(\d*)", U)
     res = p.sub(u"\u00d710^{\\1}", res)
-    p = re.compile(r"e-0*(\d*)", re.U)
+    p = re.compile(r"e-0*(\d*)", U)
     res = p.sub(u"\u00d710^{-\\1}", res)
     return res
