@@ -131,7 +131,7 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
             data = self.__datasets[self.cur_dset]
             x = data.plots[0][0]
             lx = len(x)
-            comment = unicode(data.info)
+            comment = unicode(data.journal) + "\n" + unicode(data.info)
             dct = data.tech_info
             if all([lx == len(i[0]) and
                     (x == i[0]).all() for i in data.plots]):

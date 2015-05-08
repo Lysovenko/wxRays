@@ -26,3 +26,6 @@ class Journal(list):
 
     def log(self, msg):
         self.append(str(msg))
+
+    def __str__(self):
+        return "\n".join([str(i) for i in self])
