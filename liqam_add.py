@@ -232,6 +232,7 @@ class Menu_call:
         alt_i = sqc.alt_exp_by_sq(exp, sq[1], sq[2])
         pld = dat["plot"].get_data(_("Intensity curve")).clone()
         pld.append((exp.x_data, alt_i, 1))
+        pld.journal.log("exp. intens. changed")
         dat["alt I"] = alt_i
         dat["plot"].set_data(PN_AIC, pld).discards.update(
             ("exp I changed", "sq changed", "sq found"))
@@ -290,6 +291,7 @@ class Menu_call:
             PN_RFT, [(q, rdf["sq"], 1, None, "o"), (q2, sq2, 1)],
             r"$q,\,\AA^{-1}$", "s(q)", "A^{-1}")
         pld.discards.update(("liq samp", "sq found", "sq changed"))
+        pld.journal.log("Reverce Fourier Transform")
         dat["menu"].action_catch("RFT made")
         dat["plot"].plot_dataset(PN_RFT)
 
@@ -322,6 +324,7 @@ class Menu_call:
         pdt = plot.set_data(PN_RDFT, [(rarr, grarr, 1), (x, y, 1)],
                             r"$r,\,\AA$", "g(r)", "A")
         pdt.discards.update(("liq samp", "sq found", "sq changed", "gr found"))
+        pdt.journal.log("find RDF's tail")
         info = ["\n\n",
                 "''g(r) = 1 + a * cos(b * r - c) * exp(-d * r) / r''",
                 "\n\n----\n\n{|\n! %s\n! %s\n"] +\
@@ -374,6 +377,7 @@ _MOD_NAMES = {"clsc": _("Classic"), "mix": _("By Stetsiv (mix)"),
 def plot_sq(dat, q, sq, sqd):
     plot = dat["plot"]
     plts = [(q, sq, 1, None, "o-", 5)]
+    log = ["mode: %s" % sqd["Calculation mode"]]
     info = [u"\n\n== ", _("Calculation details"), " ==\n\n"]
     info += ['{|\n|-\n| ', _("Calculation mode"), "\n| ",
              _MOD_NAMES[sqd["Calculation mode"]], "\n"]
@@ -384,18 +388,24 @@ def plot_sq(dat, q, sq, sqd):
     if "Degree of polynomial" in sqd:
         info.append("|-\n| %s\n| %d\n" %
                     (_("Degree of polynomial"), sqd["Degree of polynomial"]))
+        log.append("pol. deg: %d" % sqd["Degree of polynomial"])
     if "At. dens." in sqd:
         info.append(u"|-\n| \u03c1_{0}\n| %s\n" %
                     loc.format("%g", sqd["At. dens."]))
+        log.append("At. dens.: %g" % sqd["At. dens."])
     if "R_c" in sqd:
         info.append("|-\n| R_{0}\n| %s\n" %
                     loc.format("%g", sqd["R_c"]))
         info.append("|-\n| %s\n| %d\n" %
                     (_("R_{0} samples"), sqd["R_c samps"]))
+        log.append("R_c: %g" % sqd["R_c"])
+        log.append("R_c samps: %d" % sqd["R_c samps"])
     info.append('|}\n')
     if "BG coefs" in sqd:
         info.append(u"%s:\n\n" % _("The background polynomial"))
-        info.append("''f(x) = %s''\n\n" % poly1d2wiki(sqd["BG coefs"]))
+        wp1d = poly1d2wiki(sqd["BG coefs"])
+        info.append("''f(x) = %s''\n\n" % wp1d)
+        log.append("Background: %s" % wp1d)
     info = u"".join(info)
     if "head" in sqd:
         head = sqd["head"]
@@ -417,7 +427,9 @@ def plot_sq(dat, q, sq, sqd):
                 _("diameter"), _("Effective density"), u"\u03b7", "S(0)")] +
             ["|}\n\n"]) %\
             tuple([loc.format('%g', i) for i in (diam, dens, etha, s0)])
+        log.append("head: %s" % head)
     if "tail" in sqd:
+        log.append("tail: %s" % sqd["tail"])
         coefs = sqd["tail"]["coefs"]
         tail = sqd["tail"]["points"]
         x, y = sqc.tail_xy(coefs, q[-tail], q[-1], tail * 10)
@@ -432,6 +444,7 @@ def plot_sq(dat, q, sq, sqd):
     pdata = plot.set_data(PN_SSF, plts, r"$s,\,\AA^{-1}$", "S(q)", "A^{-1}")
     pdata.set_picker(Menu_call(dat, "sq_picker"))
     pdata.discards.add("liq samp")
+    pdata.journal.log("structure factor: %s" % "; ".join(log))
     if info:
         pdata.set_info(info)
     plot.plot_dataset(PN_SSF)
@@ -882,6 +895,7 @@ class DlgGrCalc(wx.Dialog):
             infos.append("| Symetric\n| %g\n| %g\n| %g\n" %
                          (syms[0][0], syms[0][3], np.sqrt(syms[0][2] / 2.)))
         dat.set_info(u"|-\n".join(infos) + "|}\n")
+        dat.journal.log("get_areas")
 
     def plot_gr(self, dsq, plot):
         try:
@@ -1091,6 +1105,7 @@ class DlgRhoRcCalc(wx.Dialog):
             pldat.set_info(u"""density = %g (blue)\n
 cutoff = %g (green)\n
 """ % (rho, rcc))
+            pldat.journal.log("calc_roho_rc: \\rho: %g; r_c%g: %g" % (rho, rcc))
             plot.plot_dataset(PN_ADE)
         return rho, rcc
 
