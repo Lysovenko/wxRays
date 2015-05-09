@@ -39,7 +39,7 @@ from wx.html import HtmlWindow
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg, \
     NavigationToolbar2WxAgg
-from log import Journal
+from dataset import DataSet
 
 
 class Plot:
@@ -313,65 +313,6 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
                                            (event.xdata, event.ydata), 0)
         else:
             self.__statusbar.SetStatusText("", 0)
-
-
-class DataSet:
-    'required by Plot class'
-    def __init__(self, plots, xlabel=None, ylabel=None, xunits='A^{-1}'):
-        self.xlabel = xlabel
-        self.ylabel = ylabel
-        self.xunits = xunits
-        self.plots = plots
-        self.fresh = True
-        self.ax1 = False
-        self.ax2 = False
-        self.only_last = False
-        self.picker = None
-        self.info = None
-        self.journal = Journal()
-        self.tech_info = {}
-        self.discards = set()
-        for a in zip(*self.plots)[2]:
-            if a == 1:
-                self.ax1 = True
-            elif a == 2:
-                self.ax2 = True
-
-    def get_units(self):
-        return self.xunits
-
-    def clone(self):
-        cln = DataSet(list(self.plots), self.xlabel, self.ylabel, self.xunits)
-        cln.picker = self.picker
-        cln.tech_info.update(self.tech_info)
-        cln.journal.set_parent(self.journal)
-        return cln
-
-    def append(self, plt):
-        self.plots.append(plt)
-        a = plt[2]
-        if a == 1:
-            self.ax1 = True
-        elif a == 2:
-            self.ax2 = True
-
-    def replace_last(self, plt):
-        "insecure replace last plot"
-        if type(plt) == tuple:
-            pplt = self.plots[-1]
-            self.plots[-1] = plt + pplt[len(plt):]
-            self.only_last = 1
-        else:
-            for i, pl in enumerate(plt, len(self.plots) - len(plt)):
-                pplt = self.plots[i]
-                self.plots[i] = pl + pplt[len(pl):]
-            self.only_last = len(plt)
-
-    def set_picker(self, picker):
-        self.picker = picker
-
-    def set_info(self, info):
-        self.info = info
 
 
 class Plot_info(wx.Frame):
