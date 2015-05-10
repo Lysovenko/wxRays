@@ -1105,7 +1105,8 @@ class DlgRhoRcCalc(wx.Dialog):
             pldat.set_info(u"""density = %g (blue)\n
 cutoff = %g (green)\n
 """ % (rho, rcc))
-            pldat.journal.log("calc_roho_rc: \\rho: %g; r_c%g: %g" % (rho, rcc))
+            pldat.journal.log("calc_roho_rc: \\rho: %g; r_c%g: %g" %
+                              (rho, rcc))
             plot.plot_dataset(PN_ADE)
         return rho, rcc
 
