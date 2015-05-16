@@ -84,7 +84,7 @@ class Journal(list):
         self[:0] = parent
 
     def log(self, msg):
-        self.append(str(msg))
+        self.append(unicode(msg))
 
     def __str__(self):
-        return "\n".join([str(i) for i in self])
+        return "> " + "\n> ".join([unicode(i) for i in self])

@@ -191,11 +191,11 @@ class Menu_call:
             return
         q, sq, sqd = dat["data"]["SSF"][:3]
         if "SQ point" not in dat:
-            head = sq.argmax() + 1
+            head = int(sq.argmax() + 1)
         else:
             head = dat["SQ point"] + 1
         diam = 2.
-        dens = dat["data"]["Exp. data"].rho0
+        dens = float(dat["data"]["Exp. data"].rho0)
         rv = v_input(dat["window"], _("Head init. params"),
                      (_("Points:"), head, 3, len(q)),
                      (_("Diam:"), diam), (_("Dens:"), dens))
@@ -291,7 +291,8 @@ class Menu_call:
             PN_RFT, [(q, rdf["sq"], 1, None, "o"), (q2, sq2, 1)],
             r"$q,\,\AA^{-1}$", "s(q)", "A^{-1}")
         pld.discards.update(("liq samp", "sq found", "sq changed"))
-        pld.journal.log("Reverce Fourier Transform")
+        pld.journal.set_parent(dat["plot"].get_data(PN_RDF).journal)
+        pld.journal.log("Reverse Fourier Transform")
         dat["menu"].action_catch("RFT made")
         dat["plot"].plot_dataset(PN_RFT)
 
@@ -444,6 +445,7 @@ def plot_sq(dat, q, sq, sqd):
     pdata = plot.set_data(PN_SSF, plts, r"$s,\,\AA^{-1}$", "S(q)", "A^{-1}")
     pdata.set_picker(Menu_call(dat, "sq_picker"))
     pdata.discards.add("liq samp")
+    pdata.journal.set_parent(plot.get_data(_("Intensity curve")).journal)
     pdata.journal.log("structure factor: %s" % "; ".join(log))
     if info:
         pdata.set_info(info)
@@ -900,12 +902,15 @@ class DlgGrCalc(wx.Dialog):
     def plot_gr(self, dsq, plot):
         try:
             rgr = self.get_gr(*dsq[:2])
-            plot.set_data(
+            pld = plot.set_data(
                 PN_RDF, [rgr + (1,)], r"$r,\,\AA$", "g(r)",
-                "A").discards.update(("liq samp", "sq found", "sq changed"))
+                "A")
         except ValueError, err:
             wx.MessageBox(_("Value Error: %s") % err, PROG_NAME, wx.ICON_ERROR)
             return
+        pld.discards.update(("liq samp", "sq found", "sq changed"))
+        pld.journal.set_parent(plot.get_data(PN_SSF).journal)
+        pld.journal.log("calculate RDF")
         q, sq = dsq[:2]
         rho = self.get_rho0()
         self.internal["menu"].action_catch("gr found")

@@ -364,6 +364,7 @@ def plot_exp_data(plot, data, menu):
     if eplts:
         ddict["extra plots"] = eplts
     pdat.tech_info['wavelength'] = data.wavel
+    pdat.journal.log("Experimental data loaded: %s" % ddict)
     menu.action_catch("on init")
     if data.is_sample("liquid"):
         menu.action_catch('liq samp')
