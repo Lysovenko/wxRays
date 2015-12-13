@@ -428,6 +428,8 @@ class DBCardsList:
             self.plot_pattern(unum)
 
     def info_window(self, unum):
+        if not unum:
+            return
         card = self.card_poss[unum]
         popnew = True
         for htmw in self.__htmlist:
@@ -441,6 +443,8 @@ class DBCardsList:
             self.__htmlist.append(html)
 
     def predefine_reflexes(self, unum):
+        if not unum:
+            return
         card = self.card_poss[unum]
         if "Exp. data" in self.__data:
             ed = self.__data["Exp. data"]
