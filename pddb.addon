@@ -1,0 +1,4 @@
+path=pddb_add.py
+name=Powder diffraction database browser
+id=9
+keys=configurable
