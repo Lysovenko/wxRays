@@ -22,6 +22,8 @@ from sys import argv, stderr
 
 if __name__ == "__main__":
     fobj = open(argv[1])
+    print("""PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;""")
     print("CREATE TABLE elements_ind (cid int, enum int);")
     print("CREATE TABLE reflexes (cid INT, d REAL, intens REAL,"
           " h INT, k INT, l INT);")
@@ -34,3 +36,4 @@ if __name__ == "__main__":
         pos = card.set_by_NIST_file(fobj, ppos)
         dump_card(card)
     fobj.close()
+    print("COMMIT;")
