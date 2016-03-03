@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import sys
+from sys import argv, stderr
 
 
 CS_LEN = 80
@@ -174,7 +174,7 @@ class NIST_Card:
                         try:
                             cellparams.append(sst and float(sst) or None)
                         except ValueError:
-                            print("Bad Float", sst, file=sys.stderr )
+                            print("Bad Float", sst, file=stderr)
                     for i in range(27, 51, 8):
                         sst = buf[i:i + 8].strip()
                         cellparams.append(sst and float(sst) or None)
@@ -263,20 +263,20 @@ class NIST_Card:
         name = self.get_uname().replace("'", "''")
         comment = repr(self.comment).replace("'", "''")
         print("INSERT INTO about VALUES(%d, '%s', '%s', '%s', '%s');" % (
-                num, name, formula, self.quality, comment))
+            num, name, formula, self.quality, comment))
         for i in self.content:
             print("INSERT INTO elements VALUES(%d, %d, %d);" % ((num,) + i))
         for i in self.reflexes:
             if len(i) == 2:
-                print("INSERT INTO reflexes VALUES(%d, %g, %g, null, null, null);" %
-                      ((num,) + i))
+                print("INSERT INTO reflexes VALUES(%d, %g, %g, null, null, "
+                      "null);" % ((num,) + i))
             else:
                 print("INSERT INTO reflexes VALUES(%d, %g, %g, %d, %d, %d);" %
                       ((num,) + i))
 
 
 if __name__ == "__main__":
-    fobj = open(sys.argv[1])
+    fobj = open(argv[1])
     fobj.seek(0, 2)
     epo = fobj.tell()
     lines = epo / 80
@@ -286,7 +286,7 @@ CREATE TABLE elements (cid INT, enum INT, quantity INT);
 CREATE TABLE reflexes (cid INT, d REAL, intens REAL, h INT, k INT, l INT);
 CREATE TABLE about (cid INT, name VARCHAR, formula VARCHAR, quality varchar,
  comment TEXT);
-CREATE TABLE citations (cid INT, sid int, info VARCHAR);
+CREATE TABLE citations (cid INT, sid INT, info VARCHAR);
 CREATE TABLE sources (sid INT, source VARCHAR);
 """)
     pos = 0
@@ -296,7 +296,7 @@ CREATE TABLE sources (sid INT, source VARCHAR);
         curp = int(pos / lines * 100)
         if curp > shown:
             shown = curp
-            print ("%d %%" % curp, file=sys.stderr)
+            print("%d %%" % curp, file=stderr)
         card = NIST_Card()
         pos = card.set_by_NIST_file(fobj, pos)
         card.dump_sql()
