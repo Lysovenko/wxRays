@@ -61,20 +61,6 @@ BILCODES = {"AP": u"\u2248", "DA": u"\u2020", "DD": u"\u2021", "DE": u"\u00b0",
             "VD": u"\u0394", "VS": u"\u03a3", "VV": u"\u03a9"}
 
 
-def string_card(fobj, pos):
-    'read datafile fields and set content'
-    fobj.seek(pos * 80)
-    buf = fobj.read(80)
-    if not buf:
-        return - 1
-    snum = buf[72:79]
-    res = ''
-    while buf and snum == buf[72:79]:
-        res += buf + '\n'
-        buf = fobj.read(80)
-    return res
-
-
 class NIST_Card:
     "Support for NIST*AIDS-83 format"
     def __init__(self):
@@ -87,16 +73,7 @@ class NIST_Card:
         self.comment = None
         self.ref = None
         self.cellparams = None
-        self.spc_grp = None
-
-    def get_dict(self):
-        'return card as Python dictionary'
-        resd = {}
-        for item in ['content', 'name', 'formula', 'reflexes', 'number']:
-            val = eval('self.' + item)
-            if val:
-                resd[item] = val
-        return resd
+        self.spc_grp = "NULL"
 
     def get_formula_elements(self):
         'list of elements from formula of compound'
@@ -170,7 +147,7 @@ class NIST_Card:
                 if buf[0:51].strip():
                     cellparams = []
                     for i in range(0, 27, 9):
-                        sst = buf[i:i + 9].strip()
+                        sst = buf[i:i + 9].strip().replace(',', '')
                         try:
                             cellparams.append(sst and float(sst) or None)
                         except ValueError:
@@ -181,8 +158,7 @@ class NIST_Card:
                     self.cellparams = tuple(cellparams)
             elif row_type == '3':
                 sgr = buf[0:10].strip()
-                if sgr:
-                    self.spc_grp = sgr
+                self.spc_grp = "'%s'" % sgr if sgr else "NULL"
             elif row_type == '8':
                 self.set_content_buf(buf)
             elif row_type == '7':
@@ -261,9 +237,14 @@ class NIST_Card:
             self.content = [(i, 0) for i in contains]
         formula = self.formula if self.formula else ""
         name = self.get_uname().replace("'", "''")
-        comment = repr(self.comment).replace("'", "''")
-        print("INSERT INTO about VALUES(%d, '%s', '%s', '%s', '%s');" % (
-            num, name, formula, self.quality, comment))
+        comment = "'%s'" % repr(self.comment).replace("'", "''") if \
+                  self.comment else "NULL"
+        print("INSERT INTO about VALUES(%d, '%s', '%s', %s, '%s', %s);" % (
+            num, name, formula, self.spc_grp, self.quality, comment))
+        for i, j in enumerate(self.cellparams) if self.cellparams else ():
+            if j is not None:
+                print("insert into cellparams values(%d, %d, %g);" %
+                      (num, i, j))
         for i in self.ref if self.ref else ():
             print("INSERT INTO citations VALUES(%d, %d"
                   % (num, codens[i["code"]]), end='')
@@ -316,8 +297,9 @@ if __name__ == "__main__":
 BEGIN TRANSACTION;
 CREATE TABLE elements (cid INT, enum INT, quantity INT);
 CREATE TABLE reflexes (cid INT, d REAL, intens REAL, h INT, k INT, l INT);
-CREATE TABLE about (cid INT, name VARCHAR, formula VARCHAR, quality VARCHAR,
- comment TEXT);
+CREATE TABLE about (cid INT, name VARCHAR, formula VARCHAR, sgroup VARCHAR,
+    quality VARCHAR, comment TEXT);
+CREATE TABLE cellparams (cid INT, param INT, value REAL);
 CREATE TABLE citations (cid INT, sid INT, vol VARCHAR, page VARCHAR,
     year VARCHAR, authors VARCHAR);
 CREATE TABLE sources (sid INT, source VARCHAR);
