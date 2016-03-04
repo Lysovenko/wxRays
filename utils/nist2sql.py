@@ -250,7 +250,7 @@ class NIST_Card:
             epos = self.name.find("$", spos)
         return res + self.name[spos:]
 
-    def dump_sql(self):
+    def dump_sql(self, codens):
         num = self.number
         if not self.reflexes:
             return
@@ -264,34 +264,65 @@ class NIST_Card:
         comment = repr(self.comment).replace("'", "''")
         print("INSERT INTO about VALUES(%d, '%s', '%s', '%s', '%s');" % (
             num, name, formula, self.quality, comment))
+        for i in self.ref if self.ref else ():
+            print("INSERT INTO citations VALUES(%d, %d"
+                  % (num, codens[i["code"]]), end='')
+            for j in ("V", "P", "Y", "names"):
+                if i[j]:
+                    print(", '%s'" % i[j].replace("'", "''"), end='')
+                else:
+                    print(', NULL', end='')
+            print(');')
         for i in self.content:
             print("INSERT INTO elements VALUES(%d, %d, %d);" % ((num,) + i))
         for i in self.reflexes:
             if len(i) == 2:
-                print("INSERT INTO reflexes VALUES(%d, %g, %g, null, null, "
-                      "null);" % ((num,) + i))
+                print("INSERT INTO reflexes VALUES(%d, %g, %g, NULL, NULL, "
+                      "NULL);" % ((num,) + i))
             else:
                 print("INSERT INTO reflexes VALUES(%d, %g, %g, %d, %d, %d);" %
                       ((num,) + i))
 
 
+def dump_codens(codest):
+    res = {}
+    if not osp.isfile(codest):
+        return res
+    sid = 0
+    with open(codest, "rb") as fobj:
+        buf = fobj.read(80)
+        while buf:
+            code = buf[:6].decode()
+            ref = buf[7:].decode().strip().replace("'", "''")
+            print("INSERT INTO sources VALUES(%d, '%s');" % (sid, ref))
+            res[code] = sid
+            sid += 1
+            buf = fobj.read(80)
+    return res
+
+
 if __name__ == "__main__":
+    import os.path as osp
     fobj = open(argv[1])
     fobj.seek(0, 2)
+    codest = osp.dirname(argv[1])
+    codest = osp.join(codest, "codens.dat")
     epo = fobj.tell()
     lines = epo / 80
+    pos = 0
+    nextp = 1
+    shown = -1
     print("""PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
 CREATE TABLE elements (cid INT, enum INT, quantity INT);
 CREATE TABLE reflexes (cid INT, d REAL, intens REAL, h INT, k INT, l INT);
-CREATE TABLE about (cid INT, name VARCHAR, formula VARCHAR, quality varchar,
+CREATE TABLE about (cid INT, name VARCHAR, formula VARCHAR, quality VARCHAR,
  comment TEXT);
-CREATE TABLE citations (cid INT, sid INT, info VARCHAR);
+CREATE TABLE citations (cid INT, sid INT, vol VARCHAR, page VARCHAR,
+    year VARCHAR, authors VARCHAR);
 CREATE TABLE sources (sid INT, source VARCHAR);
 """)
-    pos = 0
-    nextp = 1
-    shown = -1
+    codens = dump_codens(codest)
     while pos >= 0:
         curp = int(pos / lines * 100)
         if curp > shown:
@@ -299,6 +330,6 @@ CREATE TABLE sources (sid INT, source VARCHAR);
             print("%d %%" % curp, file=stderr)
         card = NIST_Card()
         pos = card.set_by_NIST_file(fobj, pos)
-        card.dump_sql()
+        card.dump_sql(codens)
     fobj.close()
     print("COMMIT;")
