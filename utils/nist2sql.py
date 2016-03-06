@@ -239,30 +239,30 @@ class NIST_Card:
         name = self.get_uname().replace("'", "''")
         comment = "'%s'" % repr(self.comment).replace("'", "''") if \
                   self.comment else "NULL"
-        print("INSERT INTO about VALUES(%d, '%s', '%s', %s, '%s', %s);" % (
+        sql("INSERT INTO about VALUES(%d, '%s', '%s', %s, '%s', %s)" % (
             num, name, formula, self.spc_grp, self.quality, comment))
         for i, j in enumerate(self.cellparams) if self.cellparams else ():
             if j is not None:
-                print("insert into cellparams values(%d, %d, %g);" %
-                      (num, i, j))
+                sql("insert into cellparams values(%d, %d, %g)" %
+                    (num, i, j))
         for i in self.ref if self.ref else ():
-            print("INSERT INTO citations VALUES(%d, %d"
-                  % (num, codens[i["code"]]), end='')
+            cmd = "INSERT INTO citations VALUES(%d, %d" % (
+                num, codens[i["code"]])
             for j in ("V", "P", "Y", "names"):
                 if i[j]:
-                    print(", '%s'" % i[j].replace("'", "''"), end='')
+                    cmd += ", '%s'" % i[j].replace("'", "''")
                 else:
-                    print(', NULL', end='')
-            print(');')
+                    cmd += ", NULL"
+            sql(cmd + ")")
         for i in self.content:
-            print("INSERT INTO elements VALUES(%d, %d, %d);" % ((num,) + i))
+            sql("INSERT INTO elements VALUES(%d, %d, %d)" % ((num,) + i))
         for i in self.reflexes:
             if len(i) == 2:
-                print("INSERT INTO reflexes VALUES(%d, %g, %g, NULL, NULL, "
-                      "NULL);" % ((num,) + i))
+                sql("INSERT INTO reflexes VALUES(%d, %g, %g, NULL, NULL, "
+                    "NULL)" % ((num,) + i))
             else:
-                print("INSERT INTO reflexes VALUES(%d, %g, %g, %d, %d, %d);" %
-                      ((num,) + i))
+                sql("INSERT INTO reflexes VALUES(%d, %g, %g, %d, %d, %d)" %
+                    ((num,) + i))
 
 
 def dump_codens(codest):
@@ -275,7 +275,7 @@ def dump_codens(codest):
         while buf:
             code = buf[:6].decode()
             ref = buf[7:].decode().strip().replace("'", "''")
-            print("INSERT INTO sources VALUES(%d, '%s');" % (sid, ref))
+            sql("INSERT INTO sources VALUES(%d, '%s');" % (sid, ref))
             res[code] = sid
             sid += 1
             buf = fobj.read(80)
@@ -284,6 +284,7 @@ def dump_codens(codest):
 
 if __name__ == "__main__":
     import os.path as osp
+    import sqlite3
     fobj = open(argv[1])
     fobj.seek(0, 2)
     codest = osp.dirname(argv[1])
@@ -293,17 +294,19 @@ if __name__ == "__main__":
     pos = 0
     nextp = 1
     shown = -1
-    print("""PRAGMA foreign_keys=OFF;
-BEGIN TRANSACTION;
-CREATE TABLE elements (cid INT, enum INT, quantity INT);
-CREATE TABLE reflexes (cid INT, d REAL, intens REAL, h INT, k INT, l INT);
-CREATE TABLE about (cid INT, name VARCHAR, formula VARCHAR, sgroup VARCHAR,
-    quality VARCHAR, comment TEXT);
-CREATE TABLE cellparams (cid INT, param INT, value REAL);
-CREATE TABLE citations (cid INT, sid INT, vol VARCHAR, page VARCHAR,
-    year VARCHAR, authors VARCHAR);
-CREATE TABLE sources (sid INT, source VARCHAR);
-""")
+    connection = sqlite3.connect(argv[2])
+    cursor = connection.cursor()
+    global sql
+    sql = cursor.execute
+    sql("CREATE TABLE elements (cid INT, enum INT, quantity INT)")
+    sql("CREATE TABLE reflexes (cid INT, d REAL, intens REAL,"
+        " h INT, k INT, l INT)")
+    sql("CREATE TABLE about (cid INT, name VARCHAR, formula VARCHAR,"
+        " sgroup VARCHAR, quality VARCHAR, comment TEXT)")
+    sql("CREATE TABLE cellparams (cid INT, param INT, value REAL)")
+    sql("CREATE TABLE citations (cid INT, sid INT, vol VARCHAR, page VARCHAR,"
+        "  year VARCHAR, authors VARCHAR)")
+    sql("CREATE TABLE sources (sid INT, source VARCHAR)")
     codens = dump_codens(codest)
     while pos >= 0:
         curp = int(pos / lines * 100)
@@ -314,4 +317,5 @@ CREATE TABLE sources (sid INT, source VARCHAR);
         pos = card.set_by_NIST_file(fobj, pos)
         card.dump_sql(codens)
     fobj.close()
-    print("COMMIT;")
+    connection.commit()
+    connection.close()
