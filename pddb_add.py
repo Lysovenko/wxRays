@@ -31,12 +31,12 @@ def introduce(data):
     "Addons Entry point"
     global INTERNAL
     INTERNAL = data
-    data['menu'].add_item("tools", {}, _("PD DB..."),
-                          Menu_callback(data), wx.ART_CDROM, data['id'])
-    APP_SETT.declare_section('PDDB')
+    data["menu"].add_item("tools", {}, _("PD DB..."),
+                          Menu_callback(data), wx.ART_CDROM, data["id"])
+    APP_SETT.declare_section("PDDB")
     iget = APP_SETT.get
     for i in _DEFAULTS:
-        data[i] = iget(i, _DEFAULTS[i], 'PDDB')
+        data[i] = iget(i, _DEFAULTS[i], "PDDB")
 
 
 def terminate(data):
@@ -57,9 +57,9 @@ class Menu_callback:
     def __call__(self, evt):
         dat = self.data
         if not dat.get("CrdLst"):
-            # index = db_load_index()
-            if index is not None:
-                dat["CrdLst"] = DBCardsList(dat, index)
+            database =
+            if database:
+                dat["CrdLst"] = DBCardsList(dat, database)
         else:
             dat["CrdLst"].Raise()
 
@@ -71,9 +71,9 @@ class Config:
     def get_visual(self, parent):
         import wx.lib.filebrowsebutton as filebrowse
         self.fbb = filebrowse.FileBrowseButton(
-            parent, labelText=_('DB file:'),
-            buttonText=_('Open'), dialogTitle=_("Open the database file"),
-            fileMask=_("PDDB database|*.db"),
+            parent, labelText=_("DB file:"),
+            buttonText=_("Open"), dialogTitle=_("Open the database file"),
+            fileMask=_("PD database|*.db"),
             fileMode=wx.OPEN, size=wx.Size(300, -1),
             initialValue=self.data["main_file"])
         return self.fbb
@@ -81,6 +81,42 @@ class Config:
     def configure(self):
         fnam = self.fbb.GetValue()
         self.data["main_file"] = fnam
+
+
+def switch_number(number):
+    if type(number) is int:
+        unum = u"%.6d" % number
+        return unum[0:2] + "-" + unum[2:]
+    else:
+        return int(number.replace("-", ""))
+
+
+def formula_markup(fstr, wiki=False):
+    formula = fstr.replace("!", u"\u00d7")
+    res = u""
+    for item in formula.split():
+        if item in ['(', ')', u'\u00d7', ','] or\
+                item[0].isdigit() or item.startswith(u"\u00d7"):
+            res += item
+            continue
+        if item.startswith(')'):
+            res += ")<sub>%s</sub>" % item[1:]
+            continue
+        epos = 0
+        while epos < len(item) and item[epos].isalpha():
+            epos += 1
+        if epos:
+            while epos and item[:epos] not in ELEMENTS:
+                epos -= 1
+            if item[:epos] in ELEMENTS:
+                res += "%s<sub>%s</sub>" % (item[:epos], item[epos:])
+            else:
+                res += item
+    res = res.replace(u"\u00d7", u" \u00d7 ")
+    if wiki:
+        res = res.replace("<sub>", "_{")
+        res = res.replace("</sub>", "}")
+    return res.replace(",", ", ")
 
 
 class RHListCtrl(wx.ListCtrl, ListRowHighlighter):
@@ -91,15 +127,13 @@ class RHListCtrl(wx.ListCtrl, ListRowHighlighter):
 
 
 class DBCardsList:
-    def __init__(self, internal, index):
+    def __init__(self, internal, database):
         self.internal = internal
-        parent = internal['window']
-        self.__db = Database(internal["main_file"])
-        if not self.__db:
-            return
+        parent = internal["window"]
+        self.__db = database
         self.__parent = parent
-        self.__plot = internal['plot']
-        self.__data = internal['data']
+        self.__plot = internal["plot"]
+        self.__data = internal["data"]
         self.__mname = _("PDDB Pattern")
         self.__frame = wx.Frame(parent, -1, _("DB Cards"))
         if parent is not None:
@@ -141,7 +175,7 @@ class DBCardsList:
             acts[xid] = action
             itms[action] = popup.Append(xid, name)
         self.__frame.Bind(wx.EVT_MENU, self.popup_selected)
-        self.card_poss = {}
+        self.cards = set()
         self.__alive = True
         self.html_mdi = None
 
@@ -171,28 +205,28 @@ class DBCardsList:
         units = plt.cur_xunits
         if pln:
             cd = plt.get_cur_data()
-            if 'wavelength' in cd.tech_info and not chromos:
-                chromos = [(cd.tech_info['wavelength'], 1.)]
-                wavels = [cd.tech_info['wavelength']]
-            if 'wavelength' in cd.tech_info:
-                wavel = cd.tech_info['wavelength']
+            if "wavelength" in cd.tech_info and not chromos:
+                chromos = [(cd.tech_info["wavelength"], 1.)]
+                wavels = [cd.tech_info["wavelength"]]
+            if "wavelength" in cd.tech_info:
+                wavel = cd.tech_info["wavelength"]
         if pln and pln != mpln and units in (
-                'A', 'A^{-1}', 'sin(\\theta)',
-                '2\\theta', '\\theta') and not cd.ax2:
+                "A", "A^{-1}", "sin(\\theta)",
+                "2\\theta", "\\theta") and not cd.ax2:
             colors = ("red", "orange", "green")
             cd = cd.clone()
             for clr, (wavel, intens) in enumerate(chromos):
                 x, y = self.card_poss[unum].get_di(units, wavel)
                 y *= intens
-                cd.append((x, y, 2, colors[clr], 'pulse'))
+                cd.append((x, y, 2, colors[clr], "pulse"))
             cd.set_info(self.card_poss[unum].wiki_di(units, wavels, cd))
             plt.set_data(mpln, cd)
             plt.plot_dataset(mpln)
             return
         if mpln in plt:
             cd = plt.get_data(mpln)
-            if 'wavelength' in cd.tech_info:
-                wavel = cd.tech_info['wavelength']
+            if "wavelength" in cd.tech_info:
+                wavel = cd.tech_info["wavelength"]
             units = cd.get_units()
             last = []
             if not chromos:
@@ -206,11 +240,11 @@ class DBCardsList:
             cd.set_info(self.card_poss[unum].wiki_di(units, wavels, cd))
             plt.plot_dataset(mpln)
             return
-        x, y = self.card_poss[unum].get_di('A^{-1}', 0.)
-        plt.set_data(mpln, [(x, y, 1, None, 'pulse')], r'$\AA^{-1}$',
-                     'I, %', 'A^{-1}')
+        x, y = self.card_poss[unum].get_di("A^{-1}", 0.)
+        plt.set_data(mpln, [(x, y, 1, None, "pulse")], r"$\AA^{-1}$",
+                     "I, %", "A^{-1}")
         plt.get_data(mpln).set_info(
-            self.card_poss[unum].wiki_di('A^{-1}', [0]))
+            self.card_poss[unum].wiki_di("A^{-1}", [0]))
         plt.plot_dataset(mpln)
 
     def on_window_close(self, evt=None):
@@ -223,52 +257,39 @@ class DBCardsList:
         self.__frame.Destroy()
         self.__alive = False
         self.__db.close()
-        del self.card_poss
+        del self.cards
 
     def Raise(self):
         self.__frame.Raise()
 
     def filter_elments(self, evt=None):
-        if 'GetKeyCode' in dir(evt) and \
+        if "GetKeyCode" in dir(evt) and \
                 evt.GetKeyCode() not in [0, wx.WXK_RETURN]:
             evt.Skip()
             return
         text = self.filter.GetValue()
         incl_del = self.incl_del.IsChecked()
         self.filter.SetValue("")
-        elfilter = ElFilter(text)
-        if incl_del:
-            el_ind = self.__el_index[0] + self.__el_index[1]
-        else:
-            el_ind = self.__el_index[0]
-        if elfilter:
-            positions = [pos for els, pos in el_ind if elfilter(els)]
-        else:
-            return
-        fobj = open(self.internal["main_file"])
-        for pos in positions:
-            card = PDDB_Card()
-            card.set_by_PDDB_file(fobj, pos, num_only=True)
-            unum = card.get_unumber()
+        rows = self.__db.select_bruto(text)
+        for cid, name, formula, qual in rows:
+            unum = switch_number(cid)
             # maybe it should be virtual list
             # but now max number of items will be limited
             max_items = 300
-            prev_poss = self.card_poss.keys()
-            if unum not in prev_poss:
-                card.set_by_PDDB_file(fobj, pos)
-                card.cl_pos = pos
-                self.card_poss[unum] = card
-                index = self.__list.InsertStringItem(sys.maxint, unum)
-                self.__list.SetStringItem(index, 1, card.get_uname())
-                self.__list.SetStringItem(index, 2, card.get_uformula())
-                qual = card.quality + (card.deleted and u"\u22a0" or u"\u22a1")
-                self.__list.SetStringItem(index, 3, qual)
-                if index > max_items:
-                    break
+            if cid in self.cards:
+                continue
+            self.cards.add(cid)
+            index = self.__list.InsertStringItem(sys.maxint, unum)
+            self.__list.SetStringItem(index, 1, name)
+            self.__list.SetStringItem(
+                index, 2, formula.replace("!", u"\u00d7"))
+            qual = qual[1] + (qual[0] == 'D' and u"\u22a0" or u"\u22a1")
+            self.__list.SetStringItem(index, 3, qual)
+            if index > max_items:
+                break
         self.__list.SetColumnWidth(0, wx.LIST_AUTOSIZE)
         self.__list.SetColumnWidth(1, wx.LIST_AUTOSIZE)
         self.__list.SetColumnWidth(2, wx.LIST_AUTOSIZE)
-        fobj.close()
         self.__list.RefreshRows()
 
     def popup_menu(self, event):
@@ -286,7 +307,6 @@ class DBCardsList:
 
     def popup_selected(self, event):
         action = self.__popact[event.GetId()]
-        index, unum = self.__pop_pos
         if action is "Delete":
             delp = self.__list.GetFirstSelected()
             dlist = []
@@ -295,31 +315,31 @@ class DBCardsList:
                 delp = self.__list.GetNextSelected(delp)
             for i, j in enumerate(dlist):
                 p = j - i
-                unum = self.__list.GetItemText(p)
+                cid = switch_number(self.__list.GetItemText(p))
                 self.__list.DeleteItem(p)
-                del self.card_poss[unum]
+                self.cards.discard(unum)
             self.__list.RefreshRows()
         if action is "Info":
             self.info_window(unum)
         if action is "Clear":
             self.__list.DeleteAllItems()
-            self.card_poss.clear()
+            self.cards.clear()
         if action is "prepos":
             self.predefine_reflexes(unum)
 
     def list_event(self, event):
         k_code = event.GetKeyCode()
         index = event.GetIndex()
-        unum = event.GetText()
+        cid = switch_number(event.GetText())
         if k_code == wx.WXK_DELETE:
             self.__list.DeleteItem(index)
-            del self.card_poss[unum]
+            self.cards.discard(cid)
             self.__list.RefreshRows()
-        elif k_code == ord('i') or k_code == ord('I'):
+        elif k_code == ord("i") or k_code == ord("I"):
             self.info_window(unum)
-        elif k_code == ord('X'):
+        elif k_code == ord("X"):
             self.__list.DeleteAllItems()
-            self.card_poss.clear()
+            self.cards.clear()
         elif k_code == wx.WXK_RETURN or k_code == 0:
             self.plot_pattern(unum)
 
@@ -424,10 +444,10 @@ class HTML_CardInfo(wx.MDIChildFrame):
 <tr><td>Formula:</td><td>%(fml)s</td></tr>
 <tr><td>Quality:</td><td>%(qlt)s</td></tr>
 """) %\
-            {'num': self.card.get_unumber(), 'nam': self.card.get_uname(),
-             'fml': self.card.get_uformula_markup(), 'qlt': qual}
+            {"num": self.card.get_unumber(), "nam": self.card.get_uname(),
+             "fml": self.card.get_uformula_markup(), "qlt": qual}
         if self.card.cellparams:
-            pnr = ['a', 'b', 'c', u'\u03b1', u'\u03b2', u'\u03b3']
+            pnr = ["a", "b", "c", u"\u03b1", u"\u03b2", u"\u03b3"]
             res += "<tr><td>%s</td><td>" % _("Cell parameters:")
             ppr = []
             for i in xrange(6):
@@ -463,7 +483,7 @@ class HTML_CardInfo(wx.MDIChildFrame):
         if self.card.comment:
             res += _("<h5>Comment</h5>")
             for cod, val in self.card.get_umcomment():
-                if cod == 'CL':
+                if cod == "CL":
                     res += _("Color: ")
                 res += val + "<br>\n"
         if self.card.ref:
@@ -486,4 +506,4 @@ class HTML_CardInfo(wx.MDIChildFrame):
                     lit += " (%s)" % ref["Y"]
                 res += lit + "</li>\n"
             res += "</ul>\n"
-        return ''.join(['<html><body>', res, "</body></html>"])
+        return "".join(["<html><body>", res, "</body></html>"])

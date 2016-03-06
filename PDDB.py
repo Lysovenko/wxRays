@@ -18,6 +18,7 @@
 
 
 import sqlite3 as sql
+from os.path import isfile
 ELNUMS = {
     "D": 1, "H": 1, "T": 1, "He": 2, "Li": 3, "Be": 4, "B": 5, "C": 6, "N": 7,
     "O": 8, "F": 9, "Ne": 10, "Na": 11, "Mg": 12, "Al": 13, "Si": 14, "P": 15,
@@ -41,6 +42,8 @@ class Database:
     "Powder diffraction database class"
     def __init__(self, path):
         self.connection = None
+        if not isfile(path):
+            return
         try:
             self.connection = sql.connect(path)
         except sql.Error as e:
@@ -48,6 +51,8 @@ class Database:
 
     def __bool__(self):
         return self.connection is not None
+
+    __nonzero__ = __bool__
 
     def execute(self, command, commit=True):
         cursor = self.connection.cursor()
@@ -69,10 +74,10 @@ class Database:
     def select_bruto(self, req):
         spl = req.split(";")
         spl1 = spl[0].split()
-        must = [ELEMENTS[x] for x in spl1 if x in ELEMENTS]
+        must = [ELNUMS[x] for x in spl1 if x in ELNUMS]
         if len(spl) > 1:
             spl1 = spl[1].split()
-            can = [ELEMENTS[x] for x in spl1 if x in ELEMENTS]
+            can = [ELNUMS[x] for x in spl1 if x in ELNUMS]
             if spl1 == ["*"]:
                 can = None
         else:
@@ -91,6 +96,7 @@ class Database:
                 ",".join(map(str, can)), mcon)
         else:
             scon = "CASE %s ELSE -1 END" % mcon
+        return self.execute(minstr % (scon, msum))
 
 # SELECT cid, name, formula, quality FROM about INNER JOIN (SELECT cid as icid FROM elements GROUP BY cid HAVING SUM(CASE WHEN enum IN () THEN 0 WHEN enum IN (8, 74) THEN 1 ELSE -1 END) = 2) ON cid = icid ;
  

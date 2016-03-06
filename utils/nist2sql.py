@@ -250,7 +250,10 @@ class NIST_Card:
                 num, codens[i["code"]])
             for j in ("V", "P", "Y", "names"):
                 if i[j]:
-                    cmd += ", '%s'" % i[j].replace("'", "''")
+                    if j == "Y":
+                        cmd += ", %s" % i[j]
+                    else:
+                        cmd += ", '%s'" % i[j].replace("'", "''")
                 else:
                     cmd += ", NULL"
             sql(cmd + ")")
@@ -299,13 +302,13 @@ if __name__ == "__main__":
     global sql
     sql = cursor.execute
     sql("CREATE TABLE elements (cid INT, enum INT, quantity INT)")
-    sql("CREATE TABLE reflexes (cid INT, d REAL, intens REAL,"
+    sql("CREATE TABLE reflexes (cid INT, d REAL, intens INT,"
         " h INT, k INT, l INT)")
     sql("CREATE TABLE about (cid INT, name VARCHAR, formula VARCHAR,"
         " sgroup VARCHAR, quality VARCHAR, comment TEXT)")
     sql("CREATE TABLE cellparams (cid INT, param INT, value REAL)")
     sql("CREATE TABLE citations (cid INT, sid INT, vol VARCHAR, page VARCHAR,"
-        "  year VARCHAR, authors VARCHAR)")
+        "  year INT, authors VARCHAR)")
     sql("CREATE TABLE sources (sid INT, source VARCHAR)")
     codens = dump_codens(codest)
     while pos >= 0:
