@@ -49,16 +49,32 @@ ELNUMS = {
     "Np": 93, "Pu": 94, "Am": 95, "Cm": 96, "Bk": 97, "Cf": 98, "Es": 99,
     "Fm": 100, "Md": 101, "No": 102, "Lr": 103, "Rf": 104, "Db": 105,
     "Sg": 106, "Bh": 107, "Hs": 108, "Mt": 109, "Ds": 110, "Ln": 111}
-BILCODES = {"AP": u"\u2248", "DA": u"\u2020", "DD": u"\u2021", "DE": u"\u00b0",
-            "GA": u"\u03b1", "GB": u"\u03b2", "GC": u"\u03c8", "GD": u"\u03b4",
-            "GE": u"\u03b5", "GF": u"\u03c6", "GG": u"\u03b3", "GH": u"\u03b7",
-            "GI": u"\u03b9", "GJ": u"\u03be", "GK": u"\u03ba", "GL": u"\u03bb",
-            "GM": u"\u03bc", "GN": u"\u03bd", "GO": u"\u03bf", "GP": u"\u03c0",
-            "GR": u"\u03c1", "GS": u"\u03c3", "GT": u"\u03c4", "GU": u"\u03b8",
-            "GV": u"\u03c9", "GX": u"\u03c7", "GY": u"\u03c5", "GZ": u"\u03b6",
-            "ND": u"\u2248", "NE": u"\u2264", "NF": u"\u2265", "NO": u"\u2116",
-            "PD": u"\u2022", "PG": u"\u00a7", "PM": u"\u00b1", "SE": u"\u00a7",
-            "VD": u"\u0394", "VS": u"\u03a3", "VV": u"\u03a9"}
+BILCODES = {"AP": "\u2248", "DA": "\u2020", "DD": "\u2021", "DE": "\u00b0",
+            "GA": "\u03b1", "GB": "\u03b2", "GC": "\u03c8", "GD": "\u03b4",
+            "GE": "\u03b5", "GF": "\u03c6", "GG": "\u03b3", "GH": "\u03b7",
+            "GI": "\u03b9", "GJ": "\u03be", "GK": "\u03ba", "GL": "\u03bb",
+            "GM": "\u03bc", "GN": "\u03bd", "GO": "\u03bf", "GP": "\u03c0",
+            "GR": "\u03c1", "GS": "\u03c3", "GT": "\u03c4", "GU": "\u03b8",
+            "GV": "\u03c9", "GX": "\u03c7", "GY": "\u03c5", "GZ": "\u03b6",
+            "ND": "\u2248", "NE": "\u2264", "NF": "\u2265", "NO": "\u2116",
+            "PD": "\u2022", "PG": "\u00a7", "PM": "\u00b1", "SE": "\u00a7",
+            "VD": "\u0394", "VS": "\u03a3", "VV": "\u03a9"}
+
+
+def replace_bilcode(sstr):
+    spos = 0
+    epos = sstr.find("$", spos)
+    res = ""
+    while epos >= 0:
+        res += sstr[spos:epos]
+        bilcode = sstr[epos + 1:epos + 3]
+        if bilcode in BILCODES:
+            res += BILCODES[bilcode]
+        else:
+            res += "$" + bilcode
+        spos = epos + 3
+        epos = sstr.find("$", spos)
+    return res + sstr[spos:]
 
 
 class NIST_Card:
@@ -172,6 +188,8 @@ class NIST_Card:
                 csec = buf[67:69]
                 tbc = buf[69] == 'C'
                 cval = buf[:67].rstrip()
+                if '$' in cval:
+                    cval = replace_bilcode(cval)
                 if self.comment and len(self.comment[-1]) == 3:
                     cval = self.comment[-1][1] + ' ' + cval
                     if tbc:
@@ -214,17 +232,7 @@ class NIST_Card:
             return ""
         if '$' not in self.name:
             return str(self.name)
-        spos = 0
-        epos = self.name.find("$", spos)
-        res = u""
-        while epos >= 0:
-            res += self.name[spos:epos]
-            bilcode = self.name[epos + 1:epos + 3]
-            if bilcode in BILCODES:
-                res += BILCODES[bilcode]
-            spos = epos + 3
-            epos = self.name.find("$", spos)
-        return res + self.name[spos:]
+        return replace_bilcode(self.name)
 
     def dump_sql(self, codens):
         num = self.number
