@@ -272,6 +272,7 @@ class DBCardsList:
 
     def popup_selected(self, event):
         action = self.__popact[event.GetId()]
+        index, unum = self.__pop_pos
         if action is "Delete":
             delp = self.__list.GetFirstSelected()
             dlist = []
@@ -320,7 +321,8 @@ class DBCardsList:
         if popnew:
             if not self.html_mdi:
                 self.html_mdi = HTML_MDI(self.__frame)
-            html = HTML_CardInfo(self.html_mdi, cid, self.__htmlist)
+            html = HTML_CardInfo(
+                self.html_mdi, self.__db, cid, self.__htmlist)
             self.__htmlist.append(html)
 
     def predefine_reflexes(self, unum):
@@ -369,11 +371,13 @@ class HTML_MDI(wx.MDIParentFrame):
 
 
 class HTML_CardInfo(wx.MDIChildFrame):
-    def __init__(self, parent, card, htmlist):
+    def __init__(self, parent, db, cid, htmlist):
         self.htmlist = htmlist
-        self.card = card
+        self.__db = db
+        self.cid = cid
+        # self.card = card
         self.parent = parent
-        wx.MDIChildFrame.__init__(self, parent, -1, card.get_unumber())
+        wx.MDIChildFrame.__init__(self, parent, -1, switch_number(self.cid))
         html = wx.html.HtmlWindow(self)
         if "gtk2" in wx.PlatformInfo:
             html.SetStandardFonts()
@@ -391,8 +395,8 @@ class HTML_CardInfo(wx.MDIChildFrame):
     def on_window_destroy(self, evt=None):
         self.htmlist.remove(self)
 
-    def popup(self, card):
-        if self.card is card:
+    def popup(self, cid):
+        if self.cid == cid:
             self.parent.Raise()
             self.Activate()
             return True

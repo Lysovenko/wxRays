@@ -19,6 +19,7 @@
 import sqlite3 as sql
 from os.path import isfile
 import numpy as np
+import locale as loc
 ELNUMS = {
     "D": 1, "H": 1, "T": 1, "He": 2, "Li": 3, "Be": 4, "B": 5, "C": 6, "N": 7,
     "O": 8, "F": 9, "Ne": 10, "Na": 11, "Mg": 12, "Al": 13, "Si": 14, "P": 15,
@@ -53,9 +54,9 @@ def formula_markup(fstr, wiki=False):
         while epos < len(item) and item[epos].isalpha():
             epos += 1
         if epos:
-            while epos and item[:epos] not in ELEMENTS:
+            while epos and item[:epos] not in ELNUMS:
                 epos -= 1
-            if item[:epos] in ELEMENTS:
+            if item[:epos] in ELNUMS:
                 res += "%s<sub>%s</sub>" % (item[:epos], item[epos:])
             else:
                 res += item
@@ -134,10 +135,19 @@ class Database:
             scon = "CASE %s ELSE -1 END" % mcon
         return self.execute(minstr % (scon, msum))
 
-    def reflexes(self, cid):
+    def reflexes(self, cid, hkl=False):
+        hkl = ", h, k, l" if hkl else ""
         return self.execute(
-            "select d, intens from reflexes where cid=%d "
-            "ORDER BY d" % cid, False)
+            "select d, intens%s from reflexes where cid=%d "
+            "ORDER BY d" % (hkl, cid), False)
+
+    def quality(self, cid):
+        return sel.execute(
+            "SELECT quality FROM about WHERE cid=%d" % cid, False)[0][0]
+
+    def spacegroup(self, cid):
+        return sel.execute(
+            "SELECT quality FROM sgroup WHERE cid=%d" % cid, False)[0][0]
 
     def get_di(self, cid, xtype="A^{-1}", wavel=None):
         reflexes = self.reflexes(cid)
@@ -168,7 +178,7 @@ class Database:
 
     def get_umcomment(self, cid):
         cmt = sel.execute(
-            "SELECT comment FROM about WHERE cid=%d" % cid, False)
+            "SELECT comment FROM about WHERE cid=%d" % cid, False)[0][0]
         if not cmt:
             return
         cmt = cmt[0][0]
@@ -207,7 +217,7 @@ class Database:
 
     def get_formula_markup(self, cid, wiki):
         fstr, = self.execute("SELECT formula FROM about WHERE cid=%d" % cid)[0]
-        if not fsts:
+        if not fstr:
             return ''
         else:
             return formula_markup(fstr, wiki)
@@ -227,7 +237,7 @@ class Wiki_card:
     def __str__(self):
         db, cid, xtype, wavels = self.ctp
         pos = db.get_di(cid, xtype, wavels[0])[0]
-        refl = db.reflexes(cid)
+        refl = db.reflexes(cid, True)
         xt = {'\\theta': u"\u03b8", 'A^{-1}': u"\u212b^{-1}",
               'sin(\\theta)': u"sin(\u03b8)", 'A': u"\u212b",
               '2\\theta': u"2\u03b8"}[xtype]
@@ -236,14 +246,14 @@ class Wiki_card:
                  "%s: %s\n" % (switch_number(cid), uformula),
                  "{|", "! x (%s)" % xt,
                  u"! d (\u212b)", "! I"]
-        hkl_col = max([len(i) for i in refl]) > 2
+        hkl_col = any([i[2] is not None for i in refl]) > 2
         if hkl_col:
             table.append("! hkl")
         for p, r in zip(pos, refl):
             table.append("|-")
             table.append("\n".join(["| %s" % loc.format("%g", i)
                                     for i in ((p,) + r[:2])]))
-            if len(r) > 2:
+            if r[2] is not None:
                 table.append("| %d %d %d" % r[2:])
         table.append("|}")
         if self.xy is not None:
