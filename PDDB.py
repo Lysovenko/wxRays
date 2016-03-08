@@ -16,9 +16,9 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-
 import sqlite3 as sql
 from os.path import isfile
+import numpy as np
 ELNUMS = {
     "D": 1, "H": 1, "T": 1, "He": 2, "Li": 3, "Be": 4, "B": 5, "C": 6, "N": 7,
     "O": 8, "F": 9, "Ne": 10, "Na": 11, "Mg": 12, "Al": 13, "Si": 14, "P": 15,
@@ -36,6 +36,42 @@ ELNUMS = {
     "Np": 93, "Pu": 94, "Am": 95, "Cm": 96, "Bk": 97, "Cf": 98, "Es": 99,
     "Fm": 100, "Md": 101, "No": 102, "Lr": 103, "Rf": 104, "Db": 105,
     "Sg": 106, "Bh": 107, "Hs": 108, "Mt": 109, "Ds": 110, "Ln": 111}
+
+
+def formula_markup(fstr, wiki=False):
+    formula = fstr.replace("!", u"\u00d7")
+    res = u""
+    for item in formula.split():
+        if item in ['(', ')', u'\u00d7', ','] or\
+                item[0].isdigit() or item.startswith(u"\u00d7"):
+            res += item
+            continue
+        if item.startswith(')'):
+            res += ")<sub>%s</sub>" % item[1:]
+            continue
+        epos = 0
+        while epos < len(item) and item[epos].isalpha():
+            epos += 1
+        if epos:
+            while epos and item[:epos] not in ELEMENTS:
+                epos -= 1
+            if item[:epos] in ELEMENTS:
+                res += "%s<sub>%s</sub>" % (item[:epos], item[epos:])
+            else:
+                res += item
+    res = res.replace(u"\u00d7", u" \u00d7 ")
+    if wiki:
+        res = res.replace("<sub>", "_{")
+        res = res.replace("</sub>", "}")
+    return res.replace(",", ", ")
+
+
+def switch_number(number):
+    if type(number) is int:
+        unum = u"%.6d" % number
+        return unum[0:2] + "-" + unum[2:]
+    else:
+        return int(number.replace("-", ""))
 
 
 class Database:
@@ -98,6 +134,142 @@ class Database:
             scon = "CASE %s ELSE -1 END" % mcon
         return self.execute(minstr % (scon, msum))
 
-# SELECT cid, name, formula, quality FROM about INNER JOIN (SELECT cid as icid FROM elements GROUP BY cid HAVING SUM(CASE WHEN enum IN () THEN 0 WHEN enum IN (8, 74) THEN 1 ELSE -1 END) = 2) ON cid = icid ;
- 
-#SELECT cid FROM elements GROUP BY cid HAVING SUM(CASE WHEN enum IN (1) THEN 0 WHEN enum IN (8, 74) THEN 1 ELSE -1 END) = 2;
+    def reflexes(self, cid):
+        return self.execute(
+            "select d, intens from reflexes where cid=%d "
+            "ORDER BY d" % cid, False)
+
+    def get_di(self, cid, xtype="A^{-1}", wavel=None):
+        reflexes = self.reflexes(cid)
+        if not reflexes:
+            return [], []
+        dis = np.array(reflexes, "f").transpose()
+        if xtype == "A^{-1}":
+            x = (2. * np.pi) / dis[0]
+        elif xtype == "A":
+            x = dis[0]
+        elif xtype == "sin(\\theta)":
+            x = wavel / 2. / dis[0]
+        elif xtype == "\\theta":
+            x = np.arcsin(wavel / 2. / dis[0]) / np.pi * 180.
+        elif xtype == "2\\theta":
+            x = np.arcsin(wavel / 2. / dis[0]) / np.pi * 360.
+        else:
+            raise ValueError("Unknown x axis type: %s" % xtype)
+        intens = dis[1]
+        if intens.max() == 999.:
+            for i in (intens == 999.).nonzero():
+                intens[i] += 1.
+            intens /= 10.
+        return x, intens
+
+    def wiki_di(self, cid, xtype, wavels, pld=None):
+        return Wiki_card(self, cid, xtype, wavels, pld)
+
+    def get_umcomment(self, cid):
+        cmt = sel.execute(
+            "SELECT comment FROM about WHERE cid=%d" % cid, False)
+        if not cmt:
+            return
+        cmt = cmt[0][0]
+        if not cmt:
+            return
+        dcoduns = {"BF": "b", "IT": "i"}
+        for cod, val in eval(cmt):
+            val = val.decode(encoding="utf8")
+            if '\\' in val:
+                coduns = []
+                spos = 0
+                epos = val.find('\\')
+                rval = u""
+                while epos >= 0:
+                    rval += val[spos:epos]
+                    bilcode = val[epos + 1:epos + 3]
+                    if bilcode.isupper() and bilcode.isalpha():
+                        if bilcode == "RG":
+                            for codun in coduns:
+                                rval += "</%s>" % codun
+                        elif bilcode in dcoduns:
+                            codun = dcoduns[bilcode]
+                            rval += "<%s>" % codun
+                            coduns.insert(0, codun)
+                        else:
+                            print("Warning: No such dcodun '%s'" % bilcode)
+                        spos = epos + 3
+                    else:
+                        spos = epos + 1
+                        epos = val.find("\\", spos)
+                        rval += formula_markup(val[spos:epos])
+                        spos = epos + 1
+                    epos = val.find("\\", spos)
+                val = rval + val[spos:]
+            yield cod, val
+
+    def get_formula_markup(self, cid, wiki):
+        fstr, = self.execute("SELECT formula FROM about WHERE cid=%d" % cid)[0]
+        if not fsts:
+            return ''
+        else:
+            return formula_markup(fstr, wiki)
+
+    def get_name(self, cid):
+        return self.execute("SELECT name FROM about WHERE cid=%d" % cid)[0][0]
+
+
+class Wiki_card:
+    def __init__(self, db, cid, xtype, wavels, pld):
+        self.ctp = db, cid, xtype, wavels
+        if pld is not None:
+            self.xy = pld.plots[0][:2]
+        else:
+            self.xy = None
+
+    def __str__(self):
+        db, cid, xtype, wavels = self.ctp
+        pos = db.get_di(cid, xtype, wavels[0])[0]
+        refl = db.reflexes(cid)
+        xt = {'\\theta': u"\u03b8", 'A^{-1}': u"\u212b^{-1}",
+              'sin(\\theta)': u"sin(\u03b8)", 'A': u"\u212b",
+              '2\\theta': u"2\u03b8"}[xtype]
+        uformula = db.get_formula_markup(cid, True)
+        table = ["=== %s ===\n" % db.get_name(cid),
+                 "%s: %s\n" % (switch_number(cid), uformula),
+                 "{|", "! x (%s)" % xt,
+                 u"! d (\u212b)", "! I"]
+        hkl_col = max([len(i) for i in refl]) > 2
+        if hkl_col:
+            table.append("! hkl")
+        for p, r in zip(pos, refl):
+            table.append("|-")
+            table.append("\n".join(["| %s" % loc.format("%g", i)
+                                    for i in ((p,) + r[:2])]))
+            if len(r) > 2:
+                table.append("| %d %d %d" % r[2:])
+        table.append("|}")
+        if self.xy is not None:
+            for wavel in wavels:
+                pos = db.get_di(cid, xtype, wavel)[0]
+                self.gnuplot_tail(table, pos, refl, hkl_col, uformula)
+        return u"\n".join(table)
+
+    def gnuplot_tail(self, table, pos, refl, hkl_col, uformula):
+        table.append("----")
+        plotpos = []
+        x, y = self.xy
+        for p, r in zip(pos, refl):
+            if p < x[0] or p > x[-1]:
+                continue
+            for xp, xv in enumerate(x):
+                if xv >= p:
+                    break
+            xp1 = xp - 1
+            y0 = y[xp1] + (p - x[xp1]) * (y[xp] - y[xp1]) / (xv - x[xp1])
+            plotpos.append((p, y0) + r[2:])
+        for p in plotpos:
+            table.append("set arrow from %g, %g rto 0, ll nohead\n"
+                         % p[:2])
+            name = uformula
+            if len(p) > 2:
+                name += " (%d %d %d)" % p[2:]
+            table.append("set label \"%s\" at %g, %g + ll rotate\n"
+                         % ((name,) + p[:2]))

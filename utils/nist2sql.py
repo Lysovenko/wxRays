@@ -328,5 +328,6 @@ if __name__ == "__main__":
         pos = card.set_by_NIST_file(fobj, pos)
         card.dump_sql(codens)
     fobj.close()
+    sql("CREATE INDEX i_refl ON reflexes (cid)")
     connection.commit()
     connection.close()

@@ -20,7 +20,7 @@ import wx
 import wx.html
 from wx.lib.mixins.listctrl import ListRowHighlighter
 import sys
-from PDDB import Database
+from PDDB import Database, formula_markup, switch_number
 from marshal import dump, load
 import os.path as osp
 import locale
@@ -57,7 +57,7 @@ class Menu_callback:
     def __call__(self, evt):
         dat = self.data
         if not dat.get("CrdLst"):
-            database =
+            database = Database(dat["main_file"])
             if database:
                 dat["CrdLst"] = DBCardsList(dat, database)
         else:
@@ -81,42 +81,6 @@ class Config:
     def configure(self):
         fnam = self.fbb.GetValue()
         self.data["main_file"] = fnam
-
-
-def switch_number(number):
-    if type(number) is int:
-        unum = u"%.6d" % number
-        return unum[0:2] + "-" + unum[2:]
-    else:
-        return int(number.replace("-", ""))
-
-
-def formula_markup(fstr, wiki=False):
-    formula = fstr.replace("!", u"\u00d7")
-    res = u""
-    for item in formula.split():
-        if item in ['(', ')', u'\u00d7', ','] or\
-                item[0].isdigit() or item.startswith(u"\u00d7"):
-            res += item
-            continue
-        if item.startswith(')'):
-            res += ")<sub>%s</sub>" % item[1:]
-            continue
-        epos = 0
-        while epos < len(item) and item[epos].isalpha():
-            epos += 1
-        if epos:
-            while epos and item[:epos] not in ELEMENTS:
-                epos -= 1
-            if item[:epos] in ELEMENTS:
-                res += "%s<sub>%s</sub>" % (item[:epos], item[epos:])
-            else:
-                res += item
-    res = res.replace(u"\u00d7", u" \u00d7 ")
-    if wiki:
-        res = res.replace("<sub>", "_{")
-        res = res.replace("</sub>", "}")
-    return res.replace(",", ", ")
 
 
 class RHListCtrl(wx.ListCtrl, ListRowHighlighter):
@@ -184,6 +148,7 @@ class DBCardsList:
 
     def plot_pattern(self, unum):
         "plot the current pattern"
+        cid = switch_number(unum)
         if "Exp. data" in self.__data:
             ed = self.__data["Exp. data"]
             chromos = []
@@ -216,10 +181,10 @@ class DBCardsList:
             colors = ("red", "orange", "green")
             cd = cd.clone()
             for clr, (wavel, intens) in enumerate(chromos):
-                x, y = self.card_poss[unum].get_di(units, wavel)
+                x, y = self.__db.get_di(cid, units, wavel)
                 y *= intens
                 cd.append((x, y, 2, colors[clr], "pulse"))
-            cd.set_info(self.card_poss[unum].wiki_di(units, wavels, cd))
+            cd.set_info(self.__db.wiki_di(cid, units, wavels, cd))
             plt.set_data(mpln, cd)
             plt.plot_dataset(mpln)
             return
@@ -233,18 +198,18 @@ class DBCardsList:
                 chromos = [(0., 1.)]
                 wavels = [0]
             for wavel, intens in chromos:
-                x, y = self.card_poss[unum].get_di(units, wavel)
+                x, y = self.__db.get_di(cid, units, wavel)
                 y *= intens
                 last.append((x, y))
             cd.replace_last(last)
-            cd.set_info(self.card_poss[unum].wiki_di(units, wavels, cd))
+            cd.set_info(self.__db.wiki_di(cid, units, wavels, cd))
             plt.plot_dataset(mpln)
             return
-        x, y = self.card_poss[unum].get_di("A^{-1}", 0.)
+        x, y = self.__db.get_di(cid, "A^{-1}", 0.)
         plt.set_data(mpln, [(x, y, 1, None, "pulse")], r"$\AA^{-1}$",
                      "I, %", "A^{-1}")
         plt.get_data(mpln).set_info(
-            self.card_poss[unum].wiki_di("A^{-1}", [0]))
+            self.__db.wiki_di(cid, "A^{-1}", [0]))
         plt.plot_dataset(mpln)
 
     def on_window_close(self, evt=None):
@@ -330,7 +295,7 @@ class DBCardsList:
     def list_event(self, event):
         k_code = event.GetKeyCode()
         index = event.GetIndex()
-        cid = switch_number(event.GetText())
+        unum = event.GetText()
         if k_code == wx.WXK_DELETE:
             self.__list.DeleteItem(index)
             self.cards.discard(cid)
@@ -346,22 +311,22 @@ class DBCardsList:
     def info_window(self, unum):
         if not unum:
             return
-        card = self.card_poss[unum]
+        cid = switch_number(unum)
         popnew = True
         for htmw in self.__htmlist:
-            if htmw.popup(card):
+            if htmw.popup(cid):
                 popnew = False
                 break
         if popnew:
             if not self.html_mdi:
                 self.html_mdi = HTML_MDI(self.__frame)
-            html = HTML_CardInfo(self.html_mdi, card, self.__htmlist)
+            html = HTML_CardInfo(self.html_mdi, cid, self.__htmlist)
             self.__htmlist.append(html)
 
     def predefine_reflexes(self, unum):
         if not unum:
             return
-        card = self.card_poss[unum]
+        cid = switch_number(unum)
         if "Exp. data" in self.__data:
             ed = self.__data["Exp. data"]
             if ed.lambda1 is not None:
@@ -372,12 +337,12 @@ class DBCardsList:
             return
         wavel /= 2.
         result = []
-        for reflex in card.reflexes:
+        for reflex in self.__db.reflexes(cid):
             p = wavel / reflex[0]
             if p > 1.:
                 continue
             i = float(reflex[1])
-            if len(reflex) == 2:
+            if reflex[2] is None:
                 c = unum
             else:
                 c = "%s (%d %d %d)" % ((unum,) + reflex[2:])
