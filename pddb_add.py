@@ -403,55 +403,55 @@ class HTML_CardInfo(wx.MDIChildFrame):
         return False
 
     def mkhtext(self):
-        qual = self.card.quality
-        if self.card.deleted:
-            qual += _(" (Deleted)")
-        res = _("""
+        db = self.__db
+        cid = self.cid
+        qual = db.quality(cid)
+        qual = qual[1] + _(" (Deleted)") if qual[0] == "D" else qual[1]
+        res = (_("""
 <table>
 <tr><td>Number:</td><td>%(num)s</td></tr>
 <tr><td>Name:</td><td>%(nam)s</td></tr>
 <tr><td>Formula:</td><td>%(fml)s</td></tr>
 <tr><td>Quality:</td><td>%(qlt)s</td></tr>
-""") %\
-            {"num": self.card.get_unumber(), "nam": self.card.get_uname(),
-             "fml": self.card.get_uformula_markup(), "qlt": qual}
-        if self.card.cellparams:
+""") % {"num": switch_number(cid), "nam": db.name(cid),
+        "fml": db.formula_markup(cid), "qlt": qual})
+        cell = db.cellparams(cid)
+        if cell:
             pnr = ["a", "b", "c", u"\u03b1", u"\u03b2", u"\u03b3"]
             res += "<tr><td>%s</td><td>" % _("Cell parameters:")
             ppr = []
-            for i in xrange(6):
-                if self.card.cellparams[i]:
-                    ppr.append("%s=%s" % (
-                        pnr[i], locale.format("%g", self.card.cellparams[i])))
+            for p, v in cell:
+                ppr.append("%s=%s" % (pnr[p], locale.format("%g", v)))
             res += "; ".join(ppr) + "</td></tr>\n"
-        if self.card.spc_grp:
+        spc_grp = db.spacegroup(cid)
+        if spc_grp:
             res += "<tr><td>%s</td><td>%s</td></tr>\n" % \
-                (_("Space group:"), self.card.spc_grp)
+                (_("Space group:"), spc_grp)
         res += "</table>\n"
-        if self.card.reflexes:
-            rtbl = "<br>\n<br>\n<table border=1>\n"
-            rtblr = "<tr>"
-            rcels = 0
-            for reflex in self.card.reflexes:
-                if len(reflex) == 2:
-                    rtblr += "<td><pre> %s %3d </pre></td>" % \
-                        ((locale.format("%.5f", reflex[0]),) + reflex[1:])
-                else:
-                    rtblr += "<td><pre> %s %3d  %4d%4d%4d </pre></td>" % \
-                        ((locale.format("%.5f", reflex[0]),) + reflex[1:])
-                rcels += 1
-                if rcels == 3:
-                    rtbl += rtblr + "</tr>\n"
-                    rtblr = "<tr>"
-                    rcels = 0
-            if rcels:
-                for reflex in xrange(rcels, 3):
-                    rtblr += "<td></td>"
+        rtbl = "<br>\n<br>\n<table border=1>\n"
+        rtblr = "<tr>"
+        rcels = 0
+        for reflex in reflexes(cid, True):
+            if reflex[2] is None:
+                rtblr += "<td><pre> %s %3d </pre></td>" % \
+                    ((locale.format("%.5f", reflex[0]),) + reflex[1:2])
+            else:
+                rtblr += "<td><pre> %s %3d  %4d%4d%4d </pre></td>" % \
+                    ((locale.format("%.5f", reflex[0]),) + reflex[1:])
+            rcels += 1
+            if rcels == 3:
                 rtbl += rtblr + "</tr>\n"
-            res += rtbl + "</table>\n"
-        if self.card.comment:
+                rtblr = "<tr>"
+                rcels = 0
+        if rcels:
+            for reflex in xrange(rcels, 3):
+                rtblr += "<td></td>"
+            rtbl += rtblr + "</tr>\n"
+        res += rtbl + "</table>\n"
+        comment = db.comment(cid)
+        if comment:
             res += _("<h5>Comment</h5>")
-            for cod, val in self.card.get_umcomment():
+            for cod, val in mcomment:
                 if cod == "CL":
                     res += _("Color: ")
                 res += val + "<br>\n"

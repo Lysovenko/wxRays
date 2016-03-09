@@ -142,11 +142,11 @@ class Database:
             "ORDER BY d" % (hkl, cid), False)
 
     def quality(self, cid):
-        return sel.execute(
+        return self.execute(
             "SELECT quality FROM about WHERE cid=%d" % cid, False)[0][0]
 
     def spacegroup(self, cid):
-        return sel.execute(
+        return self.execute(
             "SELECT quality FROM sgroup WHERE cid=%d" % cid, False)[0][0]
 
     def get_di(self, cid, xtype="A^{-1}", wavel=None):
@@ -176,8 +176,8 @@ class Database:
     def wiki_di(self, cid, xtype, wavels, pld=None):
         return Wiki_card(self, cid, xtype, wavels, pld)
 
-    def get_umcomment(self, cid):
-        cmt = sel.execute(
+    def comment(self, cid):
+        cmt = self.execute(
             "SELECT comment FROM about WHERE cid=%d" % cid, False)[0][0]
         if not cmt:
             return
@@ -215,15 +215,19 @@ class Database:
                 val = rval + val[spos:]
             yield cod, val
 
-    def get_formula_markup(self, cid, wiki):
+    def formula_markup(self, cid, wiki):
         fstr, = self.execute("SELECT formula FROM about WHERE cid=%d" % cid)[0]
         if not fstr:
             return ''
         else:
             return formula_markup(fstr, wiki)
 
-    def get_name(self, cid):
+    def name(self, cid):
         return self.execute("SELECT name FROM about WHERE cid=%d" % cid)[0][0]
+
+    def cell_params(self, cid):
+        return self.execute("SELECT param, value FROM cellparams "
+                            "WHERE cid=%d ORDER BY param" % cid, False)
 
 
 class Wiki_card:
@@ -241,8 +245,8 @@ class Wiki_card:
         xt = {'\\theta': u"\u03b8", 'A^{-1}': u"\u212b^{-1}",
               'sin(\\theta)': u"sin(\u03b8)", 'A': u"\u212b",
               '2\\theta': u"2\u03b8"}[xtype]
-        uformula = db.get_formula_markup(cid, True)
-        table = ["=== %s ===\n" % db.get_name(cid),
+        uformula = db.formula_markup(cid, True)
+        table = ["=== %s ===\n" % db.name(cid),
                  "%s: %s\n" % (switch_number(cid), uformula),
                  "{|", "! x (%s)" % xt,
                  u"! d (\u212b)", "! I"]
