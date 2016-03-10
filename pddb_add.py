@@ -339,7 +339,7 @@ class DBCardsList:
             return
         wavel /= 2.
         result = []
-        for reflex in self.__db.reflexes(cid):
+        for reflex in self.__db.reflexes(cid, True):
             p = wavel / reflex[0]
             if p > 1.:
                 continue
@@ -415,7 +415,7 @@ class HTML_CardInfo(wx.MDIChildFrame):
 <tr><td>Quality:</td><td>%(qlt)s</td></tr>
 """) % {"num": switch_number(cid), "nam": db.name(cid),
         "fml": db.formula_markup(cid), "qlt": qual})
-        cell = db.cellparams(cid)
+        cell = db.cell_params(cid)
         if cell:
             pnr = ["a", "b", "c", u"\u03b1", u"\u03b2", u"\u03b3"]
             res += "<tr><td>%s</td><td>" % _("Cell parameters:")
@@ -431,7 +431,7 @@ class HTML_CardInfo(wx.MDIChildFrame):
         rtbl = "<br>\n<br>\n<table border=1>\n"
         rtblr = "<tr>"
         rcels = 0
-        for reflex in reflexes(cid, True):
+        for reflex in db.reflexes(cid, True):
             if reflex[2] is None:
                 rtblr += "<td><pre> %s %3d </pre></td>" % \
                     ((locale.format("%.5f", reflex[0]),) + reflex[1:2])
@@ -451,28 +451,24 @@ class HTML_CardInfo(wx.MDIChildFrame):
         comment = db.comment(cid)
         if comment:
             res += _("<h5>Comment</h5>")
-            for cod, val in mcomment:
+            for cod, val in comment:
                 if cod == "CL":
                     res += _("Color: ")
                 res += val + "<br>\n"
-        if self.card.ref:
-            res += _("<h5>References</h5>\n")
-            # codens = get_codens_dict()
-            res += "<ul>\n"
-            for ref in self.card.ref:
-                lit = "<li>"
-                if ref["names"]:
-                    lit += "%s // " % ref["names"]
-                if ref["code"] in codens:
-                    lit += codens[ref["code"]]
-                else:
-                    lit += ref["code"]
-                if ref["V"]:
-                    lit += ", <b>%s</b>" % ref["V"]
-                if ref["P"]:
-                    lit += ", P. %s" % ref["P"]
-                if ref["Y"]:
-                    lit += " (%s)" % ref["Y"]
-                res += lit + "</li>\n"
-            res += "</ul>\n"
+        res += _("<h5>Bibliography</h5>\n")
+        res += "<ul>\n"
+        for source, vol, page, year, authors in db.citations(cid):
+            lit = "<li>"
+            if authors:
+                lit += "%s // " % authors
+            if source:
+                lit += source
+            if vol:
+                lit += ", <b>%s</b>" % vol
+            if page:
+                lit += ", P. %s" % page
+            if year:
+                lit += " (%d)" % year
+            res += lit + "</li>\n"
+        res += "</ul>\n"
         return "".join(["<html><body>", res, "</body></html>"])

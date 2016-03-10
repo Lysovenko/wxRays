@@ -10,6 +10,7 @@ do
         msgmerge -U "$i" wxRays.pot
     fi
     fnam="../locale/${i%.po}/LC_MESSAGES/wxRays.mo"
+    mkdir -p "../locale/${i%.po}/LC_MESSAGES"
     if [ "$i" -nt "$fnam" ] 
     then
         echo $fnam

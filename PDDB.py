@@ -147,7 +147,7 @@ class Database:
 
     def spacegroup(self, cid):
         return self.execute(
-            "SELECT quality FROM sgroup WHERE cid=%d" % cid, False)[0][0]
+            "SELECT sgroup FROM about WHERE cid=%d" % cid, False)[0][0]
 
     def get_di(self, cid, xtype="A^{-1}", wavel=None):
         reflexes = self.reflexes(cid)
@@ -178,7 +178,7 @@ class Database:
 
     def comment(self, cid):
         cmt = self.execute(
-            "SELECT comment FROM about WHERE cid=%d" % cid, False)[0][0]
+            "SELECT comment FROM about WHERE cid=%d" % cid, False)
         if not cmt:
             return
         cmt = cmt[0][0]
@@ -186,7 +186,7 @@ class Database:
             return
         dcoduns = {"BF": "b", "IT": "i"}
         for cod, val in eval(cmt):
-            val = val.decode(encoding="utf8")
+            val = val.decode("utf8")
             if '\\' in val:
                 coduns = []
                 spos = 0
@@ -215,7 +215,7 @@ class Database:
                 val = rval + val[spos:]
             yield cod, val
 
-    def formula_markup(self, cid, wiki):
+    def formula_markup(self, cid, wiki=False):
         fstr, = self.execute("SELECT formula FROM about WHERE cid=%d" % cid)[0]
         if not fstr:
             return ''
@@ -228,6 +228,12 @@ class Database:
     def cell_params(self, cid):
         return self.execute("SELECT param, value FROM cellparams "
                             "WHERE cid=%d ORDER BY param" % cid, False)
+
+    def citations(self, cid):
+        return self.execute(
+            "SELECT source, vol, page, year, authors FROM citations LEFT JOIN "
+            "sources ON citations.sid=sources.sid WHERE cid=%d "
+            "ORDER BY year DESC" % cid, False)
 
 
 class Wiki_card:
