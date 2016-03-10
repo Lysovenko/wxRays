@@ -108,13 +108,19 @@ class Database:
     def __exit__(self, tp, val, tb):
         self.close()
 
+    def select_cards(self, req):
+        try:
+            res = self.select_bruto(req)
+        except KeyError:
+            raise ValueError("Bad request")
+
     def select_bruto(self, req):
         spl = req.split(";")
         spl1 = spl[0].split()
-        must = [ELNUMS[x] for x in spl1 if x in ELNUMS]
+        must = [ELNUMS[x] for x in spl1]
         if len(spl) > 1:
             spl1 = spl[1].split()
-            can = [ELNUMS[x] for x in spl1 if x in ELNUMS]
+            can = [ELNUMS[x] for x in spl1]
             if spl1 == ["*"]:
                 can = None
         else:
@@ -129,7 +135,7 @@ class Database:
         if can is None:
             scon = "CASE %s ELSE 0 END" % mcon
         elif can:
-            scon = "case when enum in (%s) then 0 %s else -1" % (
+            scon = "CASE WHEN enum IN (%s) THEN 0 %s ELSE -1" % (
                 ",".join(map(str, can)), mcon)
         else:
             scon = "CASE %s ELSE -1 END" % mcon
@@ -138,7 +144,7 @@ class Database:
     def reflexes(self, cid, hkl=False):
         hkl = ", h, k, l" if hkl else ""
         return self.execute(
-            "select d, intens%s from reflexes where cid=%d "
+            "SELECT d, intens%s FROM reflexes WHERE cid=%d "
             "ORDER BY d" % (hkl, cid), False)
 
     def quality(self, cid):

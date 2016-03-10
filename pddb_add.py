@@ -235,7 +235,10 @@ class DBCardsList:
         text = self.filter.GetValue()
         incl_del = self.incl_del.IsChecked()
         self.filter.SetValue("")
-        rows = self.__db.select_bruto(text)
+        try:
+            rows = self.__db.select_cards(text)
+        except ValueError:
+            print("Wrong query")
         for cid, name, formula, qual in rows:
             unum = switch_number(cid)
             # maybe it should be virtual list
