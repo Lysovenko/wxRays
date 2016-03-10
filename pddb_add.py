@@ -238,7 +238,8 @@ class DBCardsList:
         try:
             rows = self.__db.select_cards(text)
         except ValueError:
-            print("Wrong query")
+            wx.MessageBox(_("Wrong query"), _("Error"))
+            rows = ()
         for cid, name, formula, qual in rows:
             unum = switch_number(cid)
             # maybe it should be virtual list

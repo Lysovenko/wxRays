@@ -20,6 +20,7 @@ import sqlite3 as sql
 from os.path import isfile
 import numpy as np
 import locale as loc
+import re
 ELNUMS = {
     "D": 1, "H": 1, "T": 1, "He": 2, "Li": 3, "Be": 4, "B": 5, "C": 6, "N": 7,
     "O": 8, "F": 9, "Ne": 10, "Na": 11, "Mg": 12, "Al": 13, "Si": 14, "P": 15,
@@ -109,10 +110,41 @@ class Database:
         self.close()
 
     def select_cards(self, req):
-        try:
-            res = self.select_bruto(req)
-        except KeyError:
+        if ';' in req:
+            try:
+                res = self.select_bruto(req)
+            except KeyError:
+                raise ValueError("Bad request")
+            return res
+        res = self.select_bruqa(req)
+        if type(res) is int:
             raise ValueError("Bad request")
+        return res
+
+    def select_bruqa(self, req):
+        pos = 0
+        regexp = re.compile(r"([A-Za-z]+)\s*(\d*)\s*")
+        lst = regexp.findall(req)
+        dct = dict(lst)
+        res = 0
+        if len(lst) > len(dct):
+            res += 1
+        if set(dct).difference(set(ELNUMS)):
+            res += 2
+        if res:
+            return res
+        dreq = ""
+        for nam, val in lst:
+            try:
+                qu = int(val)
+            except ValueError:
+                qu = 1
+            dreq += " WHEN enum=%d AND quantity=%d THEN 1" % (ELNUMS[nam], qu)
+        minstr = """SELECT cid, name, formula, quality FROM about INNER JOIN
+        (SELECT cid as icid FROM elements GROUP BY cid HAVING
+        SUM(CASE %s ELSE -1 END) = %d) ON cid = icid""" % (dreq, len(lst))
+        print minstr
+        return self.execute(minstr)
 
     def select_bruto(self, req):
         spl = req.split(";")
