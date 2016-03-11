@@ -143,7 +143,6 @@ class Database:
         minstr = """SELECT cid, name, formula, quality FROM about INNER JOIN
         (SELECT cid as icid FROM elements GROUP BY cid HAVING
         SUM(CASE %s ELSE -1 END) = %d) ON cid = icid""" % (dreq, len(lst))
-        print minstr
         return self.execute(minstr)
 
     def select_bruto(self, req):
