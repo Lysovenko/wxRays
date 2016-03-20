@@ -17,3 +17,16 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from sys import argv, stderr
 
+def parsloop(iterable):
+    result = {}
+    strb = None
+    for line in iterable:
+        if line.strip() == ";":
+            if strb is None:
+                strb = ""
+            else:
+               result[str_item] = strb
+               strb = None
+        elif strb is not None:
+            strb += line
+        if line.startswith("_")
