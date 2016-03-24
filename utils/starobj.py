@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"CIF file parser"
-# cif2obj (C) 2016 Serhii Lysovenko
+"STAR object"
+# starobj (C) 2016 Serhii Lysovenko
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,18 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from sys import argv, stderr
 
-def parsloop(iterable):
-    result = {}
-    strb = None
-    for line in iterable:
-        if line.strip() == ";":
-            if strb is None:
-                strb = ""
-            else:
-               result[str_item] = strb
-               strb = None
-        elif strb is not None:
-            strb += line
-        if line.startswith("_")
+class StarObj(dict):
+    def __init__(self, initor=None):
+    dict.__init__(self)
+    if type(initor) is str:
+        self.update(initor)
