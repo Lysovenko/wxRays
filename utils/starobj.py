@@ -18,6 +18,7 @@
 
 class StarObj(dict):
     def __init__(self, initor=None):
-    dict.__init__(self)
-    if type(initor) is str:
-        self.update(initor)
+        dict.__init__(self)
+        if type(initor) is str:
+            self.update(initor)
+
