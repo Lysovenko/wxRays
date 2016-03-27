@@ -331,4 +331,3 @@ if __name__ == "__main__":
     sql("CREATE INDEX i_refl ON reflexes (cid)")
     connection.commit()
     connection.close()
-#blah
