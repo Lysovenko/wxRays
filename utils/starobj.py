@@ -22,3 +22,13 @@ class StarObj(dict):
         if type(initor) is str:
             self.update(initor)
 
+    def update(self, upstr):
+        text_block = None
+        for line in upstr.splitlines():
+            if text_block is not None:
+                if line.strip() == ';':
+                    pass
+                else:
+                    text_block.append(line)
+            lcl = line.lovercase().strip()
+            if lcl.startswith('
