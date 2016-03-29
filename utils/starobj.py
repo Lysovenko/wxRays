@@ -31,4 +31,5 @@ class StarObj(dict):
                 else:
                     text_block.append(line)
             lcl = line.lovercase().strip()
-            if lcl.startswith('
+            if lcl.startswith('loot_'):
+                pass
