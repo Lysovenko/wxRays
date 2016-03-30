@@ -16,6 +16,8 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+import re
+
 class StarObj(dict):
     def __init__(self, initor=None):
         dict.__init__(self)
