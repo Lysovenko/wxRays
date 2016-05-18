@@ -166,11 +166,15 @@ class Database:
         if can is None:
             scon = "CASE %s ELSE 0 END" % mcon
         elif can:
-            scon = "CASE WHEN enum IN (%s) THEN 0 %s ELSE -1" % (
+            scon = "CASE WHEN enum IN (%s) THEN 0 %s ELSE -1 END" % (
                 ",".join(map(str, can)), mcon)
         else:
             scon = "CASE %s ELSE -1 END" % mcon
-        return self.execute(minstr % (scon, msum))
+        try:
+            return self.execute(minstr % (scon, msum))
+        except Exception:
+            print(minstr % (scon, msum))
+            return ()
 
     def reflexes(self, cid, hkl=False):
         hkl = ", h, k, l" if hkl else ""
