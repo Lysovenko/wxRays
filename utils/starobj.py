@@ -17,6 +17,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import re
+import pyparsing
 
 class StarObj(dict):
     def __init__(self, initor=None):
