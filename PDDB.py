@@ -122,15 +122,16 @@ class Database:
         return res
 
     def select_bruqa(self, req):
+        "Select bruto equation"
         pos = 0
         regexp = re.compile(r"([A-Za-z]+)\s*(\d*)\s*")
         lst = regexp.findall(req)
         dct = dict(lst)
         res = 0
         if len(lst) > len(dct):
-            res += 1
+            res |= 1
         if set(dct).difference(set(ELNUMS)):
-            res += 2
+            res |= 2
         if res:
             return res
         dreq = ""
