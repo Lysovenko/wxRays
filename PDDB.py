@@ -116,6 +116,12 @@ class Database:
             except KeyError:
                 raise ValueError("Bad request")
             return res
+        if req.startswith(':'):
+            try:
+                res = self.select_reflex(req)
+            except:
+                raise ValueError("Bad request")
+            return res
         res = self.select_bruqa(req)
         if type(res) is int:
             raise ValueError("Bad request")
@@ -176,6 +182,22 @@ class Database:
         except Exception:
             print(minstr % (scon, msum))
             return ()
+
+    def select_reflex(self, req):
+        try:
+            d1, d2, h1, h2 = map(float, req[1:].split())
+        except:
+            return ()
+        minstr = """SELECT cid, name, formula, quality FROM about INNER JOIN
+        (SELECT cid as icid FROM reflexes WHERE d BETWEEN %g AND %g AND intens
+        BETWEEN %d AND %d)
+        ON cid = icid""" % (d1, d2, h1, h2)
+        try:
+            return self.execute(minstr)
+        except Exception:
+            print(minstr)
+            return ()
+        
 
     def reflexes(self, cid, hkl=False):
         hkl = ", h, k, l" if hkl else ""
