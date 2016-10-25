@@ -252,6 +252,7 @@ class DBCardsList:
 
     def plot_pattern(self, unum):
         "plot the current pattern"
+        print("plot %s" % unum)
         if "Exp. data" in self.__data:
             ed = self.__data["Exp. data"]
             chromos = []

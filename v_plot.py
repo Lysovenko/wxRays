@@ -186,7 +186,12 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
             self.cur_dset = d_set
             self.cur_xunits = data.xunits
             self.figure.clear()
-            self.figure.suptitle(d_set, fontdict={"family": "Arial"})
+            for font_fml in ['serif', 'sans-serif', 'cursive', 'fantasy', 'monospace']:
+                try:
+                    self.figure.suptitle(d_set, fontdict={"family": font_fml})
+                except:
+                    continue
+                break
             self.p_plot = None
             self.axes1 = self.figure.add_subplot(111)
             self.axes1.grid(True)
@@ -196,10 +201,10 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
                 self.axes2 = None
             if data.xlabel:
                 self.axes1.set_xlabel(
-                    data.xlabel, fontdict={"family": "Arial"})
+                    data.xlabel, fontdict={"family": font_fml})
             if data.ylabel:
                 self.axes1.set_ylabel(
-                    data.ylabel, fontdict={"family": "Arial"})
+                    data.ylabel, fontdict={"family": font_fml})
             if data.picker is not None:
                 self.selected, = self.axes1.plot(
                     [plots[0][0][0]], [plots[0][1][0]], 'o', ms=10,
