@@ -189,7 +189,7 @@ class Database:
         except:
             return ()
         minstr = """SELECT cid, name, formula, quality FROM about INNER JOIN
-        (SELECT cid as icid FROM reflexes WHERE d BETWEEN %g AND %g AND intens
+        (SELECT DISTINCT cid as icid FROM reflexes WHERE d BETWEEN %g AND %g AND intens
         BETWEEN %d AND %d)
         ON cid = icid""" % (d1, d2, h1, h2)
         try:

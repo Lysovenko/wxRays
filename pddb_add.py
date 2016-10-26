@@ -301,6 +301,7 @@ class DBCardsList:
         k_code = event.GetKeyCode()
         index = event.GetIndex()
         unum = event.GetText()
+        cid = switch_number(unum)
         if k_code == wx.WXK_DELETE:
             self.__list.DeleteItem(index)
             self.cards.discard(cid)
