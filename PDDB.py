@@ -110,22 +110,36 @@ class Database:
         self.close()
 
     def select_cards(self, req):
-        if ';' in req:
-            try:
-                res = self.select_bruto(req)
-            except KeyError:
+        reqs = req.split('&')
+        selects = []
+        for req in reqs:
+            if ';' in req:
+                try:
+                    res = self.select_bruto(req)
+                except KeyError:
+                    raise ValueError("Bad request")
+                selects.append(res)
+                continue
+            if req.startswith(':'):
+                try:
+                    res = self.select_reflex(req)
+                except:
+                    raise ValueError("Bad request")
+                selects.append(res)
+                continue
+            res = self.select_bruqa(req)
+            if type(res) is int:
                 raise ValueError("Bad request")
-            return res
-        if req.startswith(':'):
-            try:
-                res = self.select_reflex(req)
-            except:
-                raise ValueError("Bad request")
-            return res
-        res = self.select_bruqa(req)
-        if type(res) is int:
-            raise ValueError("Bad request")
-        return res
+            selects.append(res)
+        if not selects:
+            return ()
+        sreq = """SELECT cid, name, formula, quality FROM about
+        INNER JOIN (%s) ON cid = icid""" % " INTERSECT ".join(selects)
+        try:
+            return self.execute(sreq)
+        except Exception:
+            print(sreq)
+            return ()
 
     def select_bruqa(self, req):
         "Select bruto equation"
@@ -147,10 +161,8 @@ class Database:
             except ValueError:
                 qu = 1
             dreq += " WHEN enum=%d AND quantity=%d THEN 1" % (ELNUMS[nam], qu)
-        minstr = """SELECT cid, name, formula, quality FROM about INNER JOIN
-        (SELECT cid as icid FROM elements GROUP BY cid HAVING
-        SUM(CASE %s ELSE -1 END) = %d) ON cid = icid""" % (dreq, len(lst))
-        return self.execute(minstr)
+        return """SELECT cid as icid FROM elements GROUP BY cid HAVING
+        SUM(CASE %s ELSE -1 END) = %d""" % (dreq, len(lst))
 
     def select_bruto(self, req):
         spl = req.split(";")
@@ -165,9 +177,7 @@ class Database:
             can = []
         if not must and not can:
             return []
-        minstr = """SELECT cid, name, formula, quality FROM about INNER JOIN
-        (SELECT cid as icid FROM elements GROUP BY cid HAVING SUM(%s) = %d)
-        ON cid = icid"""
+        minstr = """SELECT cid as icid FROM elements GROUP BY cid HAVING SUM(%s) = %d"""
         mcon = "WHEN enum IN (%s) THEN 1" % ",".join(map(str, must))
         msum = len(must)
         if can is None:
@@ -177,27 +187,16 @@ class Database:
                 ",".join(map(str, can)), mcon)
         else:
             scon = "CASE %s ELSE -1 END" % mcon
-        try:
-            return self.execute(minstr % (scon, msum))
-        except Exception:
-            print(minstr % (scon, msum))
-            return ()
+        return minstr % (scon, msum)
 
     def select_reflex(self, req):
         try:
             d1, d2, h1, h2 = map(float, req[1:].split())
         except:
             return ()
-        minstr = """SELECT cid, name, formula, quality FROM about INNER JOIN
-        (SELECT DISTINCT cid as icid FROM reflexes WHERE d BETWEEN %g AND %g AND intens
-        BETWEEN %d AND %d)
-        ON cid = icid""" % (d1, d2, h1, h2)
-        try:
-            return self.execute(minstr)
-        except Exception:
-            print(minstr)
-            return ()
-        
+        return """SELECT DISTINCT cid as icid FROM reflexes
+        WHERE d BETWEEN %g AND %g AND intens
+        BETWEEN %d AND %d""" % (d1, d2, h1, h2)
 
     def reflexes(self, cid, hkl=False):
         hkl = ", h, k, l" if hkl else ""
@@ -354,6 +353,9 @@ class Wiki_card:
                          % p[:2])
             name = uformula
             if len(p) > 2:
-                name += " (%d %d %d)" % p[2:]
+                try:
+                    name += " (%d %d %d)" % p[2:]
+                except Exception:
+                    pass
             table.append("set label \"%s\" at %g, %g + ll rotate\n"
                          % ((name,) + p[:2]))
