@@ -313,6 +313,7 @@ class DBCardsList:
             self.cards.clear()
         elif k_code == wx.WXK_RETURN or k_code == 0:
             self.plot_pattern(unum)
+        event.Skip()
 
     def info_window(self, unum):
         if not unum:
@@ -388,13 +389,22 @@ class HTML_CardInfo(wx.MDIChildFrame):
             html.SetStandardFonts()
         html.SetPage(self.mkhtext())
         self.Bind(wx.EVT_WINDOW_DESTROY, self.on_window_destroy)
-        self.Bind(wx.EVT_CHAR, self.on_char)
+        self.Bind(wx.EVT_CHAR_HOOK, self.on_char)
         self.parent.Raise()
         self.Show()
 
     def on_char(self, evt):
-        if evt.GetKeyCode() == wx.WXK_ESCAPE:
+        k_code = evt.KeyCode
+        if k_code == wx.WXK_ESCAPE:
             self.Destroy()
+            return
+        if k_code == ord('C') and evt.controlDown:
+            clipdata = wx.TextDataObject()
+            clipdata.SetText(self.mkhtext())
+            wx.TheClipboard.Open()
+            wx.TheClipboard.SetData(clipdata)
+            wx.TheClipboard.Close()
+            return
         evt.Skip()
 
     def on_window_destroy(self, evt=None):
