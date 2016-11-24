@@ -365,6 +365,7 @@ class HTML_MDI(wx.MDIParentFrame):
             self.SetIcon(parent.GetIcon())
         self.alive = True
         self.Bind(wx.EVT_CLOSE, self.on_window_close)
+        self.Bind(wx.EVT_CHAR_HOOK, self.on_char)
         self.Show()
 
     def __nonzero__(self):
@@ -374,6 +375,11 @@ class HTML_MDI(wx.MDIParentFrame):
         "closing and making self False"
         self.Destroy()
         self.alive = False
+
+    def on_char(self, event):
+        print(event.Modifiers, wx.MOD_CONTROL)
+        print(event.KeyCode)
+        help(event)
 
 
 class HTML_CardInfo(wx.MDIChildFrame):
@@ -387,7 +393,8 @@ class HTML_CardInfo(wx.MDIChildFrame):
         html = wx.html.HtmlWindow(self)
         if "gtk2" in wx.PlatformInfo:
             html.SetStandardFonts()
-        html.SetPage(self.mkhtext())
+        self.__ht = self.mkhtext()
+        html.SetPage(self.__ht)
         self.Bind(wx.EVT_WINDOW_DESTROY, self.on_window_destroy)
         self.Bind(wx.EVT_CHAR_HOOK, self.on_char)
         self.parent.Raise()
@@ -398,9 +405,9 @@ class HTML_CardInfo(wx.MDIChildFrame):
         if k_code == wx.WXK_ESCAPE:
             self.Destroy()
             return
-        if k_code == ord('C') and evt.controlDown:
+        if k_code == ord('C'):
             clipdata = wx.TextDataObject()
-            clipdata.SetText(self.mkhtext())
+            clipdata.SetText(self.__ht)
             wx.TheClipboard.Open()
             wx.TheClipboard.SetData(clipdata)
             wx.TheClipboard.Close()
