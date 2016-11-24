@@ -377,9 +377,13 @@ class HTML_MDI(wx.MDIParentFrame):
         self.alive = False
 
     def on_char(self, event):
-        print(event.Modifiers, wx.MOD_CONTROL)
-        print(event.KeyCode)
-        help(event)
+        if event.Modifiers == wx.MOD_CONTROL and event.KeyCode == ord('C'):
+            self.GetActiveChild().html2clipboard()
+            return
+        if  event.KeyCode == wx.WXK_ESCAPE:
+            self.GetActiveChild().Destroy()
+            return
+        event.Skip()
 
 
 class HTML_CardInfo(wx.MDIChildFrame):
@@ -387,7 +391,6 @@ class HTML_CardInfo(wx.MDIChildFrame):
         self.htmlist = htmlist
         self.__db = db
         self.cid = cid
-        # self.card = card
         self.parent = parent
         wx.MDIChildFrame.__init__(self, parent, -1, switch_number(self.cid))
         html = wx.html.HtmlWindow(self)
@@ -396,23 +399,15 @@ class HTML_CardInfo(wx.MDIChildFrame):
         self.__ht = self.mkhtext()
         html.SetPage(self.__ht)
         self.Bind(wx.EVT_WINDOW_DESTROY, self.on_window_destroy)
-        self.Bind(wx.EVT_CHAR_HOOK, self.on_char)
         self.parent.Raise()
         self.Show()
 
-    def on_char(self, evt):
-        k_code = evt.KeyCode
-        if k_code == wx.WXK_ESCAPE:
-            self.Destroy()
-            return
-        if k_code == ord('C'):
-            clipdata = wx.TextDataObject()
-            clipdata.SetText(self.__ht)
-            wx.TheClipboard.Open()
-            wx.TheClipboard.SetData(clipdata)
-            wx.TheClipboard.Close()
-            return
-        evt.Skip()
+    def html2clipboard(self):
+        clipdata = wx.TextDataObject()
+        clipdata.SetText(self.__ht)
+        wx.TheClipboard.Open()
+        wx.TheClipboard.SetData(clipdata)
+        wx.TheClipboard.Close()
 
     def on_window_destroy(self, evt=None):
         self.htmlist.remove(self)
