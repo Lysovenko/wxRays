@@ -377,7 +377,7 @@ class HTML_MDI(wx.MDIParentFrame):
         self.alive = False
 
     def on_char(self, event):
-        if event.Modifiers == wx.MOD_CONTROL and event.KeyCode == ord('C'):
+        if event.Modifiers == wx.MOD_CONTROL and event.KeyCode in (3, ord('C')):
             self.GetActiveChild().html2clipboard()
             return
         if  event.KeyCode == wx.WXK_ESCAPE:
