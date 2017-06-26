@@ -11,8 +11,8 @@ setup(name="wxRays",
       package_data={"wxRays":
                     ["splash.png", "locale/uk/LC_MESSAGES/wxRays.mo",
                      "locale/ru/LC_MESSAGES/wxRays.mo",
-                     "po/*.po", "doc/*.pdf", "data/*"]
-                    + [i for i in listdir('.') if i.endswith('.addon')]},
+                     "po/*.po", "doc/*.pdf", "data/*"] +
+                    [i for i in listdir('.') if i.endswith('.addon')]},
       package_dir={"wxRays": ""},
       requires=["wxPython (>=2.8)"],
       url="http://sourceforge.net/p/wxrays")

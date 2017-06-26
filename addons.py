@@ -23,6 +23,10 @@ from imp import find_module, load_module
 from os import listdir
 from os.path import dirname, realpath, split, splitext, join, isfile, \
     isabs, normpath
+import wx
+from wx.lib.mixins.listctrl import CheckListCtrlMixin
+from sys import maxint
+import wx.lib.rcsizer as rcs
 
 
 class Addons:
@@ -169,16 +173,10 @@ def mod_from_desc(desc, adds_dat):
 # ########################   GUI Part   ###############################
 
 
-import wx
-from wx.lib.mixins.listctrl import CheckListCtrlMixin
-from sys import maxint
-import wx.lib.rcsizer as rcs
-
-
 class ChkListCtrl(wx.ListCtrl, CheckListCtrlMixin):
     def __init__(self, parent, size):
-        wx.ListCtrl.__init__(self, parent, -1, style=wx.LC_REPORT
-                             | wx.BORDER_NONE | wx.LC_SINGLE_SEL,
+        wx.ListCtrl.__init__(self, parent, -1, style=wx.LC_REPORT |
+                             wx.BORDER_NONE | wx.LC_SINGLE_SEL,
                              size=size)
         CheckListCtrlMixin.__init__(self)
 
@@ -186,8 +184,8 @@ class ChkListCtrl(wx.ListCtrl, CheckListCtrlMixin):
 class AddonsListCtrlPanel(wx.Panel):
 
     def __init__(self, parent, size=(-1, -1)):
-        wx.Panel.__init__(self, parent, -1, style=wx.WANTS_CHARS
-                          | wx.SUNKEN_BORDER)
+        wx.Panel.__init__(self, parent, -1, style=wx.WANTS_CHARS |
+                          wx.SUNKEN_BORDER)
         sizer = wx.BoxSizer(wx.VERTICAL)
         self.list = ChkListCtrl(self, size)
         sizer.Add(self.list, 1, wx.EXPAND)
@@ -301,8 +299,8 @@ class DlgAddonConfig(wx.Dialog):
         vp = get_vis(self)
         sizer.Add(vp, 0, wx.ALL, 5)
         line = wx.StaticLine(self, -1, size=(20, -1), style=wx.LI_HORIZONTAL)
-        sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT
-                  | wx.TOP, 5)
+        sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT |
+                  wx.TOP, 5)
         hsizer = rcs.RowColSizer()
         is_ok = wx.Button(self, wx.ID_OK)
         is_cancel = wx.Button(self, wx.ID_CANCEL)

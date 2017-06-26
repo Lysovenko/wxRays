@@ -436,7 +436,8 @@ def calc_rho_rc(exq, pSQ, bg0, grsps, sps, r_c, assum=None):
     """Calculate first approximation of the atomic density and
     make recomendation about cutoff radius"""
     simplefilter("error", np.RankWarning)
-    f_kn = lambda j: calc_pknorm(exq, pSQ, bg0, grsps, j, 1.)
+
+    def f_kn(j): return calc_pknorm(exq, pSQ, bg0, grsps, j, 1.)
     v_kn = np.vectorize(f_kn)
     if assum:
         sh = .05 * r_c

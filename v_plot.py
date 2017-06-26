@@ -164,8 +164,8 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
         self.toolbar.EnableTool(self.id_save, True)
         self.toolbar.EnableTool(self.id_info, data.info is not None)
         self.__menu.action_catch("!pl sav d on")
-        self.__menu.action_catch(data.info is not None and "!pl info on"
-                                 or "!pl info off")
+        self.__menu.action_catch(data.info is not None and "!pl info on" or
+                                 "!pl info off")
         plots = data.plots
         last_only = 0
         if self.cur_dset == d_set and not data.fresh:
@@ -186,7 +186,8 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
             self.cur_dset = d_set
             self.cur_xunits = data.xunits
             self.figure.clear()
-            for font_fml in ['serif', 'sans-serif', 'cursive', 'fantasy', 'monospace']:
+            for font_fml in ['serif', 'sans-serif', 'cursive', 'fantasy',
+                             'monospace']:
                 try:
                     self.figure.suptitle(d_set, fontdict={"family": font_fml})
                 except:

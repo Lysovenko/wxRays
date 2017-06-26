@@ -19,9 +19,9 @@
 
 # Used to guarantee to use at least Wx2.8
 import wxversion
-wxversion.ensureMinimal('2.8')
 import os.path as osp
 from sys import argv
+wxversion.ensureMinimal('2.8')
 import wx
 
 

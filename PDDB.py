@@ -177,7 +177,8 @@ class Database:
             can = []
         if not must and not can:
             return []
-        minstr = """SELECT cid as icid FROM elements GROUP BY cid HAVING SUM(%s) = %d"""
+        minstr = """
+        SELECT cid as icid FROM elements GROUP BY cid HAVING SUM(%s) = %d"""
         mcon = "WHEN enum IN (%s) THEN 1" % ",".join(map(str, must))
         msum = len(must)
         if can is None:

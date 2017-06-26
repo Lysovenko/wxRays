@@ -127,8 +127,8 @@ class DlgDdataFile(wx.Dialog):
         box.Add(self.filtering, 1, wx.ALIGN_CENTRE | wx.ALL, 5)
         sizer.Add(box, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
         line = wx.StaticLine(self, -1, size=(20, -1), style=wx.LI_HORIZONTAL)
-        sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT
-                  | wx.TOP, 5)
+        sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT |
+                  wx.TOP, 5)
         # Axis units selection
         box = wx.BoxSizer(wx.HORIZONTAL)
         label = wx.StaticText(self, -1, _("File X:"))
@@ -152,8 +152,8 @@ class DlgDdataFile(wx.Dialog):
         box.Add(self.sample, 1, wx.ALIGN_CENTRE | wx.ALL, 5)
         sizer.Add(box, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
         line = wx.StaticLine(self, -1, size=(20, -1), style=wx.LI_HORIZONTAL)
-        sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT
-                  | wx.TOP, 5)
+        sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT |
+                  wx.TOP, 5)
         # Buttons...
         box = wx.BoxSizer(wx.HORIZONTAL)
         btn = wx.Button(self, wx.ID_CANCEL)
@@ -357,7 +357,7 @@ class InputElement:
                 badv = args[-1]
                 args = args[:-1]
             else:
-                badv = lambda x: False
+                def badv(x): return False
             if len(args) == 2:
                 tdata = loc.format(u"%g", data)
                 self.input = wx.TextCtrl(parent, value=tdata,

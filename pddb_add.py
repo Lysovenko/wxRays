@@ -380,7 +380,10 @@ class HTML_MDI(wx.MDIParentFrame):
         if event.Modifiers == wx.MOD_CONTROL and event.KeyCode == ord('C'):
             self.GetActiveChild().html2clipboard()
             return
-        if  event.KeyCode == wx.WXK_ESCAPE:
+        if event.Modifiers == wx.MOD_CONTROL and event.KeyCode == ord('T'):
+            self.GetActiveChild().tabular2clipboard()
+            return
+        if event.KeyCode == wx.WXK_ESCAPE:
             self.GetActiveChild().Destroy()
             return
         event.Skip()
@@ -430,8 +433,9 @@ class HTML_CardInfo(wx.MDIChildFrame):
 <tr><td>Name:</td><td>%(nam)s</td></tr>
 <tr><td>Formula:</td><td>%(fml)s</td></tr>
 <tr><td>Quality:</td><td>%(qlt)s</td></tr>
-""") % {"num": switch_number(cid), "nam": db.name(cid),
-        "fml": db.formula_markup(cid), "qlt": qual})
+""") %
+               {"num": switch_number(cid), "nam": db.name(cid),
+                "fml": db.formula_markup(cid), "qlt": qual})
         cell = db.cell_params(cid)
         if cell:
             pnr = ["a", "b", "c", u"\u03b1", u"\u03b2", u"\u03b3"]
@@ -489,3 +493,18 @@ class HTML_CardInfo(wx.MDIChildFrame):
             res += lit + "</li>\n"
         res += "</ul>\n"
         return "".join(["<html><body>", res, "</body></html>"])
+
+    def tabular2clipboard(self):
+        result = ""
+        for reflex in sorted(self.__db.reflexes(self.cid, True), reverse=True):
+            if reflex[2] is None:
+                result += "%s\t%d\n" % \
+                    ((locale.format("%.5f", reflex[0]),) + reflex[1:2])
+            else:
+                result += "%s\t%d\t%d %d %d\n" % \
+                    ((locale.format("%.5f", reflex[0]),) + reflex[1:])
+        clipdata = wx.TextDataObject()
+        clipdata.SetText(result)
+        wx.TheClipboard.Open()
+        wx.TheClipboard.SetData(clipdata)
+        wx.TheClipboard.Close()
