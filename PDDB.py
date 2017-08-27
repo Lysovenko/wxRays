@@ -110,7 +110,7 @@ class Database:
         self.close()
 
     def select_cards(self, req):
-        reqs = req.split('&')
+        reqs = map(type(req).strip, req.split('&'))
         selects = []
         for req in reqs:
             if ';' in req:
@@ -170,13 +170,14 @@ class Database:
         must = [ELNUMS[x] for x in spl1]
         if len(spl) > 1:
             spl1 = spl[1].split()
-            can = [ELNUMS[x] for x in spl1]
             if spl1 == ["*"]:
                 can = None
+            else:
+                can = [ELNUMS[x] for x in spl1]
         else:
             can = []
         if not must and not can:
-            return []
+            raise KeyError("Not must and not can")
         minstr = """
         SELECT cid as icid FROM elements GROUP BY cid HAVING SUM(%s) = %d"""
         mcon = "WHEN enum IN (%s) THEN 1" % ",".join(map(str, must))
@@ -192,9 +193,10 @@ class Database:
 
     def select_reflex(self, req):
         try:
-            d1, d2, h1, h2 = map(float, req[1:].split())
+            d1, d2, h1, h2 = map(lambda x: float(x.replace(',', '.')),
+                                 req[1:].split())
         except:
-            return ()
+            raise ValueError("Bad values")
         return """SELECT DISTINCT cid as icid FROM reflexes
         WHERE d BETWEEN %g AND %g AND intens
         BETWEEN %d AND %d""" % (d1, d2, h1, h2)
