@@ -16,12 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
+from __future__ import print_function, absolute_import, division
 
 # Used to guarantee to use at least Wx2.8
 import wxversion
+from ..settings import prog_init
 import os.path as osp
 from sys import argv
-wxversion.ensureMinimal('2.8')
+# the control shot
+#wxversion.ensureMinimal('2.8')
 import wx
 
 
@@ -32,7 +35,7 @@ class MainFrame(wx.Frame):
         wx.Frame.__init__(self, None, - 1, PROG_NAME, size=last_size)
         from v_plot import Plot
         from v_menu import Active_menu
-        from c_file import ascii_file_load
+        from ..file import ascii_file_load
         self.data = {}
         adb = {'data': self.data, 'window': self}
         self.addons_data = {' base ': adb}
@@ -110,8 +113,7 @@ class TheSplashScreen(wx.SplashScreen):
             self.ShowMain()
 
     def ShowMain(self):
-        import settings
-        settings.prog_init()
+        prog_init()
         frame = MainFrame()
         frame.SetIcon(wx.IconFromBitmap(self.bmp))
         self.Hide()

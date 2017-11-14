@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 "This is the input point to some interesting educational program"
-# wxRays (C) 2013-2014 Serhii Lysovenko
+# wxRays (C) 2017 Serhii Lysovenko
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,5 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from __future__ import  absolute_import
-from core import main
-main()
+from __future__ import print_function, absolute_import, division, unicode_literals
+from .face import main

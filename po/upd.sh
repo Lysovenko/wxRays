@@ -1,5 +1,5 @@
 #!/bin/bash
-xgettext -o wxRays.pot ../*.py
+find .. -name \*.py | xargs xgettext -o wxRays.pot
 msguniq  wxRays.pot -u -o wxRays.pot
 NEWEST="$(ls -t *.po | head -n1)"
 for i in *.po

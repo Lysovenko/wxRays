@@ -17,20 +17,20 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, absolute_import
 import __builtin__
 import os
 from addons import Addons
 import locale
-osp = os.path
-VERSION = '0.1.1'
+from os.path import dirname, join, isdir, expanduser, normpath, isfile
+VERSION = '0.2.1'
 
 
 def install_gt():
     try:
         from gettext import install
-        LOCALEDIR = osp.join(osp.dirname(__file__), 'locale')
-        if osp.isdir(LOCALEDIR):
+        LOCALEDIR = join(dirname(dirname(__file__)), 'locale')
+        if isdir(LOCALEDIR):
             install('wxRays', LOCALEDIR, True)
         else:
             install('wxRays', unicode=True)
@@ -43,23 +43,23 @@ class Settings:
         import ConfigParser
         self.__config = ConfigParser.RawConfigParser()
         if os.name == 'posix':
-            aphom = osp.expanduser("~/.config")
-            if osp.isdir(aphom):
+            aphom = expanduser("~/.config")
+            if isdir(aphom):
                 self.__app_home = aphom + "/wxRays"
             else:
-                self.__app_home = osp.expanduser("~/.wxRays")
+                self.__app_home = expanduser("~/.wxRays")
         elif name == 'nt':
-            if osp.isdir(expanduser("~/Application Data")):
-                self.__app_home = osp.expanduser("~/Application Data/wxRays")
+            if isdir(expanduser("~/Application Data")):
+                self.__app_home = expanduser("~/Application Data/wxRays")
             else:
-                self.__app_home = osp.expanduser("~/wxRays")
+                self.__app_home = expanduser("~/wxRays")
         else:
-            self.__app_home = osp.normpath(osp.expanduser("~/wxRays"))
-        if osp.isfile(self.__app_home):
+            self.__app_home = normpath(expanduser("~/wxRays"))
+        if isfile(self.__app_home):
             os.remove(self.__app_home)
-        if not osp.isdir(self.__app_home):
+        if not isdir(self.__app_home):
             os.mkdir(self.__app_home, 0755)
-        self.__config.read(osp.join(self.__app_home, "wxRays.cfg"))
+        self.__config.read(join(self.__app_home, "wxRays.cfg"))
 
     def declare_section(self, section):
         if not self.__config.has_section(section):
@@ -89,7 +89,7 @@ class Settings:
 
     def get_home(self, name=''):
         if name:
-            return osp.join(self.__app_home, name)
+            return join(self.__app_home, name)
         return self.__app_home
 
     def save(self):
