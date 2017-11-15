@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+from __future__ import print_function, absolute_import, division, unicode_literals
 import wx
 
 
@@ -28,7 +28,7 @@ class Active_menu:
         self.act_catchers = []
 
     def set_menu_bar(self):
-        from addons import run_addons_dialog
+        from .addons import run_addons_dialog
         from v_datmod import VDM_menu
         frame = self.frame
         menubar = frame.GetMenuBar()
