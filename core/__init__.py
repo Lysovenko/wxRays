@@ -18,7 +18,6 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from __future__ import absolute_import, division, unicode_literals
-import __builtin__
 import locale
 from os.path import dirname, join, isdir
 from .settings import Settings
@@ -36,16 +35,17 @@ def install_gt():
             install('wxRays', unicode=True)
     except ImportError:
         try:
-            __builtin__.__dict__["_"] = unicode
+            __builtins__["_"] = unicode
         except NameError:
-            __builtin__.__dict__["_"] = str
+            __builtins__["_"] = str
 
 
 def initialize():
-    if 'APP_SETT' in __builtin__.__dict__:
+    extvars = __builtins__
+    if 'APP_SETT' in extvars:
         return
-    __builtin__.__dict__['APP_SETT'] = Settings()
-    __builtin__.__dict__['PROG_NAME'] = "wxRays"
+    extvars['APP_SETT'] = Settings()
+    extvars['PROG_NAME'] = "wxRays"
     APP_SETT.addons = Addons()
     APP_SETT.addons.set_active()
     locale.setlocale(locale.LC_NUMERIC, "")

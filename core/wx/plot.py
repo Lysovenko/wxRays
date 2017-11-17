@@ -127,7 +127,7 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
                         wx.YES_NO | wx.ICON_EXCLAMATION) == wx.NO:
                     fd.Destroy()
                     return
-            from c_file import save_dat
+            from ..file import save_dat
             data = self.__datasets[self.cur_dset]
             x = data.plots[0][0]
             lx = len(x)

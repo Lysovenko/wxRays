@@ -32,8 +32,8 @@ class MainFrame(wx.Frame):
     def __init__(self):
         last_size = eval(APP_SETT.get("frame_size", "(550, 350)"))
         wx.Frame.__init__(self, None, - 1, PROG_NAME, size=last_size)
-        from v_plot import Plot
-        from v_menu import Active_menu
+        from .plot import Plot
+        from .menu import Active_menu
         from ..file import ascii_file_load
         self.data = {}
         adb = {'data': self.data, 'window': self}
@@ -63,7 +63,7 @@ class MainFrame(wx.Frame):
 
     def OnCreate(self):
         if len(argv) > 1:
-            from v_dialogs import load_data_file
+            from .dialogs import load_data_file
             load_data_file(self, argv[1:],
                            self.addons_data[' base ']['loaders'])
 
@@ -81,11 +81,11 @@ class MainFrame(wx.Frame):
         self.Destroy()
 
     def OnDataFile(self, event):
-        from v_dialogs import load_data_file
+        from .dialogs import load_data_file
         load_data_file(self, None, self.addons_data[' base ']['loaders'])
 
     def AboutMe(self, evt):
-        from v_dialogs import about_box
+        from .dialogs import about_box
         about_box()
 
 

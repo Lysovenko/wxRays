@@ -29,7 +29,7 @@ class Active_menu:
 
     def set_menu_bar(self):
         from .addons import run_addons_dialog
-        from v_datmod import VDM_menu
+        from .datmod import VDM_menu
         frame = self.frame
         menubar = frame.GetMenuBar()
         data = frame.addons_data[' base ']

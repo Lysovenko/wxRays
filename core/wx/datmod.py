@@ -18,8 +18,8 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
 
 
-from v_plot import plot_exp_data
-from v_dialogs import v_input
+from .plot import plot_exp_data
+from .dialogs import v_input
 
 
 class VDM_menu:

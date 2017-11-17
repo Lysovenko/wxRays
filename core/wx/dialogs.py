@@ -260,8 +260,8 @@ def load_data_file(mobj, fnames, loads):
     else:
         index = 0
     if fnames is not None or fd.ShowModal() == wx.ID_OK:
-        from c_file import Exp_Data
-        from v_plot import plot_exp_data
+        from ..file import Exp_Data
+        from .plot import plot_exp_data
         if fnames is None:
             fnams = fd.GetPaths()
             APP_SETT.set("df_prev_dir", repr(fd.GetDirectory()))
@@ -298,7 +298,7 @@ def load_data_file(mobj, fnames, loads):
         if data is None:
             return
         if not data:
-            from v_dialogs import DlgDdataFile
+            from .dialogs import DlgDdataFile
             dlg = DlgDdataFile(mobj)
             if dlg.ShowModal() == wx.ID_OK:
                 dct = dlg.get_dict()

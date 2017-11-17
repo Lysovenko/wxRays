@@ -62,7 +62,6 @@ class AddonsListCtrlPanel(wx.Panel):
             index = lstctr.InsertStringItem(maxint, '')
             lstctr.SetStringItem(index, 1, data['name'])
             lstctr.CheckItem(index, data['isactive'])
-        self.nitems = index + 1
         lstctr.Thaw()
         lstctr.Update()
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_item_selected, self.list)
