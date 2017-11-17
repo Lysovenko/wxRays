@@ -23,6 +23,10 @@ import os
 from addons import Addons
 import locale
 from os.path import dirname, join, isdir, expanduser, normpath, isfile
+try:
+    from configparser import RawConfigParser
+except ImportError:
+    from ConfigParser import RawConfigParser
 VERSION = '0.2.1'
 
 
@@ -40,8 +44,7 @@ def install_gt():
 
 class Settings:
     def __init__(self):
-        import ConfigParser
-        self.__config = ConfigParser.RawConfigParser()
+        self.__config = RawConfigParser()
         if os.name == 'posix':
             aphom = expanduser("~/.config")
             if isdir(aphom):
@@ -65,7 +68,7 @@ class Settings:
         if not self.__config.has_section(section):
             self.__config.add_section(section)
 
-    def get(self, name, default, section='DEFAULT'):
+    def get(self, name, default=None, section='DEFAULT'):
         if not self.__config.has_option(section, name):
             return default
         deft = type(default)
