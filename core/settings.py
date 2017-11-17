@@ -39,7 +39,10 @@ def install_gt():
         else:
             install('wxRays', unicode=True)
     except ImportError:
-        __builtin__.__dict__["_"] = unicode
+        try:
+            __builtin__.__dict__["_"] = unicode
+        except NameError:
+            __builtin__.__dict__["_"] = str
 
 
 class Settings:
@@ -105,7 +108,7 @@ def initialize():
     if 'APP_SETT' in __builtin__.__dict__:
         return
     __builtin__.__dict__['APP_SETT'] = Settings()
-    __builtin__.__dict__['PROG_NAME'] = u"wxRays"
+    __builtin__.__dict__['PROG_NAME'] = "wxRays"
     APP_SETT.addons = Addons()
     APP_SETT.addons.set_active()
     locale.setlocale(locale.LC_NUMERIC, "")

@@ -22,10 +22,6 @@ from imp import find_module, load_module
 from os import listdir
 from os.path import dirname, realpath, split, splitext, join, isfile, \
     isabs, normpath
-import wx
-from wx.lib.mixins.listctrl import CheckListCtrlMixin
-from sys import maxint
-import wx.lib.rcsizer as rcs
 
 
 class Addons:

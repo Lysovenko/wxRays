@@ -24,7 +24,7 @@ from ..settings import prog_init
 import os.path as osp
 from sys import argv
 # the control shot
-#wxversion.ensureMinimal('2.8')
+# wxversion.ensureMinimal('2.8')
 import wx
 
 
