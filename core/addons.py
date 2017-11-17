@@ -27,7 +27,7 @@ from os.path import dirname, realpath, split, splitext, join, isfile, \
 class Addons:
     def __init__(self):
         "searches and reads addons descriptions files"
-        pth1 = dirname(realpath(__file__))
+        pth1 = join(dirname(dirname(realpath(__file__))), 'addons')
         path.append(pth1)
         pth2 = APP_SETT.get_home()
         adds = []

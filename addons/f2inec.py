@@ -24,7 +24,7 @@ from scipy.interpolate import interp1d
 
 
 def get_f2i_dict():
-    nam = osp.join(osp.dirname(__file__), 'data', 'af.dmp')
+    nam = osp.join(osp.dirname(__file__), 'af.dmp')
     with open(nam, 'rb') as fp:
         res = load(fp)
     return res

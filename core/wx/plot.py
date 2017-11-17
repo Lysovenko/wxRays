@@ -39,7 +39,7 @@ from wx.html import HtmlWindow
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg, \
     NavigationToolbar2WxAgg
-from dataset import DataSet
+from ..dataset import DataSet
 
 
 class Plot:
