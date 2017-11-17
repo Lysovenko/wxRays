@@ -18,31 +18,12 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from __future__ import print_function, unicode_literals, absolute_import
-import __builtin__
 import os
-from addons import Addons
-import locale
-from os.path import dirname, join, isdir, expanduser, normpath, isfile
+from os.path import join, isdir, expanduser, normpath, isfile
 try:
     from configparser import RawConfigParser
 except ImportError:
     from ConfigParser import RawConfigParser
-VERSION = '0.2.1'
-
-
-def install_gt():
-    try:
-        from gettext import install
-        LOCALEDIR = join(dirname(dirname(__file__)), 'locale')
-        if isdir(LOCALEDIR):
-            install('wxRays', LOCALEDIR, True)
-        else:
-            install('wxRays', unicode=True)
-    except ImportError:
-        try:
-            __builtin__.__dict__["_"] = unicode
-        except NameError:
-            __builtin__.__dict__["_"] = str
 
 
 class Settings:
@@ -102,17 +83,3 @@ class Settings:
         fobj = open(self.get_home("wxRays.cfg"), "w")
         self.__config.write(fobj)
         fobj.close()
-
-
-def initialize():
-    if 'APP_SETT' in __builtin__.__dict__:
-        return
-    __builtin__.__dict__['APP_SETT'] = Settings()
-    __builtin__.__dict__['PROG_NAME'] = "wxRays"
-    APP_SETT.addons = Addons()
-    APP_SETT.addons.set_active()
-    locale.setlocale(locale.LC_NUMERIC, "")
-    install_gt()
-
-
-prog_init = initialize

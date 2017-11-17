@@ -18,7 +18,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from __future__ import absolute_import
-from core.settings import initialize
+from core import initialize
 from core.interface import start
 initialize()
 start()

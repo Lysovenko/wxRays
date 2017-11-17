@@ -21,6 +21,7 @@ from __future__ import absolute_import, division, unicode_literals
 from importlib import import_module
 _ACTUAL_INTERFACE = None
 
+
 def start():
     f = import_module(".face", "core.wx")
     f.main()

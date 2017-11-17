@@ -20,7 +20,6 @@ from __future__ import print_function, absolute_import, division
 
 # Used to guarantee to use at least Wx2.8
 import wxversion
-from ..settings import prog_init
 import os.path as osp
 from sys import argv
 # the control shot
@@ -113,7 +112,6 @@ class TheSplashScreen(wx.SplashScreen):
             self.ShowMain()
 
     def ShowMain(self):
-        prog_init()
         frame = MainFrame()
         frame.SetIcon(wx.IconFromBitmap(self.bmp))
         self.Hide()

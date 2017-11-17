@@ -18,5 +18,35 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from __future__ import absolute_import, division, unicode_literals
+import __builtin__
+import locale
+from os.path import dirname, join, isdir
+from .settings import Settings
+from .addons import Addons
+VERSION = '0.2.1'
 
-from .wx import main
+
+def install_gt():
+    try:
+        from gettext import install
+        LOCALEDIR = join(dirname(dirname(__file__)), 'locale')
+        if isdir(LOCALEDIR):
+            install('wxRays', LOCALEDIR, True)
+        else:
+            install('wxRays', unicode=True)
+    except ImportError:
+        try:
+            __builtin__.__dict__["_"] = unicode
+        except NameError:
+            __builtin__.__dict__["_"] = str
+
+
+def initialize():
+    if 'APP_SETT' in __builtin__.__dict__:
+        return
+    __builtin__.__dict__['APP_SETT'] = Settings()
+    __builtin__.__dict__['PROG_NAME'] = "wxRays"
+    APP_SETT.addons = Addons()
+    APP_SETT.addons.set_active()
+    locale.setlocale(locale.LC_NUMERIC, "")
+    install_gt()

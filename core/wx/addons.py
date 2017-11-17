@@ -161,22 +161,3 @@ class DlgAddonConfig(wx.Dialog):
         sizer.Add(hsizer, 0, wx.EXPAND | wx.ALL, 5)
         sizer.Fit(self)
         self.SetSizer(sizer)
-
-
-if __name__ == '__main__':
-    idict = {wx.ID_OK: "ID_OK", wx.ID_CANCEL: "ID_CANCEL"}
-    APP = wx.PySimpleApp()
-    from settings import prog_init
-    prog_init()
-    adds = APP_SETT.addons
-    descrs = adds.descriptions
-    adds.set_active(set([u'10', u'1', u'2', u'5', u'9', u'8']))
-    DLG = DlgAddonMgr(None, descrs)
-    DLG.CenterOnScreen()
-    VAL = DLG.ShowModal()
-    print(idict.get(VAL, VAL))
-    if VAL == wx.ID_OK:
-        DLG.ulc.set_addons_active_state()
-        print(descrs)
-        print(adds.get_active())
-        adds.load_modules()
