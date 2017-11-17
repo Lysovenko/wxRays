@@ -101,10 +101,15 @@ class Settings:
         fobj.close()
 
 
-def prog_init():
+def initialize():
+    if 'APP_SETT' in __builtin__.__dict__:
+        return
     __builtin__.__dict__['APP_SETT'] = Settings()
     __builtin__.__dict__['PROG_NAME'] = u"wxRays"
     APP_SETT.addons = Addons()
     APP_SETT.addons.set_active()
     locale.setlocale(locale.LC_NUMERIC, "")
     install_gt()
+
+
+prog_init = initialize
