@@ -17,12 +17,13 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+from __future__ import print_function, absolute_import
 import wx
-from v_dialogs import ValidFloat, atof, v_input
 import locale as loc
 import numpy as np
 from c_powder import calc_bg, refl_sects, ReflexDedect
-from v_dialogs import DlgProgressCallb
+from core.wx.dialogs import (
+    DlgProgressCallb, ValidFloat, atof, v_input)
 _DEFAULTS = {"bg_sigmul": 2.0, "bg_polrang": 2, "refl_sigmin": 1e-3,
              "refl_consig": False, "refl_mbells": 10, "refl_bt": 0,
              "refl_ptm": 4, "refloc_sz": "(640,480)", "refl_bf": 2.}

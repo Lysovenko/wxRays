@@ -16,12 +16,12 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 from sys import modules, path
 from imp import find_module, load_module
 from os import listdir
-from os.path import dirname, realpath, split, splitext, join, isfile, \
-    isabs, normpath
+from os.path import (dirname, realpath, split, splitext, join, isfile,
+                     isabs, normpath)
 
 
 class Addons:
@@ -99,10 +99,10 @@ class Addons:
                 try:
                     fptr, pth, dsc = find_module(nam, [pth])
                     module = load_module(nam, fptr, pth, dsc)
-                except ImportError:
+                except ImportError as err:
                     desc['isactive'] = False
                     any_error = True
-                    print('ImportError: %s' % nam)
+                    print('ImportError: %s, %s' % (nam, err))
                     continue
                 if fptr:
                     fptr.close()

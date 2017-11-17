@@ -24,7 +24,7 @@ import locale as loc
 import numpy as np
 import sqcalc as sqc
 import f2inec as f2i
-from v_dialogs import DlgProgressCallb, atof, ValidFloat, v_input
+from core.wx.dialogs import DlgProgressCallb, atof, ValidFloat, v_input
 from formtext import poly1d2wiki
 import wx.lib.rcsizer as rcs
 import os.path as osp
@@ -262,7 +262,7 @@ class Menu_call:
             exp.y_data[ib:ie] = chy
         else:
             sqc.change_curve(exp.y_data, alt_i, bf)
-        from v_plot import plot_exp_data
+        from core.wx.plot import plot_exp_data
         plot_exp_data(dat["plot"], exp, dat["menu"])
         dat.pop("alt I")
         dat["menu"].action_catch("exp I changed")
@@ -1145,6 +1145,6 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME, wx.YES_NO |
             exq, csq, sqd = mobj.data["SSF"][:3]
             els = sqd["Elements"]
             otpl = sqc.esq_calc(exq, csq, els) + (sqd,)
-        from c_file import save_dat
+        from core.file import save_dat
         save_dat(fnam, otpl)
     fd.Destroy()
