@@ -45,7 +45,7 @@ class Settings:
         if isfile(self.__app_home):
             os.remove(self.__app_home)
         if not isdir(self.__app_home):
-            os.mkdir(self.__app_home, 0755)
+            os.mkdir(self.__app_home, 0o755)
         self.__config.read(join(self.__app_home, "wxRays.cfg"))
 
     def declare_section(self, section):

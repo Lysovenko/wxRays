@@ -48,7 +48,10 @@ class Addons:
                     ls = line.split('=', 1)
                     if len(ls) != 2:
                         continue
-                    add_descr[ls[0]] = unicode(ls[1].strip(), 'utf-8')
+                    try:
+                        add_descr[ls[0]] = unicode(ls[1].strip(), 'utf-8')
+                    except NameError:
+                        add_descr[ls[0]] = ls[1].strip()
             # validating the result of scanning
             is_valid = True
             for i in ('path', 'name', 'id'):

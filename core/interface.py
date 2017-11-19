@@ -22,6 +22,11 @@ from importlib import import_module
 _ACTUAL_INTERFACE = None
 
 
+class Interface:
+    "with user, world and other addons"
+    def __init__(self, parent):
+        if parent is None:
+            return
 def start():
-    f = import_module(".face", "core.wx")
+    f = import_module(".wx.face", "core")
     f.main()
