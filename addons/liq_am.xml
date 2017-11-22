@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shapes>
+  <shape name="dialog S(q) calc" type="dialog">
+    <!-- missing docstring ;-) -->
+    <title rename="title">Calculation of the structure factor</title>
+    <table>
+      <tr>
+	<td border="5"><label rename="lab_elements">Elements:</label></td>
+	<td colspan="3" expand="True" ><text rename="elements_ea" validator="valid_elements"/></td>
+      </tr>
+      <tr>
+	<td colspan="4" align="center">
+	  <radio vertical="False" onchange="on_mode_change" title="Calculation mode" rename="calc_mod"
+		 default="sqcalc_mode">
+	    <choice rename="clsc">Classic</choice>
+	    <choice rename="mix">By Stetsiv (mix)</choice>
+	    <choice rename="pcf">By Stetsiv (PCF)</choice>
+	    <choice rename="pcfi">By Stetsiv (PCF integrated)</choice>
+	    <choice rename="pcfir">By Stetsiv (PCF dens. opt.)</choice>
+	    <choice rename="pblk">By Stetsiv (parabolic)</choice>
+	  </radio>
+	</td>
+      </tr>
+      <tr>
+	<td colspan="4" expand="True"><line/></td>
+      </tr>
+      <tr>
+	<td border="5"><label rename="pol_range">Polynomial's range:</label></td>
+	<td><spin begin="1" end="50" value="pol_spin"/></td>
+	<td border="5"><label rename="at_dens">Atomic density:</label></td>
+	<td><text rename="rho0_ea" validator="valid_float" /></td>
+      </tr>
+      <tr>
+	<td border="5"><label trname="sections">Sections:</label></td>
+	<td><spin begin="0" end="10" value="sqcalc_optcects"/></td>
+	<td><label rename="start_dens">Start dens. opt.:</label></td>
+	<td><spin begin="1" end="50" value="ord_r_spin"/></td>
+      </tr>      
+    </table>
+  </shape>
+</shapes>
