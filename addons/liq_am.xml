@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<shapes>
-  <shape name="dialog S(q) calc" type="dialog">
+<frames>
+  <frame name="dialog S(q) calc" type="dialog">
     <!-- missing docstring ;-) -->
     <title rename="title">Calculation of the structure factor</title>
     <table>
       <tr>
 	<td border="5"><label rename="lab_elements">Elements:</label></td>
-	<td colspan="3" expand="True" ><text rename="elements_ea" validator="valid_elements"/></td>
+	<td colspan="3" expand="True" ><text value="elements_ea" validator="valid_elements"/></td>
       </tr>
       <tr>
 	<td colspan="4" align="center">
@@ -28,14 +28,24 @@
 	<td border="5"><label rename="pol_range">Polynomial's range:</label></td>
 	<td><spin begin="1" end="50" value="pol_spin"/></td>
 	<td border="5"><label rename="at_dens">Atomic density:</label></td>
-	<td><text rename="rho0_ea" validator="valid_float" /></td>
+	<td><text value="rho0_ea" validator="valid_float" /></td>
       </tr>
       <tr>
 	<td border="5"><label trname="sections">Sections:</label></td>
 	<td><spin begin="0" end="10" value="sqcalc_optcects"/></td>
 	<td><label rename="start_dens">Start dens. opt.:</label></td>
 	<td><spin begin="1" end="50" value="ord_r_spin"/></td>
-      </tr>      
+      </tr>
+      <tr>
+	<td border="5"><label rename="r_cutoff">Cutoff radius:</label></td>
+	<td><text validator="valid_float" value="r_c"/></td>
+	<td border="5"><label rename="samples">Samples:</label></td>
+	<td><spin begin="3" end="1000" value="rc_num" /></td>
+      </tr>
+      <tr>
+	<td border="5"><button type="Cancel" /></td>
+	<td border="5" align="right" colspan="2"><button type="OK" default="True" /></td>
+      </tr>
     </table>
-  </shape>
-</shapes>
+  </frame>
+</frames>
