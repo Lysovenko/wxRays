@@ -26,6 +26,14 @@ class Puzzle:
         self.frame = frame
         self.actors = None
         self.data = None
+        self.treaters = {
+            'label': self.label,
+            'text': self.text,
+            'spin': self.spin,
+            'button': self.button,
+            'radio': self.radio,
+            'line': self.line
+        }
 
     def set_actors(self, actors):
         self.actors = actors
@@ -46,12 +54,83 @@ class Puzzle:
 
     def play_table(self, table):
         for r in table:
-            if r.rag != "tr":
+            if r.tag != "tr":
                 raise KeyError("table must contain only raws")
             self.actors["table_next_raw"]()
             for c in r:
-                if r.rag != "td":
+                if c.tag != "td":
                     raise KeyError("raw must contain only cells")
+                cont = self.treaters[c[0].tag](c[0])
+                align = c.get('align')
+                colspan = c.get('colspan')
+                if colspan is not None:
+                    colspan = self.integer(colspan)
+                rowspan = c.get('rowspan')
+                if rowspan is not None:
+                    rowspan = self.integer(rowspan)
+                expand = self.boolean(c.get('expand'))
+                border = c.get('border')
+                if border is not None:
+                    border = self.integer(border)
+                self.actors["table_put_cell"](cont, align, colspan,
+                                              rowspan, expand, border)
+
+    def label(self, label):
+        rename = label.get("rename")
+        if rename:
+            return self.actors['get_label'](self.data.get(rename, label.text))
+        else:
+            return self.actors['get_label'](label.text)
+
+    def text(self, text):
+        props = {}
+        for i in ("value", "validator"):
+            p = text.get(i)
+            if p in self.data:
+                p = self.data[value]
+            props[i] = p
+        return self.actors['get_text'](**props)
+
+    def spin(self, spin):
+        props = {}
+        for i in ("begin", "end", "value"):
+            props[i] = self.integer(spin.get(i))
+        return self.actors['get_spin'](**props)
+
+    def button(self, button):
+        b_type = button.get('type')
+        default = self.boolean(button.get('default'))
+        return self.actors['get_button'](b_type, default=default)
+
+    def radio(self, radio):
+        vertical = self.boolean(radio.get('vertical'))
+        title = self.data.get(radio.get("rename")) or radio.get('title')
+        default = self.integer(radio.get('default', 0))
+        onchange = radio.get('onchange')
+        if onchange is not None:
+            onchange = self.data[onchange]
+        options = [self.data.get(i.get("rename")) or i.text for i in radio]
+        return self.actors['get_radio'](
+            title, options, default, vertical, onchange)
+
+    def integer(self, param):
+        try:
+            res = int(param)
+        except ValueError:
+            res = self.data[param]
+        if type(res) is not int:
+            raise ValueError("%s must be integer" % param)
+        return res
+
+    def boolean(self, param):
+        if param not in {'True', 'False', None}:
+            res = self.data[param]
+        else:
+            res = param == 'True'
+        return res
+
+    def line(self, line):
+        return self.actors['get_line']()
 
 
 class Frames:
@@ -82,6 +161,19 @@ if __name__ == '__main__':
     from sys import argv
     f = Frames(argv[1])
     p = f.get(argv[2])
-    p.set_actors({'set_title': print})
-    p.set_data({})
+    p.set_actors({
+        'set_title': lambda x: print('Title:', x),
+        'table_next_raw': lambda: print('='*25),
+        'table_put_cell': lambda c, a, co, ro, e, b: print(
+            '<td al=%s csp=%s rsp=%s exp=%s bor=%s>' %
+            (a, co, ro, e, b), c, '</td>'),
+        'get_label': lambda l: 'label: %s' % l,
+        'get_text': lambda **p: 'text: %s' % p,
+        'get_spin': lambda **p: 'spin: %s' % p,
+        'get_button': lambda t, default=False:
+        'button type=%s, default=%s' % (t, default),
+        'get_radio': lambda *r: 'radio: %s' % (r,),
+        'get_line': lambda: '-'*20})
+    p.set_data({'sqcalc_mode': 0, 'on_mode_change': None, 'pol_spin': 3,
+                'sqcalc_optcects': 3, "ord_r_spin": 3, "rc_num": 5})
     p.play()

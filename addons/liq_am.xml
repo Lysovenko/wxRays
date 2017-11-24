@@ -12,12 +12,12 @@
 	<td colspan="4" align="center">
 	  <radio vertical="False" onchange="on_mode_change" title="Calculation mode" rename="calc_mod"
 		 default="sqcalc_mode">
-	    <choice rename="clsc">Classic</choice>
-	    <choice rename="mix">By Stetsiv (mix)</choice>
-	    <choice rename="pcf">By Stetsiv (PCF)</choice>
-	    <choice rename="pcfi">By Stetsiv (PCF integrated)</choice>
-	    <choice rename="pcfir">By Stetsiv (PCF dens. opt.)</choice>
-	    <choice rename="pblk">By Stetsiv (parabolic)</choice>
+	    <option rename="clsc">Classic</option>
+	    <option rename="mix">By Stetsiv (mix)</option>
+	    <option rename="pcf">By Stetsiv (PCF)</option>
+	    <option rename="pcfi">By Stetsiv (PCF integrated)</option>
+	    <option rename="pcfir">By Stetsiv (PCF dens. opt.)</option>
+	    <option rename="pblk">By Stetsiv (parabolic)</option>
 	  </radio>
 	</td>
       </tr>
