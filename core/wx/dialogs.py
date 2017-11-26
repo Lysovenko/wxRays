@@ -421,3 +421,34 @@ def v_input(parent, title, *args):
     dlg = DlgInput(parent, title, args)
     if dlg.ShowModal() == wx.ID_OK:
         return tuple([i.get_value() for i in dlg.inputs])
+
+
+class DlgPuzzle(wx.Dialog):
+    "Input dialog box"
+    def __init__(self, parent, puzzle):
+        wx.Dialog.__init__(self, parent, -1, "")
+        if parent is not None:
+            self.SetIcon(parent.GetIcon())
+        puzzle.set_actors({
+            'set_title': self.SetTitle,
+            'table_next_raw': self.table_next_raw})
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        box = wx.BoxSizer(wx.HORIZONTAL)
+        self.inputs = []
+        for i in args:
+            itm = InputElement(self, i)
+            self.inputs.append(itm)
+            sizer.Add(itm.box, 0,
+                      wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+        # Buttons...
+        box = wx.BoxSizer(wx.HORIZONTAL)
+        btn = wx.Button(self, wx.ID_CANCEL)
+        box.Add(btn, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
+        btn = wx.Button(self, wx.ID_OK)
+        btn.SetDefault()
+        box.Add(btn, 1, wx.ALIGN_CENTRE | wx.ALL, 5)
+        line = wx.StaticLine(self, -1, size=(20, -1), style=wx.LI_HORIZONTAL)
+        sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 5)
+        sizer.Add(box, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.SetSizer(sizer)
+        sizer.Fit(self)

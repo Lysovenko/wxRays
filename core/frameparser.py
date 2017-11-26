@@ -53,6 +53,7 @@ class Puzzle:
                 self.play_table(i)
 
     def play_table(self, table):
+        self.actors['table_new']()
         for r in table:
             if r.tag != "tr":
                 raise KeyError("table must contain only raws")

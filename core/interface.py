@@ -28,5 +28,6 @@ class Interface:
         if parent is None:
             return
 def start():
-    f = import_module(".wx.face", "core")
-    f.main()
+    global _ACTUAL_INTERFACE
+    _ACTUAL_INTERFACE = import_module(".wx.face", "core")
+    _ACTUAL_INTERFACE.main()
