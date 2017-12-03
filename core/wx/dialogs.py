@@ -19,6 +19,7 @@
 
 
 import wx
+import wx.lib.rcsizer as rcs
 import locale as loc
 import os.path as osp
 
@@ -429,6 +430,83 @@ class DlgPuzzle(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, "")
         if parent is not None:
             self.SetIcon(parent.GetIcon())
+        self.current_table = None
+        self.current_raw = -1
+        self.row_spans = {}
         puzzle.set_actors({
             'set_title': self.SetTitle,
-            'table_next_raw': self.table_next_raw})
+            'table_new', self.new_table,
+            'table_end', self.end_table,
+            'table_next_raw': self.table_next_raw,
+            'table_put_cell': self.table_put_cell,
+            'get_label': self.get_label,
+            'get_text': self.get_text,
+            'get_spin': self.get_spin,
+            'get_button': self.get_button,
+            'get_radio': self.get_radio,
+            'get_line': self.get_line})
+
+    def new_table(self):
+        self.current_table = rcs.RowColSizer()
+
+    def end_table(self):
+        self.current_table.RecalcSizes()
+        self.SetSizer(self.current_table)
+        self.current_table.Fit(self)
+
+    def table_next_raw(self):
+        self.current_raw += 1
+        self.current_col = 0
+        for i in list(self.row_spans.keys()):
+            self.row_spans[i][1] -= 1
+            if self.row_spans[i][1] == 0:
+                self.row_spans.pop(i)
+        while self.current_col in self.row_spans:
+            self.current_col += self.row_spans[self.current_col][0]
+
+    def table_put_cell(self, cont, align, colspan,
+                       rowspan, expand, border):
+        flag = wx.ALL
+        if expand:
+            flag = wx.EXPAND
+        if align == "right":
+            flag |= wx.ALIGN_RIGHT
+        if align = "center":
+            flag |= wx.ALIGN_CENTER
+        self.current_table.Add(cont, row=self.current_raw, col=self.current_col,
+                               flag=flag, colspan=colspan, rowspan=rowspan, border=border)
+        if colspan is None:
+            colspan = 1
+        if rowspan is None:
+            rowspan = 1
+        self.row_spans[self.current_col] = [colspan, row_spans]
+        while self.current_col in self.row_spans:
+            self.current_col += self.row_spans[self.current_col][0]
+
+    def get_label(self, label):
+        return wx.StaticText(self, -1, label)
+
+    def get_text(self, value="", validator=None):
+        return  wx.TextCtrl(self, value=value)
+
+    def get_spin(self, begin=0, end=0, value=0):
+        spin = wx.SpinCtrl(self, -1)
+        spin.SetRange(begin, end)
+        spin.SetValue(value)
+        return spin
+
+    def get_button(self, b_type, default=False):
+        types = {"OK": wx.ID_OK, "Cancel": wx.ID_CANCEL}
+        btn = wx.Button(self, types[b_type])
+        if default:
+            btn.SetDefault()
+        return btn
+
+    def get_radio(self, title, options, default, vertical, onchange):
+        radio =  = wx.RadioBox(self, -1, title, choices=options, majorDimension=2,
+            style=wx.RA_SPECIFY_COLS)
+        return radio
+
+    def get_line(self):
+        return wx.StaticLine(self, -1, style=wx.LI_HORIZONTAL)
+        

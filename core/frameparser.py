@@ -75,6 +75,7 @@ class Puzzle:
                     border = self.integer(border)
                 self.actors["table_put_cell"](cont, align, colspan,
                                               rowspan, expand, border)
+        self.actors['table_end']()
 
     def label(self, label):
         rename = label.get("rename")
