@@ -435,8 +435,8 @@ class DlgPuzzle(wx.Dialog):
         self.row_spans = {}
         puzzle.set_actors({
             'set_title': self.SetTitle,
-            'table_new', self.new_table,
-            'table_end', self.end_table,
+            'table_new': self.new_table,
+            'table_end': self.end_table,
             'table_next_raw': self.table_next_raw,
             'table_put_cell': self.table_put_cell,
             'get_label': self.get_label,
@@ -471,10 +471,11 @@ class DlgPuzzle(wx.Dialog):
             flag = wx.EXPAND
         if align == "right":
             flag |= wx.ALIGN_RIGHT
-        if align = "center":
+        if align == "center":
             flag |= wx.ALIGN_CENTER
-        self.current_table.Add(cont, row=self.current_raw, col=self.current_col,
-                               flag=flag, colspan=colspan, rowspan=rowspan, border=border)
+        self.current_table.Add(
+            cont, row=self.current_raw, col=self.current_col,
+            flag=flag, colspan=colspan, rowspan=rowspan, border=border)
         if colspan is None:
             colspan = 1
         if rowspan is None:
@@ -487,7 +488,7 @@ class DlgPuzzle(wx.Dialog):
         return wx.StaticText(self, -1, label)
 
     def get_text(self, value="", validator=None):
-        return  wx.TextCtrl(self, value=value)
+        return wx.TextCtrl(self, value=value)
 
     def get_spin(self, begin=0, end=0, value=0):
         spin = wx.SpinCtrl(self, -1)
@@ -503,10 +504,9 @@ class DlgPuzzle(wx.Dialog):
         return btn
 
     def get_radio(self, title, options, default, vertical, onchange):
-        radio =  = wx.RadioBox(self, -1, title, choices=options, majorDimension=2,
-            style=wx.RA_SPECIFY_COLS)
+        radio = wx.RadioBox(self, -1, title, choices=options, majorDimension=2,
+                            style=wx.RA_SPECIFY_COLS)
         return radio
 
     def get_line(self):
         return wx.StaticLine(self, -1, style=wx.LI_HORIZONTAL)
-        
