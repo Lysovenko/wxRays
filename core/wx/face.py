@@ -25,7 +25,8 @@ from sys import argv
 # the control shot
 # wxversion.ensureMinimal('2.8')
 import wx
-
+from .dialogs import DlgPuzzle
+ROOT_FRAME = None
 
 class MainFrame(wx.Frame):
     'The Main Frame'
@@ -112,11 +113,13 @@ class TheSplashScreen(wx.SplashScreen):
             self.ShowMain()
 
     def ShowMain(self):
+        global ROOT_FRAME
         frame = MainFrame()
         frame.SetIcon(wx.IconFromBitmap(self.bmp))
         self.Hide()
         frame.OnCreate()
         frame.Show()
+        ROOT_FRAME = frame
 
 
 class App(wx.App):
@@ -130,3 +133,7 @@ def main():
     app = App(False)
     app.MainLoop()
     APP_SETT.save()
+
+
+def run_dlg_puzzle(puzzle):
+    dlg = DlgPuzzle(puzzle)

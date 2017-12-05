@@ -19,6 +19,7 @@
 
 from __future__ import absolute_import, division, unicode_literals
 from importlib import import_module
+from .frameparser import Frames
 _ACTUAL_INTERFACE = None
 
 
@@ -27,7 +28,16 @@ class Interface:
     def __init__(self, parent):
         if parent is None:
             return
+
+
 def start():
     global _ACTUAL_INTERFACE
     _ACTUAL_INTERFACE = import_module(".wx.face", "core")
     _ACTUAL_INTERFACE.main()
+
+
+def run_dialog(user_data, xml_file, frame_name):
+    f = Frames(xml_file)
+    puzzle = f.get(frame_name)
+    puzzle.set_data(user_data)
+    _ACTUAL_INTERFACE.run_dlg_puzzle(puzzle)
