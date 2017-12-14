@@ -165,6 +165,8 @@ if __name__ == '__main__':
     p = f.get(argv[2])
     p.set_actors({
         'set_title': lambda x: print('Title:', x),
+        'table_new': lambda: print('#'*25),
+        'table_end': lambda: print('%'*25),
         'table_next_raw': lambda: print('='*25),
         'table_put_cell': lambda c, a, co, ro, e, b: print(
             '<td al=%s csp=%s rsp=%s exp=%s bor=%s>' %
