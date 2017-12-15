@@ -27,6 +27,7 @@ import f2inec as f2i
 from core.wx.dialogs import DlgProgressCallb, atof, ValidFloat, v_input
 from formtext import poly1d2wiki
 import wx.lib.rcsizer as rcs
+from core.interface import run_dialog
 import os.path as osp
 from sys import modules
 _DEFAULTS = {"sqcalc_mode": 0, "sqcalc_polrang": 1,
@@ -119,6 +120,11 @@ class Menu_call:
     def calc_sq(self, evt):
         dat = self.data
         if "Exp. data" in dat["data"]:
+            run_dialog({'sqcalc_mode': 0, 'on_mode_change': None, 'pol_spin': 3,
+                        'sqcalc_optcects': 3, "ord_r_spin": 3, "rc_num": 5},
+                       osp.join(osp.dirname(__file__), "liq_am.xml"), "dialog S(q) calc")
+            return
+            # Just for test
             dialog = DlgSqCalc(dat)
             if dialog.ShowModal() == wx.ID_OK:
                 dat["menu"].action_catch("sq found")

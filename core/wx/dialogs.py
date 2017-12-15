@@ -445,6 +445,7 @@ class DlgPuzzle(wx.Dialog):
             'get_button': self.get_button,
             'get_radio': self.get_radio,
             'get_line': self.get_line})
+        puzzle.play()
 
     def new_table(self):
         self.current_table = rcs.RowColSizer()
@@ -473,14 +474,16 @@ class DlgPuzzle(wx.Dialog):
             flag |= wx.ALIGN_RIGHT
         if align == "center":
             flag |= wx.ALIGN_CENTER
-        self.current_table.Add(
-            cont, row=self.current_raw, col=self.current_col,
-            flag=flag, colspan=colspan, rowspan=rowspan, border=border)
         if colspan is None:
             colspan = 1
         if rowspan is None:
             rowspan = 1
-        self.row_spans[self.current_col] = [colspan, row_spans]
+        if not border:
+            border = 0
+        self.current_table.Add(
+            cont, row=self.current_raw, col=self.current_col,
+            flag=flag, colspan=colspan, rowspan=rowspan, border=border)
+        self.row_spans[self.current_col] = [colspan, rowspan]
         while self.current_col in self.row_spans:
             self.current_col += self.row_spans[self.current_col][0]
 

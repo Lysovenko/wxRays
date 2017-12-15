@@ -136,4 +136,6 @@ def main():
 
 
 def run_dlg_puzzle(puzzle):
-    dlg = DlgPuzzle(puzzle)
+    print("I'am here:", __name__, "run_dlg_puzzle")
+    dlg = DlgPuzzle(ROOT_FRAME, puzzle)
+    dlg.ShowModal()
