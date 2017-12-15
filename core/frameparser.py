@@ -21,6 +21,21 @@ from __future__ import print_function, absolute_import
 import xml.etree.ElementTree as etree
 
 
+class Value:
+    def __init__(self, vclass):
+        self.vclass = vclass
+        self.value = vclass()
+
+    def update(self, val):
+        self.value = self.vclass(val)
+
+    def get(self):
+        return self.value
+
+    def __str__(self):
+        return self.value.__str__()
+
+
 class Puzzle:
     def __init__(self, frame):
         self.frame = frame
@@ -85,13 +100,11 @@ class Puzzle:
             return self.actors['get_label'](label.text)
 
     def text(self, text):
-        props = {}
-        for i in ("value", "validator"):
-            p = text.get(i)
-            if p in self.data:
-                p = self.data[value]
-            props[i] = p
-        return self.actors['get_text'](**props)
+        p = text.get("value")
+        if p is None:
+            raise KeyError("text must have the value")
+        val = self.data[p]
+        return self.actors['get_text'](val)
 
     def spin(self, spin):
         props = {}

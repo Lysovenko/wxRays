@@ -43,8 +43,8 @@
 	<td><spin begin="3" end="1000" value="rc_num" /></td>
       </tr>
       <tr>
-	<td border="5"><button type="Cancel" /></td>
-	<td border="5" align="right" colspan="2"><button type="OK" default="True" /></td>
+	<td border="5" colspan="2" expand="True"><button type="Cancel" /></td>
+	<td border="5" align="right" colspan="2" expand="True"><button type="OK" default="True" /></td>
       </tr>
     </table>
   </frame>

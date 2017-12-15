@@ -19,7 +19,7 @@
 
 from __future__ import absolute_import, division, unicode_literals
 from importlib import import_module
-from .frameparser import Frames
+from .frameparser import Frames, Value
 _ACTUAL_INTERFACE = None
 
 
