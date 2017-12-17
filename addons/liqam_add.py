@@ -27,7 +27,7 @@ import f2inec as f2i
 from core.wx.dialogs import DlgProgressCallb, atof, ValidFloat, v_input
 from formtext import poly1d2wiki
 import wx.lib.rcsizer as rcs
-from core.interface import run_dialog
+from core.interface import run_dialog, Value
 import os.path as osp
 from sys import modules
 _DEFAULTS = {"sqcalc_mode": 0, "sqcalc_polrang": 1,
@@ -120,9 +120,35 @@ class Menu_call:
     def calc_sq(self, evt):
         dat = self.data
         if "Exp. data" in dat["data"]:
-            run_dialog({'sqcalc_mode': 0, 'on_mode_change': None, 'pol_spin': 3,
-                        'sqcalc_optcects': 3, "ord_r_spin": 3, "rc_num": 5},
-                       osp.join(osp.dirname(__file__), "liq_am.xml"), "dialog S(q) calc")
+            dialog_data = {
+                "rename": _("Calculation of the structure factor"),
+                "lab_elements": _("Elements:"),
+                "calc_mod": _("Calculation mode"),
+                "clsc": _("Classic"),
+                "mix": _("By Stetsiv (mix)"),
+                "pcf": _("By Stetsiv (PCF)"),
+                "pcfi": _("By Stetsiv (PCF integrated)"),
+                "pcfir": _("By Stetsiv (PCF dens. opt.)"),
+                "pblk": _("By Stetsiv (parabolic)"),
+                "pol_range": _("Polynomial's range:"),
+                "at_dens": _("Atomic density:"),
+                "start_dens": _("Start dens. opt.:"),
+                "r_cutoff": _("Cutoff radius:"),
+                "samples": _("Samples:"),
+                "sections", _("Sections:"),
+                # values
+                "elements_ea": Value(str),
+                "rho0_ea": Value(float),
+                "sqcalc_optcects": Value(int),
+                "ord_r_spin": Value(int),
+                "r_c": Value(float),
+                "rc_num": Value(float),
+                "pol_spin": Value(int),
+                #
+                'sqcalc_mode': 0, 'on_mode_change': None, 'pol_spin': 3,
+                        'sqcalc_optcects': 3, "ord_r_spin": 3, "rc_num": 5}
+            run_dialog(dialog_data, osp.join(
+                osp.dirname(__file__), "liq_am.xml"), "dialog S(q) calc")
             return
             # Just for test
             dialog = DlgSqCalc(dat)
@@ -458,6 +484,27 @@ def plot_sq(dat, q, sq, sqd):
     plot.plot_dataset(PN_SSF)
 
 
+class Elements:
+    def __init__(self, elements):
+        lmns = []
+        pts = []
+        try:
+            for lmn in elements.split(';'):
+                spl = lmn.split()
+                lmns.append(str(spl[0]))
+                pts.append(atof(spl[1]))
+        except IndexError:
+            raise ValueError(_("Syntax error."))
+        spts = sum(pts)
+        if spts != 1.:
+            pts = [i / spts for i in pts]
+        f2id = f2i.get_f2i_dict()
+        bad = [i  for i in lmns if i not in f2id]
+        if bad:
+            raise ValueError("nonexisting elements: " +
+                             ", ".join(bad))
+        self.elements = zip(lmns, pts)
+    
 class ValidElements(wx.PyValidator):
     "validator for the 'elements' field"
     err_msg = ""

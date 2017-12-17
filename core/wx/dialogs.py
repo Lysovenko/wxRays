@@ -22,7 +22,10 @@ import wx
 import wx.lib.rcsizer as rcs
 import locale as loc
 import os.path as osp
-
+try:
+    str = unicode
+except NameError:
+    pass
 
 class ValidFloat(wx.PyValidator):
     "validator for floating point fields"
@@ -490,8 +493,8 @@ class DlgPuzzle(wx.Dialog):
     def get_label(self, label):
         return wx.StaticText(self, -1, label)
 
-    def get_text(self, value="", validator=None):
-        return wx.TextCtrl(self, value=value)
+    def get_text(self, value):
+        return wx.TextCtrl(self, value=str(value))
 
     def get_spin(self, begin=0, end=0, value=0):
         spin = wx.SpinCtrl(self, -1)
