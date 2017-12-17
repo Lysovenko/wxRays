@@ -20,7 +20,7 @@
 import wx
 import wx.grid as Grid
 import locale as loc
-from v_dialogs import atof
+from core.wx.dialogs import atof
 from math import sin, asin, pi
 _U_NAMES = [r"sin(\theta)", r"\theta", r"2\theta", r"\AA"]
 _U_LABELS = [u"sin(\u03b8)", u"\u03b8", u"2\u03b8", u"\u212b"]
