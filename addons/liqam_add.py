@@ -135,9 +135,9 @@ class Menu_call:
                 "start_dens": _("Start dens. opt.:"),
                 "r_cutoff": _("Cutoff radius:"),
                 "samples": _("Samples:"),
-                "sections", _("Sections:"),
+                "sections": _("Sections:"),
                 # values
-                "elements_ea": Value(str),
+                "elements_ea": Value(Elements),
                 "rho0_ea": Value(float),
                 "sqcalc_optcects": Value(int),
                 "ord_r_spin": Value(int),
@@ -146,7 +146,7 @@ class Menu_call:
                 "pol_spin": Value(int),
                 #
                 'sqcalc_mode': 0, 'on_mode_change': None, 'pol_spin': 3,
-                        'sqcalc_optcects': 3, "ord_r_spin": 3, "rc_num": 5}
+                'sqcalc_optcects': 3, "ord_r_spin": 3, "rc_num": 5}
             run_dialog(dialog_data, osp.join(
                 osp.dirname(__file__), "liq_am.xml"), "dialog S(q) calc")
             return
@@ -485,9 +485,12 @@ def plot_sq(dat, q, sq, sqd):
 
 
 class Elements:
-    def __init__(self, elements):
+    def __init__(self, elements=None):
         lmns = []
         pts = []
+        if elements is None:
+            self.elements = []
+            return
         try:
             for lmn in elements.split(';'):
                 spl = lmn.split()
@@ -499,12 +502,17 @@ class Elements:
         if spts != 1.:
             pts = [i / spts for i in pts]
         f2id = f2i.get_f2i_dict()
-        bad = [i  for i in lmns if i not in f2id]
+        bad = [i for i in lmns if i not in f2id]
         if bad:
             raise ValueError("nonexisting elements: " +
                              ", ".join(bad))
         self.elements = zip(lmns, pts)
-    
+
+    def __str__(self):
+        return "; ".join("{0} {1}".format(i, loc.format("%.4g", j * 100))
+                         for i, j in self.elements)
+
+
 class ValidElements(wx.PyValidator):
     "validator for the 'elements' field"
     err_msg = ""

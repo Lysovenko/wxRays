@@ -27,6 +27,7 @@ try:
 except NameError:
     pass
 
+
 class ValidFloat(wx.PyValidator):
     "validator for floating point fields"
     def __init__(self, is_ipos=lambda x: x <= 0., can_empty=False):
@@ -494,7 +495,10 @@ class DlgPuzzle(wx.Dialog):
         return wx.StaticText(self, -1, label)
 
     def get_text(self, value):
-        return wx.TextCtrl(self, value=str(value))
+        txt = wx.TextCtrl(self, value=str(value))
+        txt.wxrd_value = value
+        txt.Bind(wx.EVT_TEXT, self.text_changed)
+        return txt
 
     def get_spin(self, begin=0, end=0, value=0):
         spin = wx.SpinCtrl(self, -1)
@@ -516,3 +520,17 @@ class DlgPuzzle(wx.Dialog):
 
     def get_line(self):
         return wx.StaticLine(self, -1, style=wx.LI_HORIZONTAL)
+
+    def text_changed(self, evt):
+        text_ctrl = evt.EventObject
+        val = text_ctrl.wxrd_value
+        try:
+            val.update(text_ctrl.GetValue())
+        except ValueError as err:
+            text_ctrl.SetBackgroundColour("pink")
+            text_ctrl.Refresh()
+        else:
+            text_ctrl.SetBackgroundColour(
+                wx.SystemSettings_GetColour(wx.SYS_COLOUR_WINDOW))
+            text_ctrl.Refresh()
+        print(val)

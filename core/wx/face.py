@@ -28,6 +28,7 @@ import wx
 from .dialogs import DlgPuzzle
 ROOT_FRAME = None
 
+
 class MainFrame(wx.Frame):
     'The Main Frame'
     def __init__(self):
