@@ -437,6 +437,7 @@ class DlgPuzzle(wx.Dialog):
         self.current_table = None
         self.current_raw = -1
         self.row_spans = {}
+        self.err_prone_values = []
         puzzle.set_actors({
             'set_title': self.SetTitle,
             'table_new': self.new_table,
@@ -497,6 +498,7 @@ class DlgPuzzle(wx.Dialog):
     def get_text(self, value):
         txt = wx.TextCtrl(self, value=str(value))
         txt.wxrd_value = value
+        self.err_prone_values.append(value)
         txt.Bind(wx.EVT_TEXT, self.text_changed)
         return txt
 
@@ -511,6 +513,8 @@ class DlgPuzzle(wx.Dialog):
         btn = wx.Button(self, types[b_type])
         if default:
             btn.SetDefault()
+        if b_type == "OK":
+            btn.Bind(wx.EVT_BUTTON, self.ok_pressed)
         return btn
 
     def get_radio(self, title, options, default, vertical, onchange):
@@ -527,10 +531,20 @@ class DlgPuzzle(wx.Dialog):
         try:
             val.update(text_ctrl.GetValue())
         except ValueError as err:
+            val.had_error = True
             text_ctrl.SetBackgroundColour("pink")
             text_ctrl.Refresh()
         else:
+            val.had_error = False
             text_ctrl.SetBackgroundColour(
                 wx.SystemSettings_GetColour(wx.SYS_COLOUR_WINDOW))
             text_ctrl.Refresh()
         print(val)
+
+    def ok_pressed(self, evt):
+        if any(getattr(i, 'had_error', None) for i in self.err_prone_values):
+            wx.MessageBox(_("Fill fields correctly to continue!"), _("Error"),
+                          wx.ICON_EXCLAMATION)
+            evt.StopPropagation()
+        else:
+            evt.Skip()

@@ -40,4 +40,4 @@ def run_dialog(user_data, xml_file, frame_name):
     f = Frames(xml_file)
     puzzle = f.get(frame_name)
     puzzle.set_data(user_data)
-    _ACTUAL_INTERFACE.run_dlg_puzzle(puzzle)
+    return _ACTUAL_INTERFACE.run_dlg_puzzle(puzzle)

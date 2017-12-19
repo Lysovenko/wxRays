@@ -139,4 +139,4 @@ def main():
 def run_dlg_puzzle(puzzle):
     print("I'am here:", __name__, "run_dlg_puzzle")
     dlg = DlgPuzzle(ROOT_FRAME, puzzle)
-    dlg.ShowModal()
+    return dlg.ShowModal() == wx.ID_OK and "Ok" or "Cancel"
