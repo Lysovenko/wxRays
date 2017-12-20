@@ -19,21 +19,7 @@
 
 from __future__ import print_function, absolute_import
 import xml.etree.ElementTree as etree
-
-
-class Value:
-    def __init__(self, vclass):
-        self.vclass = vclass
-        self.value = vclass()
-
-    def update(self, val):
-        self.value = self.vclass(val)
-
-    def get(self):
-        return self.value
-
-    def __str__(self):
-        return self.value.__str__()
+from .value import Value
 
 
 class Puzzle:

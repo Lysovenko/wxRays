@@ -27,7 +27,8 @@ import f2inec as f2i
 from core.wx.dialogs import DlgProgressCallb, atof, ValidFloat, v_input
 from formtext import poly1d2wiki
 import wx.lib.rcsizer as rcs
-from core.interface import run_dialog, Value
+from core.interface import run_dialog
+from core.value import lfloat, Value
 import os.path as osp
 from sys import modules
 _DEFAULTS = {"sqcalc_mode": 0, "sqcalc_polrang": 1,
@@ -138,11 +139,11 @@ class Menu_call:
                 "sections": _("Sections:"),
                 # values
                 "elements_ea": Value(Elements),
-                "rho0_ea": Value(float),
+                "rho0_ea": Value(lfloat(0)),
                 "sqcalc_optcects": Value(int),
                 "ord_r_spin": Value(int),
-                "r_c": Value(float),
-                "rc_num": Value(float),
+                "r_c": Value(lfloat(0)),
+                "rc_num": Value(lfloat(0)),
                 "pol_spin": Value(int),
                 #
                 'sqcalc_mode': 0, 'on_mode_change': None, 'pol_spin': 3,
