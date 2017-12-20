@@ -30,16 +30,39 @@ class Value:
     def __init__(self, vclass):
         self.vclass = vclass
         self.value = vclass()
+        self.relevance = True
+        self.updater = None
+        self.relevator = None
 
-    def update(self, val):
+    def set_updater(self, updater):
+        self.updater = updater
+
+    def set_relevator(self, relevator):
+        self.relevator = relevator
+
+    def update(self, val, call_upd=True):
         self.value = self.vclass(val)
+        if call_upd and self.updater is not None:
+            self.updater(self.value)
 
     def get(self):
         return self.value
 
+    def is_relevant(self, relevance=None):
+        if relevance is None:
+            return self.relevace
+        self.relevace = bool(relevance)
+        if self.relevance is not None:
+            self.relevator(self.relevance)
+
     def __str__(self):
         return self.value.__str__()
 
+    def __int__(self):
+        return self.value.__int__()
+    
+    def __float__(self):
+        return self.value.__float__()
 
 def lfloat(noless=None, nomore=None):
     "limited float"

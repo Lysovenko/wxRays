@@ -498,14 +498,20 @@ class DlgPuzzle(wx.Dialog):
     def get_text(self, value):
         txt = wx.TextCtrl(self, value=str(value))
         txt.wxrd_value = value
+        value.set_updater(lambda x, txt=txt: txt.SetValue(str(x)))
+        value.set_relevator(txt.Enable)
         self.err_prone_values.append(value)
         txt.Bind(wx.EVT_TEXT, self.text_changed)
         return txt
 
-    def get_spin(self, begin=0, end=0, value=0):
+    def get_spin(self, begin=0, end=0, value=None):
         spin = wx.SpinCtrl(self, -1)
         spin.SetRange(begin, end)
-        spin.SetValue(value)
+        spin.SetValue(int(value))
+        spin.wxrd_value = value
+        value.set_updater(lambda x, spin=spin: spin.SetValue(int(x)))
+        value.set_relevator(spin.Enable)
+        spin.Bind(wx.EVT_SPINCTRL, self.spin_changed)
         return spin
 
     def get_button(self, b_type, default=False):
@@ -529,7 +535,7 @@ class DlgPuzzle(wx.Dialog):
         text_ctrl = evt.EventObject
         val = text_ctrl.wxrd_value
         try:
-            val.update(text_ctrl.GetValue())
+            val.update(text_ctrl.GetValue(), False)
         except ValueError as err:
             val.had_error = True
             text_ctrl.SetBackgroundColour("pink")
@@ -540,6 +546,11 @@ class DlgPuzzle(wx.Dialog):
                 wx.SystemSettings_GetColour(wx.SYS_COLOUR_WINDOW))
             text_ctrl.Refresh()
         print(val)
+
+    def spin_changed(self, evt):
+        spin = evt.EventObject
+        val = spin.wxrd_value
+        val.update(spin.GetValue(), False)
 
     def ok_pressed(self, evt):
         if any(getattr(i, 'had_error', None) for i in self.err_prone_values):

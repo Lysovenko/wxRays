@@ -90,12 +90,20 @@ class Puzzle:
         if p is None:
             raise KeyError("text must have the value")
         val = self.data[p]
+        if val.__class__ is not Value:
+            raise KeyError("value of '{}' must be of type 'Value'".format(p))
         return self.actors['get_text'](val)
 
     def spin(self, spin):
         props = {}
-        for i in ("begin", "end", "value"):
+        for i in ("begin", "end"):
             props[i] = self.integer(spin.get(i))
+        p = spin.get("value")
+        val = self.data[p]
+        if val.__class__ is not Value:
+            raise KeyError("value of '{}' must be of type 'Value'\n"
+                           "{} found".format(p, val.__class__))
+        props["value"] = val
         return self.actors['get_spin'](**props)
 
     def button(self, button):
