@@ -114,13 +114,16 @@ class Puzzle:
     def radio(self, radio):
         vertical = self.boolean(radio.get('vertical'))
         title = self.data.get(radio.get("rename")) or radio.get('title')
-        default = self.integer(radio.get('default', 0))
         onchange = radio.get('onchange')
         if onchange is not None:
             onchange = self.data[onchange]
         options = [self.data.get(i.get("rename")) or i.text for i in radio]
+        choices = [i.get("id") for i in radio]
+        value = self.data[radio.get('value')]
+        if value.get() not in choices:
+            value.update(choices[0])
         return self.actors['get_radio'](
-            title, options, default, vertical, onchange)
+            title, options, choices, value, vertical, onchange)
 
     def integer(self, param):
         try:
