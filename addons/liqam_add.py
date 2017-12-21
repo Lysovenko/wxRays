@@ -145,14 +145,14 @@ class Menu_call:
                 "r_c": Value(lfloat(0)),
                 "rc_num": Value(lfloat(0)),
                 "pol_spin": Value(int),
+                'sqcalc_mode': Value(str),
                 #
-                'sqcalc_mode': 0, 'on_mode_change': None}
+                'on_mode_change': None}
             res = run_dialog(dialog_data, osp.join(
                 osp.dirname(__file__), "liq_am.xml"), "dialog S(q) calc")
             print(res)
             for k, i in dialog_data.items():
-                print("<{}>:\t".format(k),i)
-               # print ("{}:\t{}".format(k, unicode(i)))
+                print("<{}>:\t".format(k), i)
             return
             # Just for test
             dialog = DlgSqCalc(dat)

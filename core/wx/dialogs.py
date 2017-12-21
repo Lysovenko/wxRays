@@ -523,9 +523,32 @@ class DlgPuzzle(wx.Dialog):
             btn.Bind(wx.EVT_BUTTON, self.ok_pressed)
         return btn
 
-    def get_radio(self, title, options, default, vertical, onchange):
-        radio = wx.RadioBox(self, -1, title, choices=options, majorDimension=2,
-                            style=wx.RA_SPECIFY_COLS)
+    def get_radio(self, title, options, choices, value, onchange, style):
+        if style:
+            ss = style.split()
+            if len(ss) == 1:
+                ast = ss[0]
+                md = 0
+            else:
+                md = int(ss[1])
+                ast = ss[0] + '+'
+            rstyle = {"column+": wx.RA_SPECIFY_COLS,
+                      "row+": wx.RA_SPECIFY_ROWS,
+                      "column": wx.RA_VERTICAL}.get(ast, wx.RA_HORIZONTAL)
+        else:
+            rstyle = wx.RA_HORIZONTAL
+            md = 0
+        print(rstyle, md, ast)
+        radio = wx.RadioBox(self, -1, title, choices=options,
+                            majorDimension=md, style=rstyle)
+        value.set_updater(lambda x, chs=choices:
+                          radio.SetSelection(chs.index(x)))
+        value.set_relevator(radio.Enable)
+        radio.wxrd_value = value
+        radio.wxrd_choices = choices
+        radio.wxrd_onchange = onchange
+        value.update(value.get())
+        radio.Bind(wx.EVT_RADIOBOX, self.radio_changed)
         return radio
 
     def get_line(self):
@@ -545,12 +568,20 @@ class DlgPuzzle(wx.Dialog):
             text_ctrl.SetBackgroundColour(
                 wx.SystemSettings_GetColour(wx.SYS_COLOUR_WINDOW))
             text_ctrl.Refresh()
-        print(val)
 
     def spin_changed(self, evt):
         spin = evt.EventObject
         val = spin.wxrd_value
         val.update(spin.GetValue(), False)
+
+    def radio_changed(self, evt):
+        radio = evt.EventObject
+        val = radio.wxrd_value
+        choices = radio.wxrd_choices
+        onchange = radio.wxrd_onchange
+        val.update(choices[radio.GetSelection()], False)
+        if onchange is not None:
+            onchange[0](val.get(), *onchange[1:])
 
     def ok_pressed(self, evt):
         if any(getattr(i, 'had_error', None) for i in self.err_prone_values):

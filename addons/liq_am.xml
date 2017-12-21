@@ -10,7 +10,7 @@
       </tr>
       <tr>
 	<td colspan="4" align="center">
-	  <radio vertical="False" onchange="on_mode_change" title="Calculation mode" rename="calc_mod"
+	  <radio style="column 2" onchange="on_mode_change" title="Calculation mode" rename="calc_mod"
 		 value="sqcalc_mode">
 	    <option id="clsc"  rename="clsc" >Classic</option>
 	    <option id="mix"   rename="mix"  >By Stetsiv (mix)</option>

@@ -112,7 +112,6 @@ class Puzzle:
         return self.actors['get_button'](b_type, default=default)
 
     def radio(self, radio):
-        vertical = self.boolean(radio.get('vertical'))
         title = self.data.get(radio.get("rename")) or radio.get('title')
         onchange = radio.get('onchange')
         if onchange is not None:
@@ -121,9 +120,10 @@ class Puzzle:
         choices = [i.get("id") for i in radio]
         value = self.data[radio.get('value')]
         if value.get() not in choices:
-            value.update(choices[0])
+            value.update(choices[0], False)
+        style = radio.get("style")
         return self.actors['get_radio'](
-            title, options, choices, value, vertical, onchange)
+            title, options, choices, value, onchange, style)
 
     def integer(self, param):
         try:

@@ -60,9 +60,10 @@ class Value:
 
     def __int__(self):
         return self.value.__int__()
-    
+
     def __float__(self):
         return self.value.__float__()
+
 
 def lfloat(noless=None, nomore=None):
     "limited float"
