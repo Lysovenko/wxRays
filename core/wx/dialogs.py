@@ -438,6 +438,7 @@ class DlgPuzzle(wx.Dialog):
         self.current_raw = -1
         self.row_spans = {}
         self.err_prone_values = []
+        self.all_values = []
         puzzle.set_actors({
             'set_title': self.SetTitle,
             'table_new': self.new_table,
@@ -500,6 +501,7 @@ class DlgPuzzle(wx.Dialog):
         txt.wxrd_value = value
         value.set_updater(lambda x, txt=txt: txt.SetValue(str(x)))
         value.set_relevator(txt.Enable)
+        self.all_values.append(value)
         self.err_prone_values.append(value)
         txt.Bind(wx.EVT_TEXT, self.text_changed)
         return txt
@@ -511,6 +513,7 @@ class DlgPuzzle(wx.Dialog):
         spin.wxrd_value = value
         value.set_updater(lambda x, spin=spin: spin.SetValue(int(x)))
         value.set_relevator(spin.Enable)
+        self.all_values.append(value)
         spin.Bind(wx.EVT_SPINCTRL, self.spin_changed)
         return spin
 
@@ -538,12 +541,12 @@ class DlgPuzzle(wx.Dialog):
         else:
             rstyle = wx.RA_HORIZONTAL
             md = 0
-        print(rstyle, md, ast)
         radio = wx.RadioBox(self, -1, title, choices=options,
                             majorDimension=md, style=rstyle)
         value.set_updater(lambda x, chs=choices:
                           radio.SetSelection(chs.index(x)))
         value.set_relevator(radio.Enable)
+        self.all_values.append(value)
         radio.wxrd_value = value
         radio.wxrd_choices = choices
         radio.wxrd_onchange = onchange
@@ -590,3 +593,8 @@ class DlgPuzzle(wx.Dialog):
             evt.StopPropagation()
         else:
             evt.Skip()
+
+    def release_values(self):
+        for v in self.all_values:
+            v.set_updater(None)
+            v.set_relevator(None)

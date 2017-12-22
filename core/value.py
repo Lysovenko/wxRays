@@ -50,9 +50,9 @@ class Value:
 
     def is_relevant(self, relevance=None):
         if relevance is None:
-            return self.relevace
-        self.relevace = bool(relevance)
-        if self.relevance is not None:
+            return self.relevance
+        self.relevance = bool(relevance)
+        if self.relevator is not None:
             self.relevator(self.relevance)
 
     def __str__(self):

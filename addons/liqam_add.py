@@ -121,40 +121,9 @@ class Menu_call:
     def calc_sq(self, evt):
         dat = self.data
         if "Exp. data" in dat["data"]:
-            dialog_data = {
-                "rename": _("Calculation of the structure factor"),
-                "lab_elements": _("Elements:"),
-                "calc_mod": _("Calculation mode"),
-                "clsc": _("Classic"),
-                "mix": _("By Stetsiv (mix)"),
-                "pcf": _("By Stetsiv (PCF)"),
-                "pcfi": _("By Stetsiv (PCF integrated)"),
-                "pcfir": _("By Stetsiv (PCF dens. opt.)"),
-                "pblk": _("By Stetsiv (parabolic)"),
-                "pol_range": _("Polynomial's range:"),
-                "at_dens": _("Atomic density:"),
-                "start_dens": _("Start dens. opt.:"),
-                "r_cutoff": _("Cutoff radius:"),
-                "samples": _("Samples:"),
-                "sections": _("Sections:"),
-                # values
-                "elements_ea": Value(Elements),
-                "rho0_ea": Value(lfloat(0)),
-                "sqcalc_optcects": Value(int),
-                "ord_r_spin": Value(int),
-                "r_c": Value(lfloat(0)),
-                "rc_num": Value(lfloat(0)),
-                "pol_spin": Value(int),
-                'sqcalc_mode': Value(str),
-                #
-                'on_mode_change': None}
-            res = run_dialog(dialog_data, osp.join(
-                osp.dirname(__file__), "liq_am.xml"), "dialog S(q) calc")
-            print(res)
-            for k, i in dialog_data.items():
-                print("<{}>:\t".format(k), i)
+            dlg = DlgSq(dat)
+            dlg.run_dialog()
             return
-            # Just for test
             dialog = DlgSqCalc(dat)
             if dialog.ShowModal() == wx.ID_OK:
                 dat["menu"].action_catch("sq found")
@@ -566,6 +535,68 @@ class ValidElements(wx.PyValidator):
 
     def TransferFromWindow(self):
         return True
+
+class DlgSq():
+    enables = {
+        "clsc": {},
+        "mix": {"pol_spin", "rho0_ea", "rc_num", "r_c"},
+        "pcf": {"pol_spin", "rho0_ea"},
+        "pcfi": {"pol_spin", "rho0_ea", "rc_num", "r_c"},
+        "pcfir": {"pol_spin", "rho0_ea", "rc_num", "r_c", "ord_r_spin"},
+        "pblk": {"pol_spin", "rho0_ea", "rc_num", "r_c"}
+        }
+
+    def __init__(self, internal):
+        self.dialog_data = dida = {
+            # renames
+            "title": _("Calculation of the structure factor"),
+            "lab_elements": _("Elements:"),
+            "calc_mod": _("Calculation mode"),
+            "clsc": _("Classic"),
+            "mix": _("By Stetsiv (mix)"),
+            "pcf": _("By Stetsiv (PCF)"),
+            "pcfi": _("By Stetsiv (PCF integrated)"),
+            "pcfir": _("By Stetsiv (PCF dens. opt.)"),
+            "pblk": _("By Stetsiv (parabolic)"),
+            "pol_range": _("Polynomial's range:"),
+            "at_dens": _("Atomic density:"),
+            "start_dens": _("Start dens. opt.:"),
+            "r_cutoff": _("Cutoff radius:"),
+            "samples": _("Samples:"),
+            "sections": _("Sections:"),
+            # values
+            "elements_ea": Value(Elements),
+            "pol_spin": Value(int),
+            "rho0_ea": Value(lfloat(0)),
+            "sqcalc_optcects": Value(int),
+            "rc_num": Value(lfloat(0)),
+            "r_c": Value(lfloat(0)),
+            "ord_r_spin": Value(int),
+            "sqcalc_mode": Value(str),
+            # interactive
+            "on_mode_change": (self.on_mode_change,)}
+        data = internal["data"]["Exp. data"]
+        rho_rc = internal["data"].get("RhoRc")
+        self.data = data
+        if data is not None and data.elements:
+            dida["elements_ea"].update(";".join("{} {}".format(i, j)
+                                               for i, j in data.elements))
+        
+    def run_dialog(self):
+        if run_dialog(self.dialog_data, osp.join(
+                osp.dirname(__file__), "liq_am.xml"), "dialog S(q) calc"):
+            self.calculate_sq()
+
+    def calculate_sq(self):
+        return
+
+    def on_mode_change(self, mode):
+        d = {}
+        for i in ("pol_spin", "rho0_ea", "rc_num", "r_c", "ord_r_spin",
+                  "sqcalc_optcects"):
+            vtbp = i in self.enables[mode]
+            self.dialog_data[i].is_relevant(vtbp)
+            d[i] = (self.dialog_data[i].is_relevant(), vtbp)
 
 
 class DlgSqCalc(wx.Dialog):
