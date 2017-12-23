@@ -439,6 +439,7 @@ class DlgPuzzle(wx.Dialog):
         self.row_spans = {}
         self.err_prone_values = []
         self.all_values = []
+        self.post_create = []
         puzzle.set_actors({
             'set_title': self.SetTitle,
             'table_new': self.new_table,
@@ -452,6 +453,9 @@ class DlgPuzzle(wx.Dialog):
             'get_radio': self.get_radio,
             'get_line': self.get_line})
         puzzle.play()
+        for f in self.post_create:
+            f()
+        del self.post_create
 
     def new_table(self):
         self.current_table = rcs.RowColSizer()
@@ -551,6 +555,9 @@ class DlgPuzzle(wx.Dialog):
         radio.wxrd_choices = choices
         radio.wxrd_onchange = onchange
         value.update(value.get())
+        if onchange is not None:
+            self.post_create.append(
+                lambda v=value.get(), oc=onchange: oc[0](v, *oc[1:]))
         radio.Bind(wx.EVT_RADIOBOX, self.radio_changed)
         return radio
 

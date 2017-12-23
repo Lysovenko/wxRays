@@ -536,6 +536,7 @@ class ValidElements(wx.PyValidator):
     def TransferFromWindow(self):
         return True
 
+
 class DlgSq():
     enables = {
         "clsc": {},
@@ -575,28 +576,48 @@ class DlgSq():
             "sqcalc_mode": Value(str),
             # interactive
             "on_mode_change": (self.on_mode_change,)}
+        self.internal = internal
         data = internal["data"]["Exp. data"]
         rho_rc = internal["data"].get("RhoRc")
         self.data = data
         if data is not None and data.elements:
             dida["elements_ea"].update(";".join("{} {}".format(i, j)
-                                               for i, j in data.elements))
-        
+                                                for i, j in data.elements))
+        for d, i in (
+                ("sqcalc_mode", "sqcalc_mode"),
+                ("pol_spin", "sqcalc_polrang"),
+                ("sqcalc_optcects", "sqcalc_optsects"),
+                ("ord_r_spin", "sqcalc_polrangrho"),
+                ("r_c", "sqcalc_rc"),
+                ("rc_num", "sqcalc_rc_num")):
+            dida[d].update(internal[i])
+        dida["rho0_ea"].update(data.rho0)
+
     def run_dialog(self):
         if run_dialog(self.dialog_data, osp.join(
                 osp.dirname(__file__), "liq_am.xml"), "dialog S(q) calc"):
             self.calculate_sq()
 
     def calculate_sq(self):
-        return
+        self.save_state()
 
     def on_mode_change(self, mode):
         d = {}
         for i in ("pol_spin", "rho0_ea", "rc_num", "r_c", "ord_r_spin",
                   "sqcalc_optcects"):
-            vtbp = i in self.enables[mode]
-            self.dialog_data[i].is_relevant(vtbp)
-            d[i] = (self.dialog_data[i].is_relevant(), vtbp)
+            self.dialog_data[i].is_relevant(i in self.enables[mode])
+
+    def save_state(self):
+        dida = self.dialog_data
+        inda = self.internal
+        for i, d in (
+                ("sqcalc_mode", "sqcalc_mode"),
+                ("sqcalc_polrang", "pol_spin"),
+                ("sqcalc_polrangrho", "ord_r_spin"),
+                ("sqcalc_optsects", "sqcalc_optcects"),
+                ("sqcalc_rc", "r_c"),
+                ("sqcalc_rc_num", "rc_num")):
+            inda[i] = dida[d].get()
 
 
 class DlgSqCalc(wx.Dialog):
