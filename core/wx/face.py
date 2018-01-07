@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 "This is some interesting educational program"
-# wxRays (C) 2013 Serhii Lysovenko
+# wxRays (C) 2013-2018 Serhii Lysovenko
 #
 # This program is free software; you can redistribute it and / or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ from sys import argv
 # the control shot
 # wxversion.ensureMinimal('2.8')
 import wx
-from .dialogs import DlgPuzzle
+from .dialogs import DlgPuzzle, DlgProgressBar
 ROOT_FRAME = None
 
 
@@ -141,3 +141,6 @@ def run_dlg_puzzle(puzzle):
     isok = dlg.ShowModal() == wx.ID_OK
     dlg.release_values()
     return isok
+
+def get_progress_bar(title, message, can_abort=False):
+    return DlgProgressBar(ROOT_FRAME, title, message, can_abort)

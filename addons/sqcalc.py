@@ -84,9 +84,11 @@ def Stetsiv_mix_nbackground(nexi, exq, n_pol, sqd, clb):
     r"""
     Parabolic + pcfi mix.
     """
-    nsbg1, k_norm1 = Stetsiv_pblk_nbackground(nexi, exq, n_pol, sqd, clb)
+    nsbg1, k_norm1 = Stetsiv_pblk_nbackground(nexi, exq, n_pol, sqd,
+                                              lambda x: clb(x * .5))
     bgc1 = np.array(sqd["BG coefs"])
-    nsbg2, k_norm2 = Stetsiv_pcfi_nbackground(nexi, exq, n_pol, sqd, clb)
+    nsbg2, k_norm2 = Stetsiv_pcfi_nbackground(nexi, exq, n_pol, sqd,
+                                              lambda x: clb(x * .5 + .5))
     bgc2 = np.array(sqd["BG coefs"])
     k_norm = k_norm1 + k_norm2
     bgc = (bgc1 * k_norm1 + bgc2 * k_norm2) / k_norm
@@ -119,7 +121,7 @@ def Stetsiv_pcf_nbackground(nexi, exq, n_pol, sqd, clb):
         x0 = fmin(stev_pcf, x0, args=(nexi, exq, exq2, pic, icar, bma, inexi),
                   disp=False)
         # callback:
-        if not clb(crg):
+        if not clb(float(crg) / n_pol):
             break
     d_0 = (inexi - np.sum(x0 * icar)) / bma
     sqd["BG coefs"] = x0.tolist() + [d_0]
@@ -162,7 +164,7 @@ def Stetsiv_pcfi_nbackground(nexi, exq, n_pol, sqd, clb):
         x0 = fmin(stev_pcfi, x0, args=(nexi, exq, imat, add, dr, icar,
                                        bma, inexi), disp=False)
         # callback:
-        if not clb(crg):
+        if not clb(float(crg) / n_pol):
             break
     d_0 = (inexi - np.sum(x0 * icar)) / bma
     sqd["BG coefs"] = list(x0) + [d_0]
@@ -211,7 +213,7 @@ def Stetsiv_pcfir_nbackground(nexi, exq, order, sqd, clb):
         x0 = fmin(stev_pcfir, x0, args=(nexi, exq, rho, imat, add, dr, icar,
                                         bma, inexi), disp=False)
         # callback:
-        if not clb(crg):
+        if not clb(float(crg) / n_pol):
             break
     if crg >= rho_order:
         rho = x0[-1]
@@ -257,7 +259,7 @@ def Stetsiv_pblk_nbackground(nexi, exq, n_pol, sqd, clb):
         x0 = fmin(stev_pblk, x0, args=(nexi, exq, icar, bma, inexi, add, rho0,
                                        rqmat, r2, dr), disp=False)
         # callback:
-        if not clb(crg):
+        if not clb(float(crg) / n_pol):
             break
     d_0 = (inexi - np.sum(x0 * icar)) / bma
     sqd["BG coefs"] = x0.tolist() + [d_0]

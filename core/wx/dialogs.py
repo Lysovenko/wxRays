@@ -235,6 +235,27 @@ class DlgProgressCallb:
         return self.state
 
 
+class DlgProgressBar:
+    def __init__(self, parent, title, message, can_abort=False):
+        style = wx.PD_AUTO_HIDE | wx.PD_ELAPSED_TIME | wx.PD_REMAINING_TIME
+        if can_abort:
+            style |= wx.PD_CAN_ABORT
+        self.dialog = wx.ProgressDialog(title, message, 100, parent,
+                                        style=style)
+        self.state = True
+
+    def __call__(self, part):
+        if self.state:
+            res = self.dialog.Update(int(part * 100))[0]
+        self.state = res
+        if part >= 1. or not res:
+            self.dialog.Destroy()
+        return res
+
+    def __nonzero__(self):
+        return self.state
+
+
 def make_mask(loads):
     ake = set()
     for l in loads:

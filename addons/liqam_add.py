@@ -27,7 +27,7 @@ import f2inec as f2i
 from core.wx.dialogs import DlgProgressCallb, atof, ValidFloat, v_input
 from formtext import poly1d2wiki
 import wx.lib.rcsizer as rcs
-from core.interface import run_dialog
+from core.interface import run_dialog, get_progress_bar
 from core.value import lfloat, Value
 import os.path as osp
 from sys import modules
@@ -457,12 +457,15 @@ def plot_sq(dat, q, sq, sqd):
     plot.plot_dataset(PN_SSF)
 
 
-class Elements:
+class Elements(list):
     def __init__(self, elements=None):
         lmns = []
         pts = []
         if elements is None:
-            self.elements = []
+            list.__init__(self)
+            return
+        if elements.__class__ == Elements:
+            list.__init__(self, elements)
             return
         try:
             for lmn in elements.split(';'):
@@ -479,62 +482,11 @@ class Elements:
         if bad:
             raise ValueError("nonexisting elements: " +
                              ", ".join(bad))
-        self.elements = zip(lmns, pts)
+        list.__init__(self, zip(lmns, pts))
 
     def __str__(self):
         return "; ".join("{0} {1}".format(i, loc.format("%.4g", j * 100))
-                         for i, j in self.elements)
-
-
-class ValidElements(wx.PyValidator):
-    "validator for the 'elements' field"
-    err_msg = ""
-
-    def Clone(self):
-        return ValidElements()
-
-    def Validate(self, win):
-        text_ctrl = self.GetWindow()
-        text = text_ctrl.GetValue()
-        if self.test_text(text):
-            text_ctrl.SetBackgroundColour(
-                wx.SystemSettings_GetColour(wx.SYS_COLOUR_WINDOW))
-            text_ctrl.Refresh()
-            return True
-        wx.MessageBox(_("Elements is invalid!\n") + self.err_msg, _("Error"))
-        text_ctrl.SetBackgroundColour("pink")
-        text_ctrl.SetFocus()
-        text_ctrl.Refresh()
-        return False
-
-    def test_text(self, text):
-        if len(text) == 0:
-            self.err_msg = _("Field in empty.")
-            return False
-        f2id = f2i.get_f2i_dict()
-        for lmn in text.split(';'):
-            spl = lmn.split()
-            if len(spl) != 2:
-                self.err_msg = _("Syntax error.")
-                return False
-            if not spl[0] in f2id:
-                self.err_msg = _("Element %s not found.") % spl[0]
-                return False
-            try:
-                elpart = atof(spl[1])
-            except ValueError:
-                self.err_msg = _("Wrong type of float.") + "\n(%s)" % spl[1]
-                return False
-            if 0. >= elpart:
-                self.err_msg = _("Part of element must be > 0.")
-                return False
-        return True
-
-    def TransferToWindow(self):
-        return True
-
-    def TransferFromWindow(self):
-        return True
+                         for i, j in self)
 
 
 class DlgSq():
@@ -600,9 +552,29 @@ class DlgSq():
 
     def calculate_sq(self):
         self.save_state()
+        exi = self.data.corr_intens()
+        exq = self.data.get_qrange()
+        add_curves = None
+        cmode = self.dialog_data["sqcalc_mode"].get()
+        sqd = {"Calculation mode": cmode}
+        for d, s in (("elements_ea", "Elements"),
+                     ("pol_spin", "Degree of polynomial"),
+                     ("rho0_ea", "At. dens."),
+                     ("sqcalc_optcects", "Sectors"),
+                     ("rc_num", "R_c samps"),
+                     ("r_c", "R_c"), ("ord_r_spin", "dens. opt. start")):
+            sqd[s] = self.dialog_data[d].get()
+        if cmode == "clsc":
+            rsq = sqc.norm_pcompt(exi, exq, sqd)
+        else:
+            args = (sqd,)
+            titl = _("S(Q) by Stetsiv")
+            msg = _("Calculating the structure factor "
+                    "by the Stetsiv method (%s)...") % sqd["Calculation mode"]
+            args += (get_progress_bar(titl, msg, can_abort=True),)
+            rsq, add_curves = sqc.calc_sq_Stetsiv(exq, exi, *args)[:2]
 
     def on_mode_change(self, mode):
-        d = {}
         for i in ("pol_spin", "rho0_ea", "rc_num", "r_c", "ord_r_spin",
                   "sqcalc_optcects"):
             self.dialog_data[i].is_relevant(i in self.enables[mode])

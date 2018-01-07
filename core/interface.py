@@ -41,3 +41,6 @@ def run_dialog(user_data, xml_file, frame_name):
     puzzle = f.get(frame_name)
     puzzle.set_data(user_data)
     return _ACTUAL_INTERFACE.run_dlg_puzzle(puzzle)
+
+def get_progress_bar(title, message, can_abort=False):
+    return _ACTUAL_INTERFACE.get_progress_bar(title, message, can_abort)
