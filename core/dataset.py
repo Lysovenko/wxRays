@@ -1,6 +1,6 @@
 # wxRays (C) 2015 Serhii Lysovenko
 #
-"History of the plot"
+"""History of the plot"""
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or (at
@@ -17,11 +17,11 @@
 
 
 class DataSet:
-    'required by Plot class'
-    def __init__(self, plots, xlabel=None, ylabel=None, xunits='A^{-1}'):
-        self.xlabel = xlabel
-        self.ylabel = ylabel
-        self.xunits = xunits
+    """required by Plot class"""
+    def __init__(self, plots, x_label=None, y_label=None, x_units='A^{-1}'):
+        self.x_label = x_label
+        self.y_label = y_label
+        self.x_units = x_units
         self.plots = plots
         self.fresh = True
         self.ax1 = False
@@ -39,10 +39,10 @@ class DataSet:
                 self.ax2 = True
 
     def get_units(self):
-        return self.xunits
+        return self.x_units
 
     def clone(self):
-        cln = DataSet(list(self.plots), self.xlabel, self.ylabel, self.xunits)
+        cln = DataSet(list(self.plots), self.x_label, self.y_label, self.x_units)
         cln.picker = self.picker
         cln.tech_info.update(self.tech_info)
         cln.journal.set_parent(self.journal)
@@ -57,7 +57,7 @@ class DataSet:
             self.ax2 = True
 
     def replace_last(self, plt):
-        "insecure replace last plot"
+        """insecure replace last plot"""
         if type(plt) == tuple:
             pplt = self.plots[-1]
             self.plots[-1] = plt + pplt[len(plt):]

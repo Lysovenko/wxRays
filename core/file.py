@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"Read data files"
+"""Read data files"""
 # wxRays (C) 2013-2015 Serhii Lysovenko
 #
 # This program is free software; you can redistribute it and/or modify
@@ -148,7 +148,7 @@ class Exp_Data:
         return self.y_data
 
     def corr_intens(self):
-        "correct intensity"
+        """correct intensity"""
         Iex = self.y_data
         ang = self.get_2theta()
         if self.alpha is None:
@@ -157,7 +157,7 @@ class Exp_Data:
         return Iex / (c2a * np.cos(ang) ** 2 + 1.) * (1. + c2a)
 
     def rev_intens(self, Icor):
-        "reverse correct intensity"
+        """reverse correct intensity"""
         ang = self.get_2theta()
         if self.alpha is None:
             return Icor / 2. * (np.cos(ang) ** 2 + 1.)

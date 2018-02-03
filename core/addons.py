@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"This is Plugin Manager"
+""""This is Plugin Manager"""
 # wxRays (C) 2013-2017 Serhii Lysovenko
 #
 # This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@ from os.path import (dirname, realpath, split, splitext, join, isfile,
 
 class Addons:
     def __init__(self):
-        "searches and reads addons descriptions files"
+        """searches and reads addons descriptions files"""
         pth1 = join(dirname(dirname(realpath(__file__))), 'addons')
         path.append(pth1)
         pth2 = APP_SETT.get_home()
@@ -94,7 +94,7 @@ class Addons:
         return id_set
 
     def introduce(self, adds_dat):
-        "modules loader"
+        """modules loader"""
         any_error = False
         for desc in self.descriptions:
             if desc['isactive'] and 'module' not in desc:
@@ -125,11 +125,11 @@ class Addons:
             self.get_active()
         return any_error
 
-    def terminate(self, adds_dat, all=False):
-        "modules unloader"
+    def terminate(self, adds_dat, every=False):
+        """modules unloader"""
         id_off = []
         for desc in self.descriptions:
-            if 'module' in desc and (all or not desc['isactive']):
+            if 'module' in desc and (every or not desc['isactive']):
                 module = desc.pop('module')
                 mdata = adds_dat.pop(desc['id'])
                 if hasattr(module, 'terminate'):
@@ -140,7 +140,7 @@ class Addons:
 
 
 def mod_from_desc(desc, adds_dat):
-    "module loader"
+    """module loader"""
     desc['isactive'] = True
     if 'module' not in desc:
         pth, nam = split(splitext(desc['path'])[0])
