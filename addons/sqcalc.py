@@ -213,7 +213,7 @@ def Stetsiv_pcfir_nbackground(nexi, exq, order, sqd, clb):
         x0 = fmin(stev_pcfir, x0, args=(nexi, exq, rho, imat, add, dr, icar,
                                         bma, inexi), disp=False)
         # callback:
-        if not clb(float(crg) / n_pol):
+        if not clb(float(crg) / order):
             break
     if crg >= rho_order:
         rho = x0[-1]
