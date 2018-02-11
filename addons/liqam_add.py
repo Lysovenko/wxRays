@@ -69,7 +69,7 @@ def introduce(data):
               (d, {"on init": False, "sq found": True},
                _("Calculate RDF..."),
                Menu_call(data, "calc_gr"), None, id),
-              (d, {"on init": False, "on plot": set([PN_RDF, PN_RDFT])},
+              (d, {"on init": False, "on plot": {PN_RDF, PN_RDFT}},
                _("Find RDF's tail..."), Menu_call(data, "tail_gr"), None, id),
               (d, {"on init": False, "sq found": False, "sq changed": False,
                    "gr found": True},
@@ -97,7 +97,6 @@ def introduce(data):
               (lm, {"on init": False, "sq found": False, "sq changed": False,
                     "SF tail found": True, "exp I changed": False},
                _("Fit to tail"), Menu_call(data, "tail_sf_fit"), None, id)]
-    data["menu"].add_item
     for i in mitems:
         data["menu"].add_item(*i)
     APP_SETT.declare_section("LIQAM")
@@ -123,12 +122,6 @@ class Menu_call:
         if "Exp. data" in dat["data"]:
             dlg = DlgSq(dat)
             dlg.run_dialog()
-            return
-            dialog = DlgSqCalc(dat)
-            if dialog.ShowModal() == wx.ID_OK:
-                dat["menu"].action_catch("sq found")
-                dialog.calculate_sq(dat["data"], dat["plot"])
-            dialog.Destroy()
 
     def calc_rho(self, evt):
         dat = self.data
@@ -573,6 +566,7 @@ class DlgSq():
                     "by the Stetsiv method (%s)...") % sqd["Calculation mode"]
             args += (get_progress_bar(titl, msg, can_abort=True),)
             rsq, add_curves = sqc.calc_sq_Stetsiv(exq, exi, *args)[:2]
+    # plot sq
 
     def on_mode_change(self, mode):
         for i in ("pol_spin", "rho0_ea", "rc_num", "r_c", "ord_r_spin",
@@ -994,7 +988,7 @@ class DlgGrCalc(wx.Dialog):
             pld = plot.set_data(
                 PN_RDF, [rgr + (1,)], r"$r,\,\AA$", "g(r)",
                 "A")
-        except ValueError, err:
+        except ValueError as err:
             wx.MessageBox(_("Value Error: %s") % err, PROG_NAME, wx.ICON_ERROR)
             return
         pld.discards.update(("liq samp", "sq found", "sq changed"))
