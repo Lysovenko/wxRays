@@ -184,7 +184,7 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
             del self.p_plots[:]
             data.fresh = False
             self.cur_dset = d_set
-            self.cur_xunits = data.xunits
+            self.cur_xunits = data.x_units
             self.figure.clear()
             for font_fml in ['serif', 'sans-serif', 'cursive', 'fantasy',
                              'monospace']:
@@ -200,12 +200,12 @@ Rewrite it?""") % osp.basename(fnam), PROG_NAME,
                 self.axes2 = self.axes1.twinx()
             else:
                 self.axes2 = None
-            if data.xlabel:
+            if data.x_label:
                 self.axes1.set_xlabel(
-                    data.xlabel, fontdict={"family": font_fml})
-            if data.ylabel:
+                    data.x_label, fontdict={"family": font_fml})
+            if data.y_label:
                 self.axes1.set_ylabel(
-                    data.ylabel, fontdict={"family": font_fml})
+                    data.y_label, fontdict={"family": font_fml})
             if data.picker is not None:
                 self.selected, = self.axes1.plot(
                     [plots[0][0][0]], [plots[0][1][0]], 'o', ms=10,
