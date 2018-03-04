@@ -18,3 +18,16 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from __future__ import absolute_import, division, unicode_literals
+
+class MenuItem:
+    def __init__(self, name, description=None):
+        self.name = name
+        self.description = description
+
+    def set_function(self, function):
+        self.function = function
+
+    def add_subitem(self, item):
+        if not hasattr(self, "subitems"):
+            self.subitems = []
+        self.subitems.append(item)
