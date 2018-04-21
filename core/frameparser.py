@@ -18,7 +18,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from __future__ import print_function, absolute_import
-import xml.etree.ElementTree as etree
+import xml.etree.ElementTree as Etree
 from .value import Value
 
 
@@ -86,23 +86,23 @@ class Puzzle:
             return self.actors['get_label'](label.text)
 
     def text(self, text):
-        p = text.get("value")
-        if p is None:
+        value = text.get("value")
+        if value is None:
             raise KeyError("text must have the value")
-        val = self.data[p]
+        val = self.data[value]
         if val.__class__ is not Value:
-            raise KeyError("value of '{}' must be of type 'Value'".format(p))
+            raise KeyError("value of '{}' must be of type 'Value'".format(value))
         return self.actors['get_text'](val)
 
     def spin(self, spin):
         props = {}
         for i in ("begin", "end"):
             props[i] = self.integer(spin.get(i))
-        p = spin.get("value")
-        val = self.data[p]
+        value = spin.get("value")
+        val = self.data[value]
         if val.__class__ is not Value:
             raise KeyError("value of '{}' must be of type 'Value'\n"
-                           "{} found".format(p, val.__class__))
+                           "{} found".format(value, val.__class__))
         props["value"] = val
         return self.actors['get_spin'](**props)
 
@@ -141,13 +141,13 @@ class Puzzle:
             res = param == 'True'
         return res
 
-    def line(self, line):
+    def line(self, dummy):
         return self.actors['get_line']()
 
 
 class Frames:
     def __init__(self, fname):
-        self.document = etree.parse(fname).getroot()
+        self.document = Etree.parse(fname).getroot()
         if self.document.tag != "frames":
             raise KeyError("root element myst be \"frames\", %s found" %
                            self.document.tag)

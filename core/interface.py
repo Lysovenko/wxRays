@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"This is the input point to some interesting educational program"
-# wxRays (C) 2017 Serhii Lysovenko
+"""This is the input point to some interesting educational program"""
+# wxRays (C) 2017-2018 Serhii Lysovenko
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,13 +18,17 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from __future__ import absolute_import, division, unicode_literals
+
 from importlib import import_module
-from .frameparser import Frames, Value
+
+from .frameparser import Frames
+
 _ACTUAL_INTERFACE = None
 
 
 class Interface:
-    "with user, world and other addons"
+    """with user, world and other addons"""
+
     def __init__(self, parent):
         if parent is None:
             return
@@ -41,6 +45,7 @@ def run_dialog(user_data, xml_file, frame_name):
     puzzle = f.get(frame_name)
     puzzle.set_data(user_data)
     return _ACTUAL_INTERFACE.run_dlg_puzzle(puzzle)
+
 
 def get_progress_bar(title, message, can_abort=False):
     return _ACTUAL_INTERFACE.get_progress_bar(title, message, can_abort)

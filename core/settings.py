@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"This is some interesting educational program"
+"""This is some interesting educational program"""
 # wxRays (C) 2012 Serhii Lysovenko
 #
 # This program is free software; you can redistribute it and/or modify
@@ -35,7 +35,7 @@ class Settings:
                 self.__app_home = aphom + "/wxRays"
             else:
                 self.__app_home = expanduser("~/.wxRays")
-        elif name == 'nt':
+        elif os.name == 'nt':
             if isdir(expanduser("~/Application Data")):
                 self.__app_home = expanduser("~/Application Data/wxRays")
             else:

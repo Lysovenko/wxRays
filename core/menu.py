@@ -19,15 +19,16 @@
 
 from __future__ import absolute_import, division, unicode_literals
 
+
 class MenuItem:
     def __init__(self, name, description=None):
+        self.subitems = []
         self.name = name
         self.description = description
+        self.function = None
 
-    def set_function(self, function):
-        self.function = function
+    def set_function(self, callback):
+        self.function = callback
 
     def add_subitem(self, item):
-        if not hasattr(self, "subitems"):
-            self.subitems = []
         self.subitems.append(item)
