@@ -35,12 +35,12 @@ class MainFrame(wx.Frame):
         last_size = eval(APP_SETT.get("frame_size", "(550, 350)"))
         wx.Frame.__init__(self, None, - 1, PROG_NAME, size=last_size)
         from .plot import Plot
-        from .menu import Active_menu
+        from .menu import ActiveMenu
         from ..file import ascii_file_load
         self.data = {}
         adb = {'data': self.data, 'window': self}
         self.addons_data = {' base ': adb}
-        self.a_menu = Active_menu(self)
+        self.a_menu = ActiveMenu(self)
         self.plot = Plot(self.a_menu)
         self.prev_dir = '.'
         adb.update({'plot': self.plot, 'menu': self.a_menu, 'loaders': []})

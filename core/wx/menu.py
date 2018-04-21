@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"menu generator"
+"""menu generator"""
 # wxRays (C) 2013 Serhii Lysovenko
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ from __future__ import print_function, absolute_import, unicode_literals
 import wx
 
 
-class Active_menu:
+class ActiveMenu:
     def __init__(self, frame):
         self.frame = frame
         frame.SetMenuBar(wx.MenuBar())
@@ -40,10 +40,10 @@ class Active_menu:
                    ({}, _("&Quit") + "\tCtrl+Q", frame.OnWindowClose,
                     wx.ART_QUIT, None),
                    (None, _("&Data"), "data", None, None),
-                   ({"on init": False, 'on plot': set([_("Intensity curve")])},
+                   ({"on init": False, 'on plot': {_("Intensity curve")}},
                     _("Crop the intensity curve"),
                     VDM_menu(data, 'crop_data'), None, 0),
-                   ({"on init": False, 'on plot': set([_("Intensity curve")])},
+                   ({"on init": False, 'on plot': {_("Intensity curve")}},
                     _("Shift the intensity curve..."),
                     VDM_menu(data, 'shift_data'), None, 1),
                    (None, None, None, None, 2),
@@ -64,7 +64,7 @@ class Active_menu:
                     menu = self.menus[callb]
                     menubar.Append(menu, name)
             else:
-                ami = Menu_item(act)
+                ami = MenuItem(act)
                 self.menu_items.append(ami)
                 qmi = ami.wx_menu_item(menu, name)
                 if bmp is not None:
@@ -80,7 +80,7 @@ class Active_menu:
             self.act_catchers.append(catcher)
 
     def action_catch(self, action, condition=None):
-        "action catcher"
+        """action catcher"""
         hist = self.act_history
         if hist and hist[-1] == action:
             return
@@ -97,7 +97,7 @@ class Active_menu:
             i(action, condition)
 
     def replay_actions(self):
-        "replay menu actions"
+        """replay menu actions"""
         if self.act_history:
             for i in self.act_history:
                 for j in self.menu_items:
@@ -114,10 +114,10 @@ class Active_menu:
             self.menus[s_nam] = smenu
         else:
             smenu = None
-        ami = Menu_item(act)
+        ami = MenuItem(act)
         ami.addons_id = add_id
         self.menu_items.append(ami)
-        qmi = ami.wx_menu_item(menu, name, kind=kind, subMenu=smenu)
+        qmi = ami.wx_menu_item(menu, name, kind=kind, sub_menu=smenu)
         if bmp is not None:
             qmi.SetBitmap(wx.ArtProvider.GetBitmap(bmp))
         if m_nam == "file" and menu.MenuItemCount > 2:
@@ -153,29 +153,33 @@ class Active_menu:
                     break
             ami.destroy()
 
-    def remove_id(self, id):
+    def remove_id(self, identifier):
         mitems = self.menu_items
         for ami in mitems:
-            if ami.id == id:
-                self.frame.Unbind(wx.EVT_MENU, id=id)
+            if ami.id == identifier:
+                self.frame.Unbind(wx.EVT_MENU, id=identifier)
                 ami.destroy()
                 mitems.remove(ami)
                 break
 
 
-class Menu_item:
-    def __init__(self, actions={}):
+class MenuItem:
+    def __init__(self, actions=None):
+        if actions is None:
+            actions = dict()
         self.id = wx.NewId()
         while 2000 <= self.id < 2100:
             self.id = wx.NewId()
         self.actions = actions
         self.addons_id = None
+        self.menu_item = None
+        self.has_sub = None
 
-    def wx_menu_item(self, parentMenu=None, text="", help="",
-                     kind=wx.ITEM_NORMAL, subMenu=None):
-        self.menu_item = wx.MenuItem(parentMenu, self.id, text, help, kind,
-                                     subMenu)
-        self.has_sub = subMenu is not None
+    def wx_menu_item(self, parent_menu=None, text="", help="",
+                     kind=wx.ITEM_NORMAL, sub_menu=None):
+        self.menu_item = wx.MenuItem(parent_menu, self.id, text, help, kind,
+                                     sub_menu)
+        self.has_sub = sub_menu is not None
         return self.menu_item
 
     def action_catch(self, action, condition):

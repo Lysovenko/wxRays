@@ -14,5 +14,5 @@ setup(name="wxRays",
                      "po/*.po", "doc/*.pdf", "data/*"] +
                     [i for i in listdir('.') if i.endswith('.addon')]},
       package_dir={"wxRays": ""},
-      requires=["wxPython (>=2.8)", 'numpy'],
+      requires=["wxPython (>=2.8)", 'numpy', 'wx'],
       url="http://sourceforge.net/p/wxrays")
