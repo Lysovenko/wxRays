@@ -27,7 +27,7 @@ import f2inec as f2i
 from core.wx.dialogs import DlgProgressCallb, atof, ValidFloat, v_input
 from formtext import poly1d2wiki
 import wx.lib.rcsizer as rcs
-from core.interface import run_dialog, get_progress_bar
+from core.application import run_dialog, get_progress_bar, APPLICATION
 from core.value import lfloat, Value
 import os.path as osp
 from sys import modules
@@ -99,14 +99,14 @@ def introduce(data):
                _("Fit to tail"), Menu_call(data, "tail_sf_fit"), None, id)]
     for i in mitems:
         data["menu"].add_item(*i)
-    APP_SETT.declare_section("LIQAM")
-    iget = APP_SETT.get
+    APPLICATION.settings.declare_section("LIQAM")
+    iget = APPLICATION.settings.get
     for i in _DEFAULTS:
         data[i] = iget(i, _DEFAULTS[i], "LIQAM")
 
 
 def terminate(data):
-    iset = APP_SETT.set
+    iset = APPLICATION.settings.set
     for i in _DEFAULTS:
         iset(i, data[i], "LIQAM")
     modules.pop("sqcalc")

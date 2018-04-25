@@ -20,6 +20,14 @@
 from __future__ import absolute_import, division, unicode_literals
 
 
+class AppMenu:
+    def __init__(self):
+        self.menu_items = []
+        self.act_history = []
+        self.act_catchers = []
+        self.handlers = dict()
+
+
 class MenuItem:
     def __init__(self, name, description=None):
         self.subitems = []

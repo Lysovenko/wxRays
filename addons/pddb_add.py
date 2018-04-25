@@ -24,6 +24,7 @@ from PDDB import Database, formula_markup, switch_number
 from marshal import dump, load
 import os.path as osp
 import locale
+from core.application import APPLICATION
 _DEFAULTS = {"main_file": "", "incl_del": 0, "win_size":  "(-1, -1)"}
 
 
@@ -33,8 +34,8 @@ def introduce(data):
     INTERNAL = data
     data["menu"].add_item("tools", {}, _("PD DB..."),
                           Menu_callback(data), wx.ART_CDROM, data["id"])
-    APP_SETT.declare_section("PDDB")
-    iget = APP_SETT.get
+    APPLICATION.settings.declare_section("PDDB")
+    iget = APPLICATION.settings.get
     for i in _DEFAULTS:
         data[i] = iget(i, _DEFAULTS[i], "PDDB")
 
@@ -44,7 +45,7 @@ def terminate(data):
     crd_lst = data.get("CrdLst")
     if crd_lst:
         crd_lst.on_window_close()
-    iset = APP_SETT.set
+    iset = APPLICATION.settings.set
     for i in _DEFAULTS:
         iset(i, data[i], "PDDB")
     sys.modules.pop("PDDB")

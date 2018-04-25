@@ -21,17 +21,20 @@ from __future__ import absolute_import, division, unicode_literals
 
 from importlib import import_module
 
+from .addons import Addons
+from .settings import Settings
+from .menu import AppMenu
 from .frameparser import Frames
 
 _ACTUAL_INTERFACE = None
 
 
-class Interface:
-    """with user, world and other addons"""
+class Application:
+    """container for 'global variables'"""
 
-    def __init__(self, parent):
-        if parent is None:
-            return
+    def __init__(self):
+        self.menu = AppMenu()
+        self.settings = Settings()
 
 
 def start():
@@ -49,3 +52,6 @@ def run_dialog(user_data, xml_file, frame_name):
 
 def get_progress_bar(title, message, can_abort=False):
     return _ACTUAL_INTERFACE.get_progress_bar(title, message, can_abort)
+
+
+APPLICATION = Application()

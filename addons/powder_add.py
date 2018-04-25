@@ -24,6 +24,7 @@ import numpy as np
 from c_powder import calc_bg, refl_sects, ReflexDedect
 from core.wx.dialogs import (
     DlgProgressCallb, ValidFloat, atof, v_input)
+from core.application import APPLICATION
 _DEFAULTS = {"bg_sigmul": 2.0, "bg_polrang": 2, "refl_sigmin": 1e-3,
              "refl_consig": False, "refl_mbells": 10, "refl_bt": 0,
              "refl_ptm": 4, "refloc_sz": "(640,480)", "refl_bf": 2.}
@@ -47,14 +48,14 @@ def introduce(data):
                pdr.call_grid, None, id)]
     for i in mitems:
         menu.add_item(*i)
-    APP_SETT.declare_section("POWDER")
-    iget = APP_SETT.get
+    APPLICATION.settings.declare_section("POWDER")
+    iget = APPLICATION.settings.get
     for n, v in _DEFAULTS.iteritems():
         data[n] = iget(n, v, "POWDER")
 
 
 def terminate(data):
-    iset = APP_SETT.set
+    iset = APPLICATION.settings.set
     for i in _DEFAULTS:
         iset(i, data[i], "POWDER")
 

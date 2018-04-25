@@ -17,11 +17,12 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-
+from __future__ import print_function, absolute_import
 import wx
 import wx.lib.rcsizer as rcs
 import locale as loc
 import os.path as osp
+from ..application import APPLICATION
 try:
     str = unicode
 except NameError:
@@ -114,7 +115,7 @@ class DlgDdataFile(wx.Dialog):
         sample_list = self.ANODES.keys()
         sample_list.sort()
         self.anode = wx.Choice(self, -1, choices=sample_list)
-        item = APP_SETT.get("dlg_data_file_anode", 0)
+        item = APPLICATION.settings.get("dlg_data_file_anode", 0)
         if 0 > item >= len(sample_list):
             item = 0
         self.anode.SetSelection(item)
@@ -125,7 +126,7 @@ class DlgDdataFile(wx.Dialog):
         box.Add(label, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
         filterings = [_("Monochromator"), _("Alpha mix"), _("No beta-filter")]
         self.filtering = wx.Choice(self, -1, choices=filterings)
-        item = APP_SETT.get("dlg_data_file_filtering", 0)
+        item = APPLICATION.settings.get("dlg_data_file_filtering", 0)
         if 0 > item or item >= len(filterings):
             item = 0
         self.filtering.SetSelection(item)
@@ -139,7 +140,7 @@ class DlgDdataFile(wx.Dialog):
         label = wx.StaticText(self, -1, _("File X:"))
         box.Add(label, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
         self.abscissa = wx.Choice(self, -1, choices=self.laxes)
-        item = APP_SETT.get("dlg_data_file_abscissa", 0)
+        item = APPLICATION.settings.get("dlg_data_file_abscissa", 0)
         if 0 > item >= len(self.laxes):
             item = 0
         self.abscissa.SetSelection(item)
@@ -150,7 +151,7 @@ class DlgDdataFile(wx.Dialog):
                 0, wx.ALIGN_CENTRE | wx.ALL, 5)
         samples = [_("Powder"), _("Liquid")]
         self.sample = wx.Choice(self, -1, choices=samples)
-        item = APP_SETT.get("dlg_data_file_sample", 0)
+        item = APPLICATION.settings.get("dlg_data_file_sample", 0)
         if 0 > item or item >= len(samples):
             item = 0
         self.sample.SetSelection(item)
@@ -197,12 +198,12 @@ class DlgDdataFile(wx.Dialog):
     def save_choice(self):
         "Missing docstring"
         item = self.anode.GetSelection()
-        APP_SETT.set("dlg_data_file_anode", item)
+        APPLICATION.settings.set("dlg_data_file_anode", item)
         item = self.filtering.GetSelection()
-        APP_SETT.set("dlg_data_file_filtering", item)
+        APPLICATION.settings.set("dlg_data_file_filtering", item)
         item = self.abscissa.GetSelection()
-        APP_SETT.set("dlg_data_file_abscissa", item)
-        APP_SETT.set("dlg_data_file_sample", self.sample.GetSelection())
+        APPLICATION.settings.set("dlg_data_file_abscissa", item)
+        APPLICATION.settings.set("dlg_data_file_sample", self.sample.GetSelection())
 
 
 class DlgProgressCallb:
@@ -277,7 +278,7 @@ def make_mask(loads):
 
 def load_data_file(mobj, fnames, loads):
     if fnames is None:
-        prev_dir = eval(APP_SETT.get("df_prev_dir", "''"))
+        prev_dir = eval(APPLICATION.settings.get("df_prev_dir", "''"))
         wild = make_mask(loads)
         fd = wx.FileDialog(mobj, message=_("Open data file(s)"),
                            style=wx.FD_OPEN | wx.MULTIPLE,
@@ -290,7 +291,7 @@ def load_data_file(mobj, fnames, loads):
         from .plot import plot_exp_data
         if fnames is None:
             fnams = fd.GetPaths()
-            APP_SETT.set("df_prev_dir", repr(fd.GetDirectory()))
+            APPLICATION.settings.set("df_prev_dir", repr(fd.GetDirectory()))
         else:
             fnams = fnames
         ldrs = [i[2] for i in loads]
@@ -339,7 +340,7 @@ def load_data_file(mobj, fnames, loads):
 
 def about_box():
     # First we create and fill the info object
-    from settings import VERSION
+    from ..settings import VERSION
     info = wx.AboutDialogInfo()
     info.Name = PROG_NAME
     info.Version = VERSION

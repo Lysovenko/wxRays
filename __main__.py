@@ -19,6 +19,6 @@
 
 from __future__ import absolute_import
 from core import initialize
-from core.interface import start
+from core.application import start
 initialize()
 start()

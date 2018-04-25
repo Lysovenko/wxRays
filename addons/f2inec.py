@@ -49,10 +49,3 @@ def inec_calc(f2i, xarr, lmnts):
         I_c_in = interp1d(S, I_c, kind='cubic')
         res += I_c_in(xarr) * ni
     return res
-
-
-if __name__ == '__main__':
-    import __builtin__
-    import settings
-    __builtin__.__dict__['APP_SETT'] = settings.Settings()
-    print('hello f2inec')

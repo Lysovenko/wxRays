@@ -18,6 +18,7 @@
 
 from __future__ import print_function
 from ..addons import mod_from_desc
+from ..application import APPLICATION
 import wx
 from wx.lib.mixins.listctrl import CheckListCtrlMixin
 from sys import maxint
@@ -123,7 +124,7 @@ def run_addons_dialog(event=None):
     else:
         # this may be called from menu only
         window = event.GetEventObject().GetMenuBar().GetFrame()
-    adds = APP_SETT.addons
+    adds = APPLICATION.addons
     descrs = adds.descriptions
     DLG = DlgAddonMgr(window, descrs)
     if event is None:

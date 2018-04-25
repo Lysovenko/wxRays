@@ -26,13 +26,14 @@ from sys import argv
 # wxversion.ensureMinimal('2.8')
 import wx
 from .dialogs import DlgPuzzle, DlgProgressBar
+from ..application import APPLICATION
 ROOT_FRAME = None
 
 
 class MainFrame(wx.Frame):
     'The Main Frame'
     def __init__(self):
-        last_size = eval(APP_SETT.get("frame_size", "(550, 350)"))
+        last_size = eval(APPLICATION.settings.get("frame_size", "(550, 350)"))
         wx.Frame.__init__(self, None, - 1, PROG_NAME, size=last_size)
         from .plot import Plot
         from .menu import ActiveMenu
@@ -44,7 +45,7 @@ class MainFrame(wx.Frame):
         self.plot = Plot(self.a_menu)
         self.prev_dir = '.'
         adb.update({'plot': self.plot, 'menu': self.a_menu, 'loaders': []})
-        APP_SETT.addons.introduce(self.addons_data)
+        APPLICATION.addons.introduce(self.addons_data)
         adb['loaders'].insert(0, (_('Commented dat files'), ('.dat',),
                                   ascii_file_load))
         self.a_menu.set_menu_bar()
@@ -78,8 +79,8 @@ class MainFrame(wx.Frame):
         event.Skip()
 
     def OnWindowClose(self, event):
-        APP_SETT.addons.terminate(self.addons_data, True)
-        APP_SETT.set("frame_size", repr(self.GetSizeTuple()))
+        APPLICATION.addons.terminate(self.addons_data, True)
+        APPLICATION.settings.set("frame_size", repr(self.GetSizeTuple()))
         self.Destroy()
 
     def OnDataFile(self, event):
@@ -133,7 +134,7 @@ class App(wx.App):
 def main():
     app = App(False)
     app.MainLoop()
-    APP_SETT.save()
+    APPLICATION.settings.save()
 
 
 def run_dlg_puzzle(puzzle):

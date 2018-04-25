@@ -25,6 +25,7 @@ from NIST import NIST_Card, ElFilter, string_card
 from marshal import dump, load
 import os.path as osp
 import locale
+from core.application import APPLICATION
 _DEFAULTS = {"main_file": "", "incl_del": 0, "win_size":  "(-1, -1)"}
 
 
@@ -34,8 +35,8 @@ def introduce(data):
     INTERNAL = data
     data['menu'].add_item("tools", {}, _("NIST database..."),
                           Menu_callback(data), wx.ART_CDROM, data['id'])
-    APP_SETT.declare_section('NISTDB')
-    iget = APP_SETT.get
+    APPLICATION.settings.declare_section('NISTDB')
+    iget = APPLICATION.settings.get
     for i in _DEFAULTS:
         data[i] = iget(i, _DEFAULTS[i], 'NISTDB')
 
@@ -45,7 +46,7 @@ def terminate(data):
     crd_lst = data.get('CrdLst')
     if crd_lst:
         crd_lst.on_window_close()
-    iset = APP_SETT.set
+    iset = APPLICATION.settings.set
     for i in _DEFAULTS:
         iset(i, data[i], 'NISTDB')
     sys.modules.pop("NIST")
@@ -81,8 +82,8 @@ class Config:
 
     def configure(self):
         fnam = self.fbb.GetValue()
-        indnam = APP_SETT.get_home("DB_el.idx")
-        indnam_d = APP_SETT.get_home("DB_el_d.idx")
+        indnam = APPLICATION.settings.get_home("DB_el.idx")
+        indnam_d = APPLICATION.settings.get_home("DB_el_d.idx")
         try:
             indexate_with_progress(fnam, indnam, indnam_d)
         except (ValueError, IndexError):
@@ -93,7 +94,7 @@ class Config:
 
 
 def get_codens_dict():
-    codesnam = APP_SETT.get_home("codens.dmp")
+    codesnam = APPLICATION.settings.get_home("codens.dmp")
     try:
         fobj = open(codesnam, "rb")
     except IOError:
@@ -115,8 +116,8 @@ def get_codens_dict():
 
 
 def db_load_index():
-    indnam = APP_SETT.get_home("DB_el.idx")
-    indnam_d = APP_SETT.get_home("DB_el_d.idx")
+    indnam = APPLICATION.settings.get_home("DB_el.idx")
+    indnam_d = APPLICATION.settings.get_home("DB_el_d.idx")
     try:
         fobj = open(indnam, "rb")
         fobj_d = open(indnam_d, "rb")

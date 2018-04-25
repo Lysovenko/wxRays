@@ -22,14 +22,16 @@ from imp import find_module, load_module
 from os import listdir
 from os.path import (dirname, realpath, split, splitext, join, isfile,
                      isabs, normpath)
+from .application import APPLICATION
 
 
 class Addons:
-    def __init__(self):
+    def __init__(self, app):
         """searches and reads addons descriptions files"""
+        self.application = app
         pth1 = join(dirname(dirname(realpath(__file__))), 'addons')
         path.append(pth1)
-        pth2 = APP_SETT.get_home()
+        pth2 = APPLICATION.settings.get_home()
         adds = []
         # find *.addon files
         for pth in (pth1, pth2):
@@ -79,7 +81,7 @@ class Addons:
 
     def set_active(self, id_set=None):
         if id_set is None:
-            id_set = APP_SETT.get("addons_ids", "set()")
+            id_set = APPLICATION.settings.get("addons_ids", "set()")
             id_set = eval(id_set)
         for desc in self.descriptions:
             desc['isactive'] = desc['id'] in id_set
@@ -90,7 +92,7 @@ class Addons:
             if desc['isactive']:
                 id_set.add(desc['id'])
         if wgs:
-            APP_SETT.set("addons_ids", repr(id_set))
+            APPLICATION.set("addons_ids", repr(id_set))
         return id_set
 
     def introduce(self, adds_dat):

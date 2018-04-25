@@ -22,31 +22,29 @@ import locale
 from os.path import dirname, join, isdir
 from .settings import Settings
 from .addons import Addons
+from .application import APPLICATION
 VERSION = '0.2.1'
 
 
 def install_gt():
     try:
         from gettext import install
-        LOCALEDIR = join(dirname(dirname(__file__)), 'locale')
-        if isdir(LOCALEDIR):
-            install('wxRays', LOCALEDIR, True)
+        locale_dir = join(dirname(dirname(__file__)), 'locale')
+        if isdir(locale_dir):
+            install('wxRays', locale_dir, True)
         else:
             install('wxRays', unicode=True)
     except ImportError:
         try:
-            __builtins__["_"] = unicode
+            __builtins__.__dict__["_"] = unicode
         except NameError:
-            __builtins__["_"] = str
+            __builtins__.__dict__["_"] = str
 
 
 def initialize():
     extvars = __builtins__
-    if 'APP_SETT' in extvars:
-        return
-    extvars['APP_SETT'] = Settings()
     extvars['PROG_NAME'] = "wxRays"
-    APP_SETT.addons = Addons()
-    APP_SETT.addons.set_active()
+    APPLICATION.addons = Addons()
+    APPLICATION.addons.set_active()
     locale.setlocale(locale.LC_NUMERIC, "")
     install_gt()

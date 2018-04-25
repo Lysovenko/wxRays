@@ -23,24 +23,25 @@ import __builtin__
 from os import stat
 from os.path import dirname, realpath, isfile
 from marshal import dump, load
+from core.application import APPLICATION
 
 
 def introduce(data):
     "Addons Entry point"
-    dict_fn = APP_SETT.get_home("alt_mo.dmp")
-    APP_SETT.declare_section("ALT_GETTEXT")
-    pofn = eval(APP_SETT.get("po_file", "''", "ALT_GETTEXT"))
+    dict_fn = APPLICATION.settings.get_home("alt_mo.dmp")
+    APPLICATION.settings.declare_section("ALT_GETTEXT")
+    pofn = eval(APPLICATION.settings.get("po_file", "''", "ALT_GETTEXT"))
     __builtin__.__dict__["_"] = AltGT(get_podict(pofn))
     adat = data["window"].addons_data
     menu = data["menu"]
-    for i in APP_SETT.addons.terminate(adat, True):
+    for i in APPLICATION.addons.terminate(adat, True):
         menu.remove_add_id(i)
     mid = data["id"]
-    for desc in APP_SETT.addons.descriptions:
+    for desc in APPLICATION.addons.descriptions:
         if desc["id"] == mid:
             break
     desc["isactive"] = False
-    APP_SETT.addons.introduce(adat)
+    APPLICATION.addons.introduce(adat)
     desc["isactive"] = True
     menu.replay_actions()
 
@@ -51,7 +52,7 @@ class Config:
 
     def get_visual(self, parent):
         import wx.lib.filebrowsebutton as filebrowse
-        pof = eval(APP_SETT.get("po_file", "''", "ALT_GETTEXT"))
+        pof = eval(APPLICATION.settings.get("po_file", "''", "ALT_GETTEXT"))
         if pof:
             sdir = dirname(pof)
         else:
@@ -63,9 +64,9 @@ class Config:
         return self.fbb
 
     def configure(self):
-        dict_fn = APP_SETT.get_home("alt_mo.dmp")
+        dict_fn = APPLICATION.settings.get_home("alt_mo.dmp")
         fnam = self.fbb.GetValue()
-        APP_SETT.set("po_file", repr(fnam), "ALT_GETTEXT")
+        APPLICATION.settings.set("po_file", repr(fnam), "ALT_GETTEXT")
         __builtin__.__dict__["_"] = AltGT(get_podict(fnam))
 
 
@@ -80,7 +81,7 @@ class AltGT:
 
 
 def get_podict(fname):
-    altmo = APP_SETT.get_home("alt_mo.dmp")
+    altmo = APPLICATION.settings.get_home("alt_mo.dmp")
     res = {}
     if isfile(fname):
         if not isfile(altmo) or stat(fname).st_mtime > stat(altmo).st_mtime:
