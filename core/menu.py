@@ -18,10 +18,12 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from __future__ import absolute_import, division, unicode_literals
+from weakref import ref
 
 
 class AppMenu:
-    def __init__(self):
+    def __init__(self, app):
+        self.application = ref(app)
         self.menu_items = []
         self.act_history = []
         self.act_catchers = []

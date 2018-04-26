@@ -33,8 +33,9 @@ class Application:
     """container for 'global variables'"""
 
     def __init__(self):
-        self.menu = AppMenu()
+        self.menu = AppMenu(self)
         self.settings = Settings()
+        self.addons = Addons(self)
 
 
 def start():

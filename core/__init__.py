@@ -44,7 +44,6 @@ def install_gt():
 def initialize():
     extvars = __builtins__
     extvars['PROG_NAME'] = "wxRays"
-    APPLICATION.addons = Addons()
     APPLICATION.addons.set_active()
     locale.setlocale(locale.LC_NUMERIC, "")
     install_gt()
