@@ -191,8 +191,6 @@ class DBCardsList:
             return
         if mpln in plt:
             cd = plt.get_data(mpln)
-            if "wavelength" in cd.tech_info:
-                wavel = cd.tech_info["wavelength"]
             units = cd.get_units()
             last = []
             if not chromos:

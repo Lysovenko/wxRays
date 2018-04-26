@@ -19,8 +19,8 @@
 
 from __future__ import print_function
 import numpy as np
-from scipy.optimize import fmin, fmin_bfgs
-from sys import stderr
+from scipy.optimize import fmin
+
 _SH_FUNCTIONS = {"Gaus": lambda the_x, x0, h, w:
                  h * np.exp(-(the_x - x0) ** 2 / w),
                  "Lorentz": lambda the_x, x0, h, w:
@@ -71,7 +71,7 @@ def refl_sects(s_x, s_y, sbg, sigma2, bf=3.):
 
 
 class ReflexDedect:
-    "treat sector of points positioned above background"
+    """treat sector of points positioned above background"""
     def __init__(self, sector, lambda21=None, I2=.5):
         tps = np.array(sector).transpose()
         self.x_ar = tps[0]
