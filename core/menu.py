@@ -19,6 +19,11 @@
 
 from __future__ import absolute_import, division, unicode_literals
 from weakref import ref
+from collections import namedtuple
+
+
+MenuItem = namedtuple("MenuItem",
+                      ["name", "title", "function", "description", "icon"])
 
 
 class AppMenu:
@@ -29,16 +34,14 @@ class AppMenu:
         self.act_catchers = []
         self.handlers = dict()
 
-
-class MenuItem:
-    def __init__(self, name, description=None):
-        self.subitems = []
-        self.name = name
-        self.description = description
-        self.function = None
-
-    def set_function(self, callback):
-        self.function = callback
-
-    def add_subitem(self, item):
-        self.subitems.append(item)
+    def add_item(self, path, name, title, function,
+                 description=None, icon=None):
+        if not path:
+            self.menu_items.append(
+                MenuItem(name, title, function, description, icon))
+            return
+        holder = self.menu_items
+        for i in path:
+            for mi in holder:
+                if mi.name == i:
+                    holder = mi.function
