@@ -36,12 +36,39 @@ class AppMenu:
 
     def add_item(self, path, name, title, function,
                  description=None, icon=None):
+        """adds an item to the menu"""
         if not path:
-            self.menu_items.append(
-                MenuItem(name, title, function, description, icon))
-            return
+            path = ()
         holder = self.menu_items
-        for i in path:
-            for mi in holder:
-                if mi.name == i:
+        numpath = []
+        for iname in path:
+            for pos, mi in enumerate(holder):
+                if mi.name == iname:
                     holder = mi.function
+                    numpath.append(pos)
+                    break
+        holder.append(MenuItem(name, title, function, description, icon))
+        adder = self.handlers.get("add_item")
+        if adder:
+            adder(numpath, title, function, description, icon)
+        return numpath
+
+    def remove_item(self, path):
+        """removes an item from the menu"""
+        if not path:
+            return
+        item = self.menu_items
+        numpath = []
+        for iname in path:
+            for pos, mi in enumerate(item):
+                if mi.name == iname:
+                    item = mi.function
+                    numpath.append(pos)
+                    break
+        if type(item.function) is list:
+            for mi in item.function:
+                self.remove_item(tuple(path)+(mi.name,))
+        remover = self.handlers.get("remove_item")
+        if remover:
+            remover(numpath)
+        #delete me somehow
