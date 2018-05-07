@@ -22,8 +22,8 @@ from weakref import ref
 from collections import namedtuple
 
 
-MenuItem = namedtuple("MenuItem",
-                      ["name", "title", "function", "description", "icon"])
+MenuItem = namedtuple("MenuItem", [
+    "name", "title", "function", "shortcut", "description", "icon"])
 
 
 class AppMenu:
@@ -34,41 +34,87 @@ class AppMenu:
         self.act_catchers = []
         self.handlers = dict()
 
-    def add_item(self, path, name, title, function,
-                 description=None, icon=None):
-        """adds an item to the menu"""
+    def get_numeric_path(self, path, level=1):
+        """get numeric path and last holders one"""
         if not path:
             path = ()
-        holder = self.menu_items
+        holders = [self.menu_items]
         numpath = []
         for iname in path:
-            for pos, mi in enumerate(holder):
+            for pos, mi in enumerate(holders[-1]):
                 if mi.name == iname:
-                    holder = mi.function
+                    holders.append(mi.function)
                     numpath.append(pos)
                     break
-        holder.append(MenuItem(name, title, function, description, icon))
-        adder = self.handlers.get("add_item")
-        if adder:
-            adder(numpath, title, function, description, icon)
+        return numpath, holders[-level]
+
+    def append_item(self, path, name, title, function, shortcut,
+                 description=None, icon=None):
+        """appends an item to the menu"""
+        numpath, holder = self.get_numeric_path(path)
+        holder.append(MenuItem(name, title, function, shortcut,
+                               description, icon))
+        appender = self.handlers.get("append_item")
+        if appender:
+            appender(numpath, title, function, shortcut, description, icon)
         return numpath
+
+    def insert_item(self, path, position, name, title, function, shortcut,
+                 description=None, icon=None):
+        """inserts an item to the menu"""
+        numpath, holder = self.get_numeric_path(path)
+        holder.insert(position, MenuItem(name, title, function, shortcut,
+                               description, icon))
+        inserter = self.handlers.get("insert_item")
+        if inserter:
+            inserter(numpath, position, title, function, shortcut,
+                     description, icon)
+        return numpath
+
+    def insert_item_relative(self, path, rel_pos, name, title, function,
+                             shortcut, description=None, icon=None):
+        """inserts an item to the menu relative to the path"""
+        numpath, holder = self.get_numeric_path(path, 2)
+        position = numpath[-1] + rel_pos
+        numpath = numpath[:-1]
+        holder.insert(position, MenuItem(name, title, function, shortcut,
+                               description, icon))
+        inserter = self.handlers.get("insert_item")
+        if inserter:
+            inserter(numpath, position, title, function, shortcut,
+                     description, icon)
+        return numpath
+
+    def insert_item_after(self, path, name, title, function,
+                             shortcut, description=None, icon=None):
+        """inserts an item to the menu after the appointed item"""
+        return self.insert_item_relative(path, name, 1, title, function,
+                                         shortcut, description, icon)
+
+    def insert_item_before(self, path, name, title, function,
+                             shortcut, description=None, icon=None):
+        """inserts an item to the menu before the appointed item"""
+        return self.insert_item_relative(path, name, 0, title, function,
+                                         shortcut, description, icon)
 
     def remove_item(self, path):
         """removes an item from the menu"""
         if not path:
             return
-        item = self.menu_items
+        tholder = self.menu_items
         numpath = []
         for iname in path:
-            for pos, mi in enumerate(item):
+            for pos, mi in enumerate(tholder):
                 if mi.name == iname:
-                    item = mi.function
+                    item = mi
+                    iholder = tholder
+                    tholder = item.function
                     numpath.append(pos)
                     break
-        if type(item.function) is list:
-            for mi in item.function:
+        if type(tholder) is list:
+            for mi in tholder:
                 self.remove_item(tuple(path)+(mi.name,))
         remover = self.handlers.get("remove_item")
         if remover:
             remover(numpath)
-        #delete me somehow
+        iholder.remove(item)
