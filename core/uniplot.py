@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-"""Plot abstraction"""
+"""Universal plot abstraction"""
 # wxRays (C) 2018 Serhii Lysovenko
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,3 +18,27 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from __future__ import absolute_import, division, unicode_literals
+
+
+class UniPlot:
+    def __init__(self):
+        self.xlabel = None
+        self.xrange = None
+        self.ylabel = None
+        self.yrange = None
+        self.x2label = None
+        self.x2range = None
+        self.y2label = None
+        self.y2range = None
+        self.title = None
+        self.plots = []
+        self.arrows = []
+        self.labels = []
+
+
+class Plot:
+    def __init__(self):
+        self.abscissa = None
+        self.ordinate = None
+        self.type = None
+        self.title = None
