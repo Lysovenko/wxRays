@@ -18,3 +18,16 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from __future__ import absolute_import, division, unicode_literals
+
+
+class Plots:
+    def __init__():
+        pass
+
+    def get_cur_key(self):
+        pass
+
+    def plot_dataset(self, d_set):
+        pass
+
+    # TODO: make an alternative for plot.axes1.get_xbound()

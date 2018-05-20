@@ -18,22 +18,37 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from __future__ import absolute_import, division, unicode_literals
+from copy import copy
 
 
 class UniPlot:
-    def __init__(self):
-        self.xlabel = None
+    """something like core.DataSet"""
+    def __init__(self, xlabel=None, ylabel=None, xunits=None):
+        self.xlabel = xlabel
         self.xrange = None
-        self.ylabel = None
+        self.ylabel = ylabel
         self.yrange = None
         self.x2label = None
         self.x2range = None
         self.y2label = None
         self.y2range = None
+        self.xunits = xunits
+        self.yunits = None
+        self.x2units = None
+        self.y2units = None
         self.title = None
         self.plots = []
         self.arrows = []
         self.labels = []
+
+    def get_units(self):
+        return self.xunits, self.yunits, self.x2units, self.y2units
+
+    def clone(self):
+        return copy(self)
+
+    def append(self, plt):
+        self.plots.append(plt)
 
 
 class Plot:
