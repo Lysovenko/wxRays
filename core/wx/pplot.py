@@ -33,3 +33,12 @@
 #   year      = 2007
 # }
 
+import wx
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg, \
+    NavigationToolbar2WxAgg
+
+
+class Plot:
+    def __init__(self, app_plot):
+        pass
