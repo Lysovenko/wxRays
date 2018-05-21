@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-#
-"""Plot abstraction"""
 # wxRays (C) 2018 Serhii Lysovenko
 #
+"""operating with plot on main frame"""
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or (at
@@ -16,20 +14,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+# If matplotlib contributes to a project that leads to a scientific
+# publication, please acknowledge this fact by citing the project.
+# You can use this BibTeX entry:
+# @Article{Hunter:2007,
+#   Author    = {Hunter, J. D.},
+#   Title     = {Matplotlib: A 2D graphics environment},
+#   Journal   = {Computing In Science \& Engineering},
+#   Volume    = {9},
+#   Number    = {3},
+#   Pages     = {90--95},
+#   abstract  = {Matplotlib is a 2D graphics package used for Python
+#   for application development, interactive scripting, and
+#   publication-quality image generation across user
+#   interfaces and operating systems.},
+#   publisher = {IEEE COMPUTER SOC},
+#   year      = 2007
+# }
 
-from __future__ import absolute_import, division, unicode_literals
-from weakref import ref
-
-
-class Plot:
-    def __init__(self, app):
-        self.application = ref(app)
-        pass
-
-    def get_cur_key(self):
-        pass
-
-    def plot_dataset(self, d_set):
-        pass
-
-    # TODO: make an alternative for plot.axes1.get_xbound()

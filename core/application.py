@@ -25,6 +25,7 @@ from .addons import Addons
 from .settings import Settings
 from .menu import AppMenu
 from .frameparser import Frames
+from .plot import Plot
 
 _ACTUAL_INTERFACE = None
 
@@ -36,6 +37,7 @@ class Application:
         self.menu = AppMenu(self)
         self.settings = Settings()
         self.addons = Addons(self)
+        self.plot = Plot(self)
 
 
 def start():
