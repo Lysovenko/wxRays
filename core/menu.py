@@ -49,14 +49,17 @@ class AppMenu:
         return numpath, holders[-level]
 
     def append_item(self, path, name, title, function, shortcut,
-                    description=None, icon=None):
+                    description=None, icon=None, visibility="",
+                    action_catch=None):
         """appends an item to the menu"""
         numpath, holder = self.get_numeric_path(path)
         holder.append(MenuItem(name, title, function, shortcut,
-                               description, icon))
+                               description, icon, visibility,
+                               action_catch))
         appender = self.handlers.get("append_item")
         if appender:
-            appender(numpath, title, function, shortcut, description, icon)
+            appender(numpath, title, function, shortcut, description,
+                     icon, visibility)
         return numpath
 
     def append_all(self, init_path=()):
@@ -64,7 +67,7 @@ class AppMenu:
         appender = self.handlers.get("append_item")
         if not appender:
             return
-        numpath, holder = self.get_numeric_path(path)
+        numpath, holder = self.get_numeric_path(init_path)
         for mi in holder:
             appender(numpath, mi.title, mi.function, mi.shortcut,
                      mi.description, mi.icon)
@@ -72,42 +75,50 @@ class AppMenu:
                 self.append_all(init_path+(mi.name,))
 
     def insert_item(self, path, position, name, title, function, shortcut,
-                    description=None, icon=None):
+                    description=None, icon=None, visibility="",
+                    action_catch=None):
         """inserts an item to the menu"""
         numpath, holder = self.get_numeric_path(path)
         holder.insert(position, MenuItem(name, title, function, shortcut,
-                                         description, icon))
+                                         description, icon, visibility,
+                                         action_catch))
         inserter = self.handlers.get("insert_item")
         if inserter:
             inserter(numpath, position, title, function, shortcut,
-                     description, icon)
+                     description, icon, visibility)
         return numpath
 
     def insert_item_relative(self, path, rel_pos, name, title, function,
-                             shortcut, description=None, icon=None):
+                             shortcut, description=None, icon=None,
+                             visibility="", action_catch=None):
         """inserts an item to the menu relative to the path"""
         numpath, holder = self.get_numeric_path(path, 2)
         position = numpath[-1] + rel_pos
         numpath = numpath[:-1]
         holder.insert(position, MenuItem(name, title, function, shortcut,
-                                         description, icon))
+                                         description, icon, visibility,
+                                         action_catch))
         inserter = self.handlers.get("insert_item")
         if inserter:
             inserter(numpath, position, title, function, shortcut,
-                     description, icon)
+                     description, icon, visibility)
         return numpath
 
     def insert_item_after(self, path, name, title, function,
-                          shortcut, description=None, icon=None):
+                          shortcut, description=None, icon=None, visibility="",
+                          action_catch=None):
         """inserts an item to the menu after the appointed item"""
-        return self.insert_item_relative(path, name, 1, title, function,
-                                         shortcut, description, icon)
+        return self.insert_item_relative(path, 1, name, title, function,
+                                         shortcut, description, icon,
+                                         visibility, action_catch)
 
     def insert_item_before(self, path, name, title, function,
-                           shortcut, description=None, icon=None):
+                           shortcut, description=None, icon=None,
+                           visibility="", action_catch=None):
         """inserts an item to the menu before the appointed item"""
-        return self.insert_item_relative(path, name, 0, title, function,
-                                         shortcut, description, icon)
+        return self.insert_item_relative(path, 0, name, title, function,
+                                         shortcut, description, icon,
+                                         visibility, action_catch)
 
     def remove_item(self, path):
         """removes an item from the menu"""
